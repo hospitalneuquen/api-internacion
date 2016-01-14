@@ -9,17 +9,59 @@ var mongoose=require("mongoose");
 mongoose.connect("mongodb://desarrollo:27017/hospital");
 var Schema=mongoose.Schema;
 
-var robotSchema=new Schema({
-  name        : { type:String, index: { unique: true } },
-  description : String,
-  occupation  : { type:String, default:"General Purpose" },
-  age         : { type: Number, min:18, max:60 },
-  dangerous   : Boolean,
-  added       : { type: Date, default: Date.now },
+// Define esquema pacientes
+var personaSchema = new Schema({
+  activo: Boolean,
+  apellido: String,
+  nombre: String,
+  documento: Number,
+  contacto: {
+    celular: {
+        numero: Number,
+        carrier: String
+    },
+    email: String,
+    telefono: String
+  },
+  sexo: String,
+  nacionalidad: String,
+  fechaNacimiento: Date,
+  fechaNacimientoEstimada: Boolean
+  fallecido: Boolean,
+  fechaFallecimiento: Date,
+  archivo: Number,
+  domicilio: {
+    texto: String,
+    codigoPostal: String,
+    barrio: String,
+    localidad: String,
+    departamento: String,
+    provincia: String,
+    pais: String
+    coordenadas: [Number, Number]
+  },
+  estadoCivil: String,
+  contactoReferencia:{
+    texto: String,
+    relacion: String,
+  },
+  obrasSociales: [String],
+  relaciones: [{
+    tipo: String,
+    apellido: String,
+    nombre: String,
+    idPersona: ObjectId
+  }],
+  codigoExterno: {
+    sisa: Number,
+    renaper: Number
+  }
 });
-robotSchema.set('toJSON', { virtuals: true });
 
-var Robot = mongoose.model('Robot',robotSchema);
+
+
+
+
 
 app.get('/', function (req, res) {
   res.send('Hello World!');
