@@ -17,7 +17,7 @@ router
             }
         });
     }).patch('/internacion/:id', function(req, res, next) {
-        
+
     });
 
 module.exports = router;
