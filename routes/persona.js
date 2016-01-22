@@ -1,13 +1,16 @@
-
 var express = require('express');
 var router = express.Router();
 var Persona = require('../models/Persona.js');
 
 router.get('/persona', function(req, res, next) {
     var query = Persona.find({});
+    if (req.query.documento)
+        query.where('documento').equals(req.query.documento);
     if (req.query.apellido)
         query.where('apellido').equals(req.query.apellido);
-    query.limit(10);
+    else {
+        query.limit(10);
+    }
     query.exec(function(err, data) {
         res.json(data);
     });
