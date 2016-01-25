@@ -1,4 +1,5 @@
-var mongoose = require('mongoose');
+var mongoose = require('mongoose'),
+    mongoosastic = require('mongoosastic');
 var Schema = mongoose.Schema;
 
 var schema = new Schema({
@@ -7,7 +8,10 @@ var schema = new Schema({
         required: true,
         default: true
     },
-    apellido: String,
+    apellido: {
+        type: String,
+        es_indexed: true
+    },
     nombre: String,
     documento: Number,
     contacto: {
@@ -65,5 +69,10 @@ var schema = new Schema({
 schema.set('toJSON', {
     virtuals: true,
     versionKey: false,
+});
+schema.plugin(mongoosastic, {
+    host: "desarrollo",
+    port: 9200,
+    protocol: "http",
 });
 module.exports = mongoose.model('Persona', schema, 'personas')
