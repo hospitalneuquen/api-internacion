@@ -4,6 +4,10 @@ var Schema = mongoose.Schema;
 var schema = new Schema({
     habitacion: Number,
     numero: Number,
+    servicio: {
+        id: Number,    // 1='clínica médica' 2='clínica quirúrgica'
+        nombre: String,
+    },
     tipoCama: {
         type: String,
         enum: ['cama', 'sillon', 'cuna'],
