@@ -12,7 +12,10 @@ var schema = new Schema({
         type: String,
         es_indexed: true
     },
-    nombre: String,
+    nombre: {
+        type: String,
+        es_indexed: true
+    },
     documento: Number,
     contacto: {
         celular: Number,
@@ -33,7 +36,10 @@ var schema = new Schema({
     },
     fechaFallecimiento: Date,
     domicilio: {
-        texto: String,
+        texto: {
+            type: String,
+            es_indexed: false,
+        },
         barrio: String,
         localidad: String,
         departamento: String,
@@ -70,9 +76,12 @@ schema.set('toJSON', {
     virtuals: true,
     versionKey: false,
 });
+
+// Habilita el indexado en ElasticSearch
 schema.plugin(mongoosastic, {
     host: "desarrollo",
     port: 9200,
     protocol: "http",
+    curlDebug: true
 });
 module.exports = mongoose.model('Persona', schema, 'personas')
