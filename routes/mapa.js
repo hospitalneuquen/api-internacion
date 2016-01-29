@@ -10,6 +10,7 @@ router.get('/mapa/:idServicio*?', function(req, res, next) {
     // else {
     //     query.limit(10);
     // }
+    query.sort({habitacion: 1, numero: 1});
     query.exec(function(err, data) {
         res.json(data);
     });
