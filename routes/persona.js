@@ -7,16 +7,14 @@ router.get('/persona/:id*?', function(req, res, next) {
         Persona.findOne({
             _id: req.params.id
         }).exec(function(err, data) {
-            if (err) {
-                next(err);
-                return
-            }
+            if (err) return next(err);
+            if (!data) return next(404);
 
             res.json(data);
         });
     } else {
         if (req.query.fulltext) {
-            // TODO: Utilizar ElasticSearch
+            // TODO: Implementar ElasticSearch
             // Persona.search({
             //     // match: {
             //     //     _all: req.query.fulltext
@@ -49,30 +47,21 @@ router.get('/persona/:id*?', function(req, res, next) {
                 res.json(data);
             });
         } else {
-            var hasQuery = false;
-            var query = Persona.find({});
-            if (req.query.documento) {
-                query.where('documento').equals(req.query.documento);
-                hasQuery = true;
-            }
-            if (req.query.apellido) {
-                query.where('apellido').equals(RegExp('^' + req.query.apellido + '$', "i"));
-                hasQuery = true;
-            }
-            if (req.query.nombre) {
-                hasQuery = true;
-                query.where('nombre').equals(RegExp('^' + req.query.nombre + '$', "i"));
-            }
+            if (!(req.query.documento || req.query.apellido || req.query.nombre))
+                return next(400);
 
-            if (!hasQuery) {
-                next(new Error("Debe consultar por un párametro como mínimo"));
-                return
-            }
+            var query = Persona.find({});
+            if (req.query.documento)
+                query.where('documento').equals(req.query.documento);
+            if (req.query.apellido)
+                query.where('apellido').equals(RegExp('^' + req.query.apellido + '$', "i"));
+            if (req.query.nombre)
+                query.where('nombre').equals(RegExp('^' + req.query.nombre + '$', "i"));
 
             // TODO: implementar paginado
             // query.limit(10);
             query.exec(function(err, data) {
-                if (err) throw err;
+                if (err) return next(err);
                 res.json(data);
             });
         }

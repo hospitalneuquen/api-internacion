@@ -37,6 +37,15 @@ app.use(function(req, res, next) {
 // will print stacktrace
 if (app.get('env') === 'development') {
     app.use(function(err, req, res, next) {
+        if (!isNaN(err)) {
+            var e = new Error(err == 400 ? "Parámetro incorrecto" : "No encontrado");
+            e.status = err;
+            err = e;
+        } else if (typeof err == "string") {
+            var e = new Error(err);
+            e.status = 400;
+            err = e;
+        }
         res.status(err.status || 500);
         res.render('error', {
             message: err.message,

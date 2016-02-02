@@ -24,7 +24,7 @@ var schema = new Schema({
     },
     sexo: {
         type: String,
-        enum: ['Masculino', 'Femenino', 'Indeterminado']
+        enum: ['masculino', 'femenino', 'indeterminado']
     },
     nacionalidad: String,
     fechaNacimiento: Date,
@@ -72,16 +72,7 @@ var schema = new Schema({
     }
 });
 
-schema.set('toJSON', {
-    virtuals: true,
-    versionKey: false,
-});
-
-// Habilita el indexado en ElasticSearch
-schema.plugin(mongoosastic, {
-    host: "desarrollo",
-    port: 9200,
-    protocol: "http",
-    curlDebug: true
+schema.plugin(require('../common/mongoose-config'), {
+    elasticSearch: true
 });
 module.exports = mongoose.model('Persona', schema, 'personas')

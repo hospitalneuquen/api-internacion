@@ -1,23 +1,34 @@
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema,
-    UbicacionSchema = require('../modelSchemas/Ubicacion.js');
+    Ubicacion = require('../models/Ubicacion.js'),
+    Cama = require('../models/Cama.js'),
+    Persona = require('../models/Persona.js');
 
 var schema = new Schema({
     paciente: {
-        id: Schema.Types.ObjectId,
-        apellido: String,
-        nombre: String,
-        documento: Number,
-        obrasSociales: [String]
+        ref: 'Persona',
+        type: Schema.Types.ObjectId,
+        required: true
     },
+    obrasSociales: [String],
     estado: {
         type: String,
-        enum: ['Espera', 'Ingresado', 'Egresado']
+        enum: ['espera', 'ingresado', 'egresado']
     },
     ingreso: {
-        fecha: Date,
-        tipo: String,
-        ubicacion: UbicacionSchema,
+        fechaHora: {
+            type: Date,
+            required: true
+        },
+        tipo: {
+            type: String,
+            enum: ['ambulatorio', 'guardia', 'derivacion'],
+            required: true
+        },
+        derivadoDesde: {
+            ref: 'Ubicacion',
+            type: Schema.Types.ObjectId,
+        },
         motivo: String,
         diagnosticoPresuntivo: String,
         situacionPaciente: {
@@ -38,7 +49,69 @@ var schema = new Schema({
             },
             quirurgicos: String
         },
-    }
+        // audit: {
+        //     usuario: {
+        //         id: {
+        //             type: Schema.Types.ObjectId,
+        //             required: true
+        //         },
+        //         firstName: {
+        //             type: String,
+        //             required: true
+        //         },
+        //         nombre: {
+        //             type: String,
+        //             required: true
+        //         }
+        //     },
+        //     fechaHora: {
+        //         type: Date,
+        //         required: true
+        //     },
+        // }
+    },
+    pases: [{
+        fechaHora: {
+            type: Date,
+            required: true
+        },
+        cama: {
+            type: Schema.Types.ObjectId,
+            ref: 'Cama'
+        }
+    }],
 });
 
-module.exports = mongoose.model('Internacion', schema, 'internaciones')
+// Middleware: validar 'paciente'
+schema.pre('validate', true, function(next, done) {
+    Persona.count({
+            _id: this.paciente
+        },
+        function(err, count) {
+            if (count > 0)
+                done();
+            else
+                done(new Error("Paciente no encontrado"))
+        }
+    );
+    next();
+});
+
+// Middleware: validar 'cama'
+schema.pre('validate', true, function(next, done) {
+    Cama.count({
+            _id: this.cama
+        },
+        function(err, count) {
+            if (count > 0)
+                done();
+            else
+                done(new Error("Cama no encontrada"))
+        }
+    );
+    next();
+});
+
+// Config
+schema.plugin(require('../common/mongoose-config'));
+module.exports = mongoose.model('Internacion', schema, 'internaciones');
