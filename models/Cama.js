@@ -30,6 +30,14 @@ var schema = new Schema({
         required: true,
         default: 'desocupada'
     },
+    reparacion : {
+        idCamaEstado:  {
+            type: Schema.Types.ObjectId,
+            ref: 'CamaEstado'
+        },
+        motivo: String,
+        createdAt: Date
+    },
     idInternacion:  {
         type: Schema.Types.ObjectId,
         ref: 'Internacion'
