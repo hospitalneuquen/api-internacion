@@ -25,6 +25,11 @@ var schema = new Schema({
         updatedAt : {
             type: Date,
             default: null
+        },
+        idPersona : {
+            type: Schema.Types.ObjectId,
+            ref: 'Persona',
+            defatul: null
         }
     }
 );

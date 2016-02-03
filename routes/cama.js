@@ -10,12 +10,12 @@ router.post('/cama/cambiarEstado/:idCama', function(req, res, next) {
 
     // buscamos la cama
     Cama.findById(req.params.idCama, function(err, cama) {
-        if (req.body.estado == "reparacion") {
-            if (err) {
-                next(err);
-                return
-            }
+        // Maneja errores en MongoDB
+    	if (err) return next(err);
+    	// Error 404: NotFound
+    	if (!cama) return next(404);
 
+        if (req.body.estado == "reparacion") {
             // validamos que la cama no este ya en reparacion
             if (cama.estado == "reparacion") {
                 error = true;
@@ -35,17 +35,12 @@ router.post('/cama/cambiarEstado/:idCama', function(req, res, next) {
             // y de esa forma hacemos el update sobre el historial
             // y limpiamos los campos de la reparacion
             if (cama.estado == 'reparacion' && cama.reparacion.idCamaEstado) {
-                CamaEstado.findByIdAndUpdate(cama.reparacion.idCamaEstado, { 'updatedAt' : new Date() });
-                    //CamaEstado.findById(cama.reparacion.idCamaEstado, function(err, _cama_estado) {
-                    //     console.log("1: ", _cama_estado);
-                    //     if (err) return next(err);
-                    //
-                    //     _cama_estado.modified_in = new Date()
-                    //     _cama_estado.save(function(err, _cama_estado) {
-                    //         console.log("2: ", _cama_estado);
-                    //         if (err) return next(err);
-                    //     });
-                    // });
+                console.log(cama.reparacion.idCamaEstado);
+                CamaEstado.findOneAndUpdate({'_id' : cama.reparacion.idCamaEstado}, {'updatedAt': Date.now()}, function(err, _cama_estado) {
+                    if (err) throw err;
+
+                    console.log(_cama_estado);
+                });
                 cama.reparacion = '';
             }
 

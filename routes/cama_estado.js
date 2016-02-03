@@ -7,10 +7,10 @@ router.get('/cama_estado/:id*?', function(req, res, next) {
     if (req.params.id) {
 
         CamaEstado.findOne({"idCama": req.params.id}, function(err, data) {
-            if (err) {
-                next(err);
-                return
-            }
+            // Maneja errores en MongoDB
+        	if (err) return next(err);
+        	// Error 404: NotFound
+        	if (!data) return next(404);
 
             res.send(data);
         });
