@@ -13,7 +13,7 @@ var schema = new Schema({
     obrasSociales: [String],
     estado: {
         type: String,
-        enum: ['espera', 'ingresado', 'egresado']
+        enum: ['espera_ingreso', 'espera_pase', 'ingresado', 'egresado']
     },
     ingreso: {
         fechaHora: {
@@ -99,16 +99,19 @@ schema.pre('validate', true, function(next, done) {
 
 // Middleware: validar 'cama'
 schema.pre('validate', true, function(next, done) {
-    Cama.count({
-            _id: this.cama
-        },
-        function(err, count) {
-            if (count > 0)
-                done();
-            else
-                done(new Error("Cama no encontrada"))
-        }
-    );
+    if (!this.cama)
+        done();
+    else
+        Cama.count({
+                _id: this.cama
+            },
+            function(err, count) {
+                if (count > 0)
+                    done();
+                else
+                    done(new Error("Cama no encontrada"))
+            }
+        );
     next();
 });
 

@@ -3,23 +3,37 @@ var express = require('express'),
     Internacion = require('../models/Internacion.js');
 
 router
+    .get('/internacion/estado/:estado', function(req, res, next) {
+        // Devuelve todas las internaciones por estado
+        Internacion.find({
+                estado: req.params.estado
+            }).populate('paciente', {
+                apellido: true,
+                nombre: true,
+                documento: true,
+                obrasSociales: true,
+                fechaNacimiento: true,
+                fechaNacimientoEstimada: true
+            })
+            .exec(function(err, data) {
+                if (err) return next(err);
+                res.json(data);
+            });
+    })
     .get('/internacion/:id', function(req, res, next) {
+        // Devuelve una internación por id
         Internacion.findOne({
             _id: req.params.id
         }, function(err, data) {
-            if (err || !data) {
-                var error = new Error(err || '');
-                error.status = !data ? 404 : 500;
-                next(error);
-            } else {
-                res.json(data);
-            }
+            if (err) return next(err);
+            if (!data) return next(404);
+            res.json(data);
         });
     })
     .post('/internacion/:id*?', function(req, res, next) {
         if (req.params.id) {
             // TODO: modificación
-             return next("No implementado")
+            return next("No implementado")
         } else {
             var data = new Internacion({
                 paciente: req.body.paciente,
