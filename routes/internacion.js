@@ -43,7 +43,7 @@ router
                 estado: camaAsignada ? 'ingresado' : 'enIngreso',
                 ingreso: {
                     fechaHora: req.body.fechaHora,
-                    tipo: req.body.tipoIngreso,
+                    tipo: req.body.tipo,
                     motivo: req.body.motivo,
                     diagnosticoPresuntivo: req.body.diagnosticoPresuntivo,
                 },
@@ -58,8 +58,28 @@ router
             });
         }
     })
-    // .patch('/internacion/:id', function(req, res, next) {
-    //
-    // });
+    .patch('/internacion/:id', function(req, res, next) {
+        Internacion.findOne({
+            _id: req.params.id
+        }, function(err, data) {
+            if (err) return next(err);
+            if (!data) return next(404);
+
+            // Sólo permite modificar algunas propiedades del documento
+            ["paciente", "estado"].forEach(function(p) {
+                if (p in req.body)
+                    data[p] = req.body[p];
+            });
+            ["fechaHora", "tipo", "motivo", "diagnosticoPresuntivo"].forEach(function(p) {
+                if (p in req.body)
+                    data.ingreso[p] = req.body[p];
+            });
+
+            data.save(function(err, data) {
+                if (err) return next(err);
+                res.json(data);
+            });
+        });
+    });
 
 module.exports = router;
