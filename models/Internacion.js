@@ -97,21 +97,28 @@ schema.pre('validate', true, function(next, done) {
     next();
 });
 
-// Middleware: validar 'cama'
+// Middleware: validar 'pases.cama'
 schema.pre('validate', true, function(next, done) {
-    if (!this.cama)
+    if (!this.pases)
         done();
-    else
+    else {
+        var camas = this.pases.map(function(i) {
+            return i.cama
+        });
         Cama.count({
-                _id: this.cama
+                _id: {
+                    $in: camas
+                }
             },
             function(err, count) {
-                if (count > 0)
+                console.log("%d %d", count, camas.length);
+                if (count == camas.length)
                     done();
                 else
                     done(new Error("Cama no encontrada"))
             }
         );
+    }
     next();
 });
 
