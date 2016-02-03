@@ -35,16 +35,19 @@ router
             // TODO: modificación
             return next("No implementado")
         } else {
+            // ¿Tiene una cama asignada?
+            var camaAsignada = req.body.cama;
+
             var data = new Internacion({
                 paciente: req.body.paciente,
-                estado: 'ingresado',
+                estado: camaAsignada ? 'ingresado' : 'enIngreso',
                 ingreso: {
                     fechaHora: req.body.fechaHora,
                     tipo: req.body.tipoIngreso,
                     motivo: req.body.motivo,
                     diagnosticoPresuntivo: req.body.diagnosticoPresuntivo,
                 },
-                pases: req.body.cama ? [{
+                pases: camaAsignada ? [{
                     fechaHora: req.body.fechaHora,
                     cama: req.body.cama,
                 }] : null

@@ -13,7 +13,7 @@ var schema = new Schema({
     obrasSociales: [String],
     estado: {
         type: String,
-        enum: ['espera_ingreso', 'espera_pase', 'ingresado', 'egresado']
+        enum: ['enIngreso', 'enPase', 'ingresado', 'egresado']
     },
     ingreso: {
         fechaHora: {
