@@ -86,10 +86,10 @@ router.post('/cama/cambiarEstado/:idCama', function(req, res, next) {
 
                     if (req.body.idInternacion){
                         //actualizamos datos de la internacion
-                        Internacion.findOneAndUpdate({id: req.body.idInternacion}, {estado: 'ingresado'}, {new: true}, function(err, internacion){
+                        Internacion.findOneAndUpdate({_id: req.body.idInternacion}, {estado: 'ingresado'}, {new: true}, function(err, internacion){
                             if (err) return next(err);
 
-                            console.log(internacion);
+                            //console.log(internacion);
                         });
                     }
 
