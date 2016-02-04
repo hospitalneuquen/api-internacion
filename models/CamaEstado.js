@@ -29,15 +29,11 @@ var schema = new Schema({
         idPersona : {
             type: Schema.Types.ObjectId,
             ref: 'Persona',
-            defatul: null
+            default: null
         }
     }
 );
 
-schema.set('toJSON', {
-    virtuals: true,
-    versionKey: false,
-});
-
-
+// Config
+schema.plugin(require('../common/mongoose-config'));
 module.exports = mongoose.model('CamaEstado', schema);
