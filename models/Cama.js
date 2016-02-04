@@ -64,16 +64,16 @@ var schema = new Schema({
     }
 });
 
-schema.pre('validate', true, function(next, done) {
+schema.pre('validate', function(next, done) {
     var parent = this;
 
     // validamos la internacion y hacemos un populate de lo datos del paciente
     if (parent.idInternacion) {
+
         // buscamos la internacion correspondiente
         Internacion.findOne({
                 // id: "56b23a3303f398a822467fa4"
-                // id: parent.idInternacion.toString()
-                id: parent.idInternacion.toString()
+                _id: parent.idInternacion.toString()
             }).populate('paciente', {
                 apellido: true,
                 nombre: true,
@@ -98,7 +98,7 @@ schema.pre('validate', true, function(next, done) {
                     sexo: data.paciente.sexo
                 };
 
-                done();
+                // done();
             });
 
     }

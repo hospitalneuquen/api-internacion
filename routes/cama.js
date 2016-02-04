@@ -60,38 +60,38 @@ router.post('/cama/cambiarEstado/:idCama', function(req, res, next) {
         }
 
         if (!error) {
+            // generamos el objeto para guardar el estado en la tabla de historial
+            var cama_estado = new CamaEstado({
+                estado: req.body.estado,
+                motivo: (req.body.motivo) ? req.body.motivo : '',
+                idCama: req.params.idCama,
+                idPersona: (cama.paciente.id) ? cama.paciente.id : null
+            });
+
+            if (cama.estado == 'reparacion') {
+                // duplicamos y dejamos en el objeto de camas los valores
+                // para la lectura de la reparacion
+                cama.reparacion = {
+                    "idCamaEstado": cama_estado._id,
+                    "motivo": cama_estado.motivo,
+                    "createdAt": cama_estado.createdAt
+                }
+            }
 
             cama.save(function(err, cama) {
                 if (err) return next(err);
 
-                // guardamos el estado en la tabla de historial
-                var cama_estado = new CamaEstado({
-                    estado: req.body.estado,
-                    motivo: (req.body.motivo) ? req.body.motivo : '',
-                    idCama: req.params.idCama,
-                    idPersona: (cama.paciente.id) ? cama.paciente.id : null
-                });
-
                 cama_estado.save(function(err) {
                     if (err) return next(err);
 
-                    // duplicamos y dejamos en el objeto de camas los valores
-                    // para la lectura de la reparacion
-                    if (cama.estado == 'reparacion') {
+                    if (req.body.idInternacion){
+                        //actualizamos datos de la internacion
+                        Internacion.findOneAndUpdate({id: req.body.idInternacion}, {estado: 'ingresado'}, {new: true}, function(err, internacion){
+                            if (err) return next(err);
 
-                        cama.reparacion = {
-                            "idCamaEstado": new ObjectId(cama_estado.id),
-                            "motivo": cama_estado.motivo,
-                            "createdAt": cama_estado.createdAt
-                        }
+                            console.log(internacion);
+                        });
                     }
-
-                    //actualizamos datos de la internacion
-                    Internacion.findOneAndUpdate({id: req.body.idInternacion}, {estado: 'ingresado'}, {new: true}, function(err, internacion){
-                        if (err) return next(err);
-
-                        console.log(internacion);
-                    });
 
                 });
 
