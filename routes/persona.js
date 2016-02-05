@@ -2,6 +2,56 @@ var express = require('express'),
     router = express.Router(),
     Persona = require('../models/Persona.js');
 
+/**
+ * @swagger
+ * /persona/{id}:
+ *   get:
+ *     tags:
+ *       - Personas
+ *     summary: Devuelve una persona por id
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: id
+ *         description: Id de la persona
+ *         in: path
+ *         required: true
+ *         type: string
+ *     responses:
+ *       200:
+ *         description: Ok
+ *       404:
+ *         description: Persona no encontrada
+ *
+ * /persona:
+ *   get:
+ *     tags:
+ *       - Personas
+ *     summary: Busca personas por documento, nombre o apellido
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: documento
+ *         description: Número de documento
+ *         in: query
+ *         required: false
+ *         type: integer
+ *       - name: apellido
+ *         description: Apellido del paciente
+ *         in: query
+ *         required: false
+ *         type: string
+ *       - name: nombre
+ *         description: Nombre del paciente
+ *         in: query
+ *         required: false
+ *         type: string
+ *     responses:
+ *       200:
+ *         description: Ok
+ *       400:
+ *         description: No se ingresó ninguna opción de búsqueda
+ */
 router.get('/persona/:id*?', function(req, res, next) {
     if (req.params.id) {
         Persona.findOne({
