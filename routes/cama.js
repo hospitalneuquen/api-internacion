@@ -6,6 +6,74 @@ var Internacion = require('../models/Internacion.js');
 
 var ObjectId = require('mongoose').Types.ObjectId;
 
+/**
+ * @swagger
+ * /cama/desinfectar/{idCama}/{desinfectar}:
+ *   post:
+ *     tags:
+ *       - Cama
+ *     summary: Setea el estado de desinfección de una cama
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: idCama
+ *         description: Id de la cama a cambiar el estado de desinfeccion
+ *         in: path
+ *         required: true
+ *         type: integer
+ *       - name: desinfectar
+ *         description: Valor true/false a cambiar
+ *         in: path
+ *         required: true
+ *         type: boolean
+ *     responses:
+ *       200:
+ *         description: Ok
+ *       404:
+ *         description: No se pudo cambiar el estado de desinfección de la cama
+ *
+ */
+router.post('/cama/desinfectar/:idCama/:desinfectar', function(req, res, next) {
+
+    Cama.findById(req.params.idCama, function(err, cama){
+        // Maneja errores en MongoDB
+        if (err) return next(err);
+        // Error 404: NotFound
+        if (!cama) return next(404);
+
+        cama.desinfectada = req.params.desinfectar;
+
+        cama.save(function(err, cama){
+            if (err) return next(err);
+
+            res.send(cama);
+        });
+    });
+});
+
+/**
+ * @swagger
+ * /cama/cambiarEstado/{idCama}:
+ *   get:
+ *     tags:
+ *       - Camas
+ *     summary: Devuelve una cama con los datos del ultimo estado actualizado
+ *              Tambien, almacena en el historial de CamaEstado el estado completo
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: idCama
+ *         description: Id de la cama a cambiar de estado
+ *         in: path
+ *         required: false
+ *         type: integer
+ *     responses:
+ *       200:
+ *         description: Ok
+ *       404:
+ *         description: No se pudo cambiar el estado de la cama
+ *
+ */
 router.post('/cama/cambiarEstado/:idCama', function(req, res, next) {
     var error = false;
 
