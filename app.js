@@ -1,10 +1,12 @@
 var express = require('express'),
     logger = require('morgan'),
     bodyParser = require('body-parser'),
+    fs = require('fs'),
     path = require('path'),
     app = express(),
     mongoose = require("mongoose"),
-    requireDir = require('require-dir');
+    requireDir = require('require-dir'),
+    swagger = require('swagger-jsdoc');
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -20,6 +22,22 @@ app.set('view engine', 'jade');
 var routes = requireDir('./routes/');
 for (var route in routes)
     app.use('/', routes[route]);
+
+// swagger docs
+// ... initialize swagger-jsdoc
+var swaggerSpec = swagger({
+  swaggerDefinition: {
+    basePath: '/api/internacion'
+  },
+  apis: fs.readdirSync(path.join(__dirname, './routes/')).map(function(i){ return path.join(__dirname, './routes/') + i})
+});
+
+// ... routes
+app.get('/docs.json', function(req, res) {
+  res.setHeader('Content-Type', 'application/json');
+  res.send(swaggerSpec);
+});
+app.use('/docs', express.static(path.join(__dirname, './node_modules/swagger-ui/dist')));
 
 // connect
 mongoose.connect("mongodb://desarrollo:27017/hospital");
