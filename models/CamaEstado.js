@@ -4,7 +4,7 @@ var Schema = mongoose.Schema;
 var schema = new Schema({
         estado: {
             type: String,
-            enum: ['ocupada', 'desocupada', 'reparacion'],
+            enum: ['ocupada', 'desocupada', 'reparacion', 'desinfectada'],
             required: true,
             default: 'desocupada'
         },
