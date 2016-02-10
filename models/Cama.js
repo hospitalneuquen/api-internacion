@@ -64,7 +64,7 @@ var schema = new Schema({
     }
 });
 
-schema.pre('validate', function(next, done) {
+schema.pre('validate', function(next) {
     var parent = this;
 
     // validamos la internacion y hacemos un populate de lo datos del paciente
@@ -72,8 +72,7 @@ schema.pre('validate', function(next, done) {
 
         // buscamos la internacion correspondiente
         Internacion.findOne({
-                // id: "56b23a3303f398a822467fa4"
-                _id: parent.idInternacion.toString()
+                _id: parent.idInternacion
             }).populate('paciente', {
                 apellido: true,
                 nombre: true,
@@ -86,24 +85,28 @@ schema.pre('validate', function(next, done) {
             .exec(function(err, data) {
 
                 if (err) {
-                    done(new Error("Internacion no encontrada"))
+                    next(new Error("Internacion no encontrada"))
                 }
 
-                parent.paciente = {
-                    id: data.paciente._id,
-                    apellido: data.paciente.apellido,
-                    nombre: data.paciente.nombre,
-                    documento: data.paciente.documento,
-                    fechaNacimiento: data.fechaNacimiento,
-                    sexo: data.paciente.sexo
-                };
+                if (data){
+                    parent.paciente = {
+                        id: data.paciente._id,
+                        apellido: data.paciente.apellido,
+                        nombre: data.paciente.nombre,
+                        documento: data.paciente.documento,
+                        fechaNacimiento: data.fechaNacimiento,
+                        sexo: data.paciente.sexo
+                    };
 
-                // done();
+                    next();
+                }
+
             });
 
+    }else{
+        next();
     }
 
-    next();
 });
 
 // Config

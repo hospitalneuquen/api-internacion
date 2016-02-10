@@ -2,6 +2,29 @@ var express = require('express');
 var router = express.Router();
 var Mapa = require('../models/Cama.js');
 
+/**
+ * @swagger
+ * /mapa/{id}:
+ *   get:
+ *     tags:
+ *       - Camas
+ *     summary: Devuelve un array de objetos del tipo cama segun el servicio.
+ *              Ej  1 = Clínica médica, 2 = Clínica quirúrgica, NULL = Todas
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: idServicio
+ *         description: Id del servicio a consultar
+ *         in: path
+ *         required: false
+ *         type: integer
+ *     responses:
+ *       200:
+ *         description: Ok
+ *       404:
+ *         description: Mapa de cama no encontrado
+ *
+ */
 router.get('/mapa/:idServicio*?', function(req, res, next) {
     //var query = Mapa.find({"servicio.id": req.params.idServicio});
     var query = Mapa.find({});
