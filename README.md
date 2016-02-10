@@ -1,4 +1,4 @@
-App-Internacion
+Api-Internacion
 ==========
 
 REST API para gestión de internaciones de pacientes
