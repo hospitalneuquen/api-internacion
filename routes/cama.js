@@ -118,13 +118,12 @@ router.post('/cama/cambiarEstado/:idCama', function(req, res, next) {
             cama.estado = 'desocupada';
 
         } else if (req.body.estado == 'ocupada') {
+
             if (!cama.desinfectada){
                 error = true;
                 res.status(500).send('La cama está actualmente sin desinfectar, no se puede internar a un paciente en ella.');
             }
 
-            // TODO: validar que el paciente no este ya internado
-            //cama.idInternacion =  new ObjectId(req.body.idInternacion);
             cama.idInternacion =  req.body.idInternacion;
             cama.estado = 'ocupada';
         } else if (req.body.estado == 'desocupada') {
@@ -174,6 +173,40 @@ router.post('/cama/cambiarEstado/:idCama', function(req, res, next) {
         }
     });
 
+});
+
+/**
+ * @swagger
+ * /cama/pacienteInternado/{idPersona}:
+ *   post:
+ *     tags:
+ *       - Persona
+ *     summary: Indica si una persona esta actualmente internada en alguna cama
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: idPersona
+ *         description: Id de la persona a cambiar a consultar si esta internada
+ *         in: path
+ *         required: true
+ *         type: integer
+ *     responses:
+ *       200:
+ *         description: Ok
+ *       404:
+ *         description: No se pudo obtener el estado de internacion del paciente
+ *
+ */
+router.get('/cama/pacienteInternado/:idPersona', function(req, res, next) {
+    var conditions = {'estado': 'ocupada', 'paciente.id': req.params.idPersona};
+
+    Cama.find(conditions,
+        function(err, cama) {
+            if (err) return next(err);
+
+            res.send(cama);
+        }
+    );
 });
 
 module.exports = router;
