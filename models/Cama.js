@@ -3,7 +3,7 @@ var mongoose = require('mongoose'),
     Persona = require('../models/Persona.js'),
     Internacion = require('../models/Internacion.js');
 
-//mongoose.set('debug', true);
+mongoose.set('debug', true);
 //var ObjectId = require('mongoose').Types.ObjectId;
 
 var schema = new Schema({
@@ -48,19 +48,29 @@ var schema = new Schema({
         ref: 'Internacion'
     },
     paciente: {
-        id: {
+        _id: {
             type: Schema.Types.ObjectId,
             ref: 'Persona'
         },
         //id: String,
+        edad: Number,
         apellido: String,
         nombre: String,
         documento: Number,
         fechaNacimiento: Date,
+        fechaNacimientoEstimada: Date,
         sexo: {
             type: String,
             enum: ['Masculino', 'Femenino', 'Indeterminado']
         }
+    },
+    ultimaEvolucion: {
+        idUsuario: {
+            type: Schema.Types.ObjectId,
+            ref: 'Usuario',
+            default: null
+        },
+        fechaHora: Date
     }
 });
 
@@ -73,40 +83,28 @@ schema.pre('validate', function(next) {
         // buscamos la internacion correspondiente
         Internacion.findOne({
                 _id: parent.idInternacion
-            }).populate('paciente', {
-                apellido: true,
-                nombre: true,
-                documento: true,
-                obrasSociales: true,
-                fechaNacimiento: true,
-                fechaNacimientoEstimada: true,
-                sexo: true
-            })
+            }).populate('paciente')
             .exec(function(err, data) {
 
                 if (err) {
                     next(new Error("Internacion no encontrada"))
                 }
 
-                if (data){
-                    parent.paciente = {
-                        id: data.paciente._id,
-                        apellido: data.paciente.apellido,
-                        nombre: data.paciente.nombre,
-                        documento: data.paciente.documento,
-                        fechaNacimiento: data.fechaNacimiento,
-                        sexo: data.paciente.sexo
-                    };
+                // asignamos los valores del paciente
+                parent.paciente = data.paciente;
 
-                    next();
-                }
-
+                next();
             });
 
-    }else{
+    } else {
         next();
     }
 
+});
+
+// declaramos la variable paciente id de forma manual
+schema.virtual('paciente.id').get(function(){
+    return this.paciente._id;
 });
 
 // Config

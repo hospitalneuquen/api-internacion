@@ -6,6 +6,19 @@ var Internacion = require('../models/Internacion.js');
 
 var ObjectId = require('mongoose').Types.ObjectId;
 
+
+router.get('/cama/:id', function(req, res, next) {
+    // Devuelve una cama por id
+    Cama.findOne({
+        _id: req.params.id
+    }, function(err, data) {
+        if (err) return next(err);
+        if (!data) return next(404);
+        res.json(data);
+    });
+})
+
+
 // /**
 //  * @swagger
 //  * /cama/desinfectar/{idCama}/{desinfectar}:
@@ -119,12 +132,12 @@ router.post('/cama/cambiarEstado/:idCama', function(req, res, next) {
 
         } else if (req.body.estado == 'ocupada') {
 
-            if (!cama.desinfectada){
+            if (!cama.desinfectada) {
                 error = true;
                 res.status(500).send('La cama está actualmente sin desinfectar, no se puede internar a un paciente en ella.');
             }
 
-            cama.idInternacion =  req.body.idInternacion;
+            cama.idInternacion = req.body.idInternacion;
             cama.estado = 'ocupada';
         } else if (req.body.estado == 'desocupada') {
             // TODO: Todooo
@@ -157,9 +170,15 @@ router.post('/cama/cambiarEstado/:idCama', function(req, res, next) {
                 cama_estado.save(function(err) {
                     if (err) return next(err);
 
-                    if (req.body.idInternacion){
+                    if (req.body.idInternacion) {
                         //actualizamos datos de la internacion
-                        Internacion.findOneAndUpdate({_id: req.body.idInternacion}, {estado: 'ingresado'}, {new: true}, function(err, internacion){
+                        Internacion.findOneAndUpdate({
+                            _id: req.body.idInternacion
+                        }, {
+                            estado: 'ingresado'
+                        }, {
+                            new: true
+                        }, function(err, internacion) {
                             if (err) return next(err);
 
                             //console.log(internacion);
@@ -198,12 +217,15 @@ router.post('/cama/cambiarEstado/:idCama', function(req, res, next) {
  *
  */
 router.get('/cama/pacienteInternado/:idPersona', function(req, res, next) {
-    var conditions = {'estado': 'ocupada', 'paciente.id': req.params.idPersona};
+    var conditions = {
+        'estado': 'ocupada',
+        'paciente._id': req.params.idPersona
+    };
 
     Cama.find(conditions,
         function(err, cama) {
             if (err) return next(err);
-
+            //console.log(cama);
             res.send(cama);
         }
     );

@@ -1,6 +1,12 @@
 var express = require('express'),
     router = express.Router(),
-    Internacion = require('../models/Internacion.js');
+    Internacion = require('../models/Internacion.js'),
+    Evolucion = require('../models/Evolucion.js'),
+    Cama = require('../models/Cama.js');
+
+// var mongoose = require('mongoose');
+// var objEvolucion = mongoose.model('Evolucion', Evolucion);
+
 
 router
     .get('/internacion/estado/:estado', function(req, res, next) {
@@ -23,12 +29,47 @@ router
     .get('/internacion/:id', function(req, res, next) {
         // Devuelve una internación por id
         Internacion.findOne({
-            _id: req.params.id
-        }, function(err, data) {
+                _id: req.params.id
+            }).populate('paciente', {
+                apellido: true,
+                nombre: true,
+                documento: true,
+                obrasSociales: true,
+                fechaNacimiento: true,
+                fechaNacimientoEstimada: true
+            })
+            .exec(function(err, data) {
+                if (err) return next(err);
+                if (!data) return next(404);
+                res.json(data);
+            });
+    })
+    .get('/internacion/:idInternacion/evolucion/:idEvolucion*?', function(req, res, next) {
+        var params = {};
+        var projection = {}
+
+        if (req.params.idInternacion) {
+            params = {
+                id: req.params.idInternacion
+            }
+        }
+
+        if (req.params.idEvolucion) {
+            params = {
+                'evoluciones._id': req.params.idEvolucion
+            };
+            projection = {
+                'evoluciones.$': 1
+            };
+        }
+
+        var query = Internacion.find(params, projection);
+        query.exec(function(err, data) {
             if (err) return next(err);
-            if (!data) return next(404);
+
             res.json(data);
         });
+
     })
     .post('/internacion/:id*?', function(req, res, next) {
         if (req.params.id) {
@@ -65,6 +106,7 @@ router
             if (err) return next(err);
             if (!data) return next(404);
 
+
             // Sólo permite modificar algunas propiedades del documento
             ["paciente", "estado"].forEach(function(p) {
                 if (p in req.body)
@@ -75,11 +117,71 @@ router
                     data.ingreso[p] = req.body[p];
             });
 
+            // angular.forEach(req.body, function(value, key){
+            //     data
+            // });
+            // console.log(req.body);
+
             data.save(function(err, data) {
                 if (err) return next(err);
                 res.json(data);
             });
         });
-    });
+    })
+
+.patch('/internacion/:idInternacion/evolucion/:idEvolucion*?', function(req, res, next) {
+    if (req.params.idInternacion) {
+
+        var params = {};
+
+        if (req.params.idInternacion) {
+            params = {
+                _id: req.params.idInternacion
+            }
+        }
+
+        if (req.params.idEvolucion) {
+            params = {
+                'evoluciones._id': req.params.idEvolucion
+            };
+
+            var evolucion = req.body;
+            var action = {
+                $set: {
+                    'evoluciones.$': evolucion
+                }
+            }
+        }else {
+            // var evolucion = new objEvolucion(req.body);
+            var evolucion = new Evolucion(req.body);
+
+            var action = {
+                $addToSet: {
+                    evoluciones: evolucion
+                }
+            }
+
+        }
+
+        Internacion.update(params, action, function(err, data) {
+            if (err) return next(err);
+            if (!data) return next(404);
+
+            // buscamos la cama y actualizamos con los datos de la evolucion
+            Cama.findOneAndUpdate({
+                idInternacion: req.params.idInternacion
+            }, {
+                'ultimaEvolucion.fechaHora': req.body.fechaHora
+            }, function(err, data) {
+                if (err) return next(err);
+            });
+
+            res.json(evolucion);
+
+        });
+    }
+
+    // res.next(404);
+});
 
 module.exports = router;
