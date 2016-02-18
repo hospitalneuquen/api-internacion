@@ -12,6 +12,8 @@
     "mongoosastic": "^3.6.0",
     "mongoose": "^4.3.5",
     "morgan": "^1.6.1",
+    "passport": "^0.3.2",
+    "passport-jwt": "^2.0.0",
     "require-dir": "^0.3.0",
     "swagger-jsdoc": "^1.1.2",
     "swagger-ui": "^2.1.4"

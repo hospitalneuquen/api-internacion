@@ -6,41 +6,53 @@ var express = require('express'),
     app = express(),
     mongoose = require("mongoose"),
     requireDir = require('require-dir'),
+    config = require('./config'),
+    passport = require('passport'),
+    passportConfig = require('./passport'),
     swagger = require('swagger-jsdoc');
 
+// connect
+mongoose.connect(config.mongo);
+
+// Express
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: false
 }));
 
+// Passport config
+passportConfig();
+app.use(passport.initialize());
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-// routes
+// Configura rutas con autenticación JWT
 var routes = requireDir('./routes/');
 for (var route in routes)
-    app.use('/', routes[route]);
+    app.use('/', passport.authenticate('jwt', {
+        session: false
+    }), routes[route]);
 
 // swagger docs
 // ... initialize swagger-jsdoc
 var swaggerSpec = swagger({
-  swaggerDefinition: {
-    basePath: '/api/internacion'
-  },
-  apis: fs.readdirSync(path.join(__dirname, './routes/')).map(function(i){ return path.join(__dirname, './routes/') + i})
+    swaggerDefinition: {
+        basePath: '/api/internacion'
+    },
+    apis: fs.readdirSync(path.join(__dirname, './routes/')).map(function(i) {
+        return path.join(__dirname, './routes/') + i
+    })
 });
 
 // ... routes
 app.get('/docs.json', function(req, res) {
-  res.setHeader('Content-Type', 'application/json');
-  res.send(swaggerSpec);
+    res.setHeader('Content-Type', 'application/json');
+    res.send(swaggerSpec);
 });
 app.use('/docs', express.static(path.join(__dirname, './node_modules/swagger-ui/dist')));
-
-// connect
-mongoose.connect("mongodb://desarrollo:27017/hospital");
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
