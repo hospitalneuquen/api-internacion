@@ -58,7 +58,7 @@ var schema = new Schema({
         nombre: String,
         documento: Number,
         fechaNacimiento: Date,
-        fechaNacimientoEstimada: Date,
+        fechaNacimientoEstimada: Boolean,
         sexo: {
             type: String,
             enum: ['Masculino', 'Femenino', 'Indeterminado']
