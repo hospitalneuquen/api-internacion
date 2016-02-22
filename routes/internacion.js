@@ -44,6 +44,17 @@ router
                 res.json(data);
             });
     })
+    .get('/internacion/:idInternacion/valoracionEnfermeria', function(req, res, next) {
+        // Devuelve una valoración inicial de enfermería por idInternación
+        Internacion.findOne({
+                _id: req.params.idInternacion
+            })
+            .exec(function(err, data) {
+                if (err) return next(err);
+                if (!data) return next(404);
+                res.json(data);
+            });
+    })
     .get('/internacion/:idInternacion/evolucion/:idEvolucion*?', function(req, res, next) {
         var params = {};
         var projection = {}
@@ -182,6 +193,26 @@ router
     }
 
     // res.next(404);
-});
+})
+.patch('/internacion/:idInternacion/valoracionEnfermeria/', function(req, res, next) {
+    if (req.params.idInternacion) {
 
+        Internacion.findById(req.params.idInternacion, function(err, internacion) {
+            // Maneja errores en MongoDB
+            if (err) return next(err);
+            // Error 404: NotFound
+            if (!internacion) return next(404);
+
+            //var valoracionInicial = new ValoracionEnfermeria(req.body);
+            internacion.enfermeria = req.body;
+
+            internacion.save(function(err, internacion) {
+                if (err) return next(err);
+                res.json(Internacion);
+            });
+        });
+    }
+
+    // res.next(404);
+});
 module.exports = router;

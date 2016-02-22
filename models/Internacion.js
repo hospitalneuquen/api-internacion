@@ -4,6 +4,7 @@ var mongoose = require('mongoose'),
     Cama = require('../models/Cama.js'),
     Persona = require('../models/Persona.js'),
     schemaEvolucion = require('../schemas/Evolucion.js');
+    schemaValoracionEnfermeria = require('../schemas/ValoracionEnfermeria.js');
 
 var schema = new Schema({
     paciente: {
@@ -81,7 +82,8 @@ var schema = new Schema({
             ref: 'Cama'
         }
     }],
-    evoluciones: [schemaEvolucion]
+    evoluciones: [schemaEvolucion],
+    enfermeria: schemaValoracionEnfermeria
 });
 
 // Middleware: validar 'paciente'
