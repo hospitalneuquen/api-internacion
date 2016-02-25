@@ -45,10 +45,7 @@ var schema = new Schema(
     //     nombre: String,
     //     nombreCorto: String
     // }
-    servicio: schemaUbicacion
 });
 
-// Config
-schema.plugin(require('../common/mongoose-config'));
-// module.exports = mongoose.model('Evolucion', schema);
+schema.plugin(require('../mongoose/audit'));
 module.exports = schema;
