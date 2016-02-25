@@ -37,14 +37,7 @@ var schema = new Schema(
         ref: 'Usuario',
         default: null
     },
-    // servicio: {
-    //     _id: {
-    //         type: Schema.Types.ObjectId,
-    //         ref: 'Ubicacion'
-    //     },
-    //     nombre: String,
-    //     nombreCorto: String
-    // }
+    servicio: schemaUbicacion
 });
 
 schema.plugin(require('../mongoose/audit'));
