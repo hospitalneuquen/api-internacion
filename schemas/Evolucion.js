@@ -31,18 +31,11 @@ var schema = new Schema(
     // tipo: {
     //     Enfermeria / Medica
     // },
-    idUsuario: {
-        type: Schema.Types.ObjectId,
-        ref: 'Usuario',
-        default: null
-    },
     servicio: {
         id: Number, // 1='clínica médica' 2='clínica quirúrgica'
         nombre: String,
     },
 });
 
-// Config
-schema.plugin(require('../common/mongoose-config'));
-// module.exports = mongoose.model('Evolucion', schema);
+schema.plugin(require('../mongoose/audit'));
 module.exports = schema;

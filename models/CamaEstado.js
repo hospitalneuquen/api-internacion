@@ -9,22 +9,9 @@ var schema = new Schema({
             default: 'desocupada'
         },
         motivo: String,
-        idUsuario: {
-            type: Schema.Types.ObjectId,
-            ref: 'Usuario',
-            default: null
-        },
         idCama: {
             type: Schema.Types.ObjectId,
             ref: 'Cama'
-        },
-        createdAt : {
-            type: Date,
-            default: Date.now
-        },
-        updatedAt : {
-            type: Date,
-            default: null
         },
         idPersona : {
             type: Schema.Types.ObjectId,
@@ -34,6 +21,5 @@ var schema = new Schema({
     }
 );
 
-// Config
-schema.plugin(require('../common/mongoose-config'));
+schema.plugin(require('../mongoose/audit'));
 module.exports = mongoose.model('CamaEstado', schema);
