@@ -1,15 +1,13 @@
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema,
     Persona = require('../models/Persona.js'),
-    Internacion = require('../models/Internacion.js');
+    Internacion = require('../models/Internacion.js'),
+    schemaUbicacion = require("../schemas/Ubicacion.js");
 
 var schema = new Schema({
     habitacion: Number,
     numero: Number,
-    servicio: {
-        id: Number, // 1='clínica médica' 2='clínica quirúrgica'
-        nombre: String,
-    },
+    servicio: schemaUbicacion,
     tipoCama: {
         type: String,
         enum: ['cama', 'sillon', 'cuna'],

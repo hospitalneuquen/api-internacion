@@ -26,10 +26,10 @@ var Mapa = require('../models/Cama.js');
  *
  */
 router.get('/mapa/:idServicio*?', function(req, res, next) {
-    //var query = Mapa.find({"servicio.id": req.params.idServicio});
+    // console.log(req.params.idServicio);
     var query = Mapa.find({});
     if (req.params.idServicio)
-        query.where('servicio.id').equals(req.params.idServicio);
+        query.where('servicio._id').equals(req.params.idServicio);
     // else {
     //     query.limit(10);
     // }

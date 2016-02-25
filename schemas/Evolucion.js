@@ -1,5 +1,6 @@
 var mongoose = require('mongoose'),
-    Schema = mongoose.Schema;
+    Schema = mongoose.Schema,
+    schemaUbicacion = require('../schemas/Ubicacion.js')
 
 var schema = new Schema(
 {
@@ -31,10 +32,19 @@ var schema = new Schema(
     // tipo: {
     //     Enfermeria / Medica
     // },
-    servicio: {
-        id: Number, // 1='clínica médica' 2='clínica quirúrgica'
-        nombre: String,
+    idUsuario: {
+        type: Schema.Types.ObjectId,
+        ref: 'Usuario',
+        default: null
     },
+    // servicio: {
+    //     _id: {
+    //         type: Schema.Types.ObjectId,
+    //         ref: 'Ubicacion'
+    //     },
+    //     nombre: String,
+    //     nombreCorto: String
+    // }
 });
 
 schema.plugin(require('../mongoose/audit'));
