@@ -16,8 +16,4 @@ var schema = new Schema({
     }
 });
 
-// Config
-schema.plugin(require('../common/mongoose-config'), {
-    removeFields: ['_fulltext']
-});
 module.exports = mongoose.model('Ubicacion', schema, 'ubicaciones')

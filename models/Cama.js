@@ -3,9 +3,6 @@ var mongoose = require('mongoose'),
     Persona = require('../models/Persona.js'),
     Internacion = require('../models/Internacion.js');
 
-mongoose.set('debug', true);
-//var ObjectId = require('mongoose').Types.ObjectId;
-
 var schema = new Schema({
     habitacion: Number,
     numero: Number,
@@ -48,11 +45,11 @@ var schema = new Schema({
         ref: 'Internacion'
     },
     paciente: {
+        // Al final se declara un virtual 'paciente.id'
         _id: {
             type: Schema.Types.ObjectId,
             ref: 'Persona'
         },
-        //id: String,
         edad: Number,
         apellido: String,
         nombre: String,
@@ -61,7 +58,7 @@ var schema = new Schema({
         fechaNacimientoEstimada: Boolean,
         sexo: {
             type: String,
-            enum: ['Masculino', 'Femenino', 'Indeterminado']
+            enum: ['masculino', 'femenino', 'indeterminado']
         }
     },
     ultimaEvolucion: {
@@ -74,32 +71,27 @@ var schema = new Schema({
     }
 });
 
+// middleware
 schema.pre('validate', function(next) {
     var parent = this;
 
-    // validamos la internacion y hacemos un populate de lo datos del paciente
+    // validamos la internacion y hacemos un populate de los datos del paciente
     if (parent.idInternacion) {
-
         // buscamos la internacion correspondiente
         Internacion.findOne({
                 _id: parent.idInternacion
             }).populate('paciente')
             .exec(function(err, data) {
-
-                if (err) {
-                    next(new Error("Internacion no encontrada"))
-                }
+                if (err)
+                    return next("Internacion no encontrada")
 
                 // asignamos los valores del paciente
                 parent.paciente = data.paciente;
-
                 next();
             });
-
     } else {
         next();
     }
-
 });
 
 // declaramos la variable paciente id de forma manual
@@ -107,6 +99,4 @@ schema.virtual('paciente.id').get(function(){
     return this.paciente._id;
 });
 
-// Config
-schema.plugin(require('../common/mongoose-config'));
 module.exports = mongoose.model('Cama', schema);

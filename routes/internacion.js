@@ -110,6 +110,21 @@ router
             });
         }
     })
+    .patch('/internacion/:idInternacion/valoracionEnfermeria/', function(req, res, next) {
+        Internacion.findById(req.params.idInternacion, function(err, internacion) {
+            // Maneja errores en MongoDB
+            if (err) return next(err);
+            // Error 404: NotFound
+            if (!internacion) return next(404);
+
+            internacion.enfermeria = req.body;
+            internacion.audit(req.user);
+            internacion.save(function(err, internacion) {
+                if (err) return next(err);
+                res.json(internacion);
+            });
+        });
+    })
     .patch('/internacion/:id', function(req, res, next) {
         Internacion.findOne({
             _id: req.params.id
@@ -162,7 +177,7 @@ router
                     'evoluciones.$': evolucion
                 }
             }
-        }else {
+        } else {
             // var evolucion = new objEvolucion(req.body);
             var evolucion = new Evolucion(req.body);
 
@@ -189,27 +204,6 @@ router
 
             res.json(evolucion);
 
-        });
-    }
-
-    // res.next(404);
-})
-.patch('/internacion/:idInternacion/valoracionEnfermeria/', function(req, res, next) {
-    if (req.params.idInternacion) {
-
-        Internacion.findById(req.params.idInternacion, function(err, internacion) {
-            // Maneja errores en MongoDB
-            if (err) return next(err);
-            // Error 404: NotFound
-            if (!internacion) return next(404);
-
-            //var valoracionInicial = new ValoracionEnfermeria(req.body);
-            internacion.enfermeria = req.body;
-
-            internacion.save(function(err, internacion) {
-                if (err) return next(err);
-                res.json(Internacion);
-            });
         });
     }
 

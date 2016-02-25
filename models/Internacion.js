@@ -50,27 +50,7 @@ var schema = new Schema({
                 abortos: Number,
             },
             quirurgicos: String
-        },
-        // audit: {
-        //     usuario: {
-        //         id: {
-        //             type: Schema.Types.ObjectId,
-        //             required: true
-        //         },
-        //         firstName: {
-        //             type: String,
-        //             required: true
-        //         },
-        //         nombre: {
-        //             type: String,
-        //             required: true
-        //         }
-        //     },
-        //     fechaHora: {
-        //         type: Date,
-        //         required: true
-        //     },
-        // }
+        }
     },
     pases: [{
         fechaHora: {
@@ -126,6 +106,5 @@ schema.pre('validate', true, function(next, done) {
     next();
 });
 
-// Config
-schema.plugin(require('../common/mongoose-config'));
+schema.plugin(require('../mongoose/audit'));
 module.exports = mongoose.model('Internacion', schema, 'internaciones');

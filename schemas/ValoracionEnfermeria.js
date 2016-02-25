@@ -1,9 +1,7 @@
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
-var schema = new Schema(
-{
-    fechaHora: Date,
+var schema = new Schema({
     // ****************************** Necesidad de Oxigenación ******************************
     FR: Number,
     SAT2: Number,
@@ -31,7 +29,7 @@ var schema = new Schema(
     vomitosCaracteristicas: String,
     nauseas: Boolean,
     otrosNutricion: String,
-    piezasDentarias:  Boolean,    // Incompletas=true, Completas=false,
+    piezasDentarias: Boolean, // Incompletas=true, Completas=false,
     protesis: Boolean,
     protesisTipo: String,
     dificultadesDeglutir: Boolean,
@@ -68,23 +66,23 @@ var schema = new Schema(
     otrosEliminacion: Boolean,
     estadoMucosas: {
         integra: Boolean,
-        hidratada:Boolean,
+        hidratada: Boolean,
     },
     estadoPiel: {
         integra: Boolean,
-        hidratada:Boolean,
+        hidratada: Boolean,
     },
     estadoPie: {
         integra: Boolean,
-        hidratada:Boolean,
+        hidratada: Boolean,
     },
     estadoBoca: {
         integra: Boolean,
-        hidratada:Boolean,
+        hidratada: Boolean,
     },
     estadoGenitales: {
         integra: Boolean,
-        hidratada:Boolean,
+        hidratada: Boolean,
     },
     observacionesTegumentos: String,
     // ****************************** Necesidad de Movilizarse/Vestirse ******************************
@@ -135,9 +133,9 @@ var schema = new Schema(
     orientado: Boolean,
     glasgow: String,
     idioma: String,
-    vision: ['Normal','Deficiente','Ausente'],
-    audicion: ['Normal','Deficiente','Ausente'],
-    lenguaje: ['Normal','Deficiente','Ausente'],
+    vision: ['Normal', 'Deficiente', 'Ausente'],
+    audicion: ['Normal', 'Deficiente', 'Ausente'],
+    lenguaje: ['Normal', 'Deficiente', 'Ausente'],
     describaSensopercepcion: String,
     dolor: Boolean,
     dolorLocalizacion: String,
@@ -156,17 +154,11 @@ var schema = new Schema(
     observacionesAprender: String,
     // ****************************** Observaciones Generales ******************************
     observacionesGenerales: String,
-    idUsuario: {
-        type: Schema.Types.ObjectId,
-        ref: 'Usuario',
-        default: null
-    },
     servicio: {
-        id: Number, // 1='clínica médica' 2='clínica quirúrgica'
+        id: Number,
         nombre: String,
     },
 });
 
-// Config
-schema.plugin(require('../common/mongoose-config'));
+schema.plugin(require('../mongoose/audit'));
 module.exports = schema;
