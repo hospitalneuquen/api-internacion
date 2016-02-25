@@ -1,5 +1,6 @@
 var mongoose = require('mongoose'),
-    Schema = mongoose.Schema;
+    Schema = mongoose.Schema,
+    schemaUbicacion = require('../schemas/Ubicacion.js')
 
 var schema = new Schema(
 {
@@ -36,10 +37,15 @@ var schema = new Schema(
         ref: 'Usuario',
         default: null
     },
-    servicio: {
-        id: Number, // 1='clínica médica' 2='clínica quirúrgica'
-        nombre: String,
-    },
+    // servicio: {
+    //     _id: {
+    //         type: Schema.Types.ObjectId,
+    //         ref: 'Ubicacion'
+    //     },
+    //     nombre: String,
+    //     nombreCorto: String
+    // }
+    servicio: schemaUbicacion
 });
 
 // Config

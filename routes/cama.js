@@ -17,6 +17,16 @@ router.get('/cama/:id', function(req, res, next) {
         res.json(data);
     });
 })
+// router.get('/cama/servicios', function(req, res, next) {
+//
+//     Cama.find().distinct('servicio.id', function(err, data) {
+//     // Cama.find({}, function(err, data) {
+//         if (err) return next(err);
+//         if (!data) return next(404);
+//         res.json(data);
+//     });
+//
+// })
 
 
 // /**
@@ -188,6 +198,39 @@ router.post('/cama/cambiarEstado/:idCama', function(req, res, next) {
                 });
 
                 res.send(cama);
+            });
+        }
+    });
+
+});
+
+router.patch('/cama/:idCama/cambiarPaciente/:idPaciente', function(req, res, next) {
+    var error = false;
+
+    // buscamos la cama
+    Cama.findById(req.params.idCama, function(err, cama) {
+        // Maneja errores en MongoDB
+        if (err) return next(err);
+        // Error 404: NotFound
+        if (!cama) return next(404);
+
+        if (!error) {
+            // generamos el objeto para guardar el estado en la tabla de historial
+            var cama_estado = new CamaEstado({
+                estado: 'ocupada',
+                motivo: (req.body.motivo) ? req.body.motivo : 'Cambio de paciente en cama',
+                idCama: req.params.idCama,
+                idPersona: (req.params.idPaciente) ? req.params.idPaciente : null
+            });
+
+            cama.save(function(err, cama) {
+                if (err) return next(err);
+
+                cama_estado.save(function(err) {
+                    if (err) return next(err);
+                });
+
+                res.json(cama);
             });
         }
     });
