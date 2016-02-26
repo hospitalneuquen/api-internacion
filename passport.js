@@ -1,4 +1,5 @@
 var
+    app = require('express')(),
     config = require('./config'),
     passport = require('passport'),
     JwtStrategy = require('passport-jwt').Strategy;
@@ -16,7 +17,10 @@ module.exports = function() {
     // Configura JWT
     passport.use(new JwtStrategy({
             secretOrKey: config.jwt.secret,
-            jwtFromRequest: ExtractJwt.fromAuthHeader()
+            jwtFromRequest: (app.settings.env === 'development') ? function(request) {
+                // Si está en un ambiente de desarrollo, permite sacar el token desde el archivo de configuración
+                return config.jwt.devToken || ExtractJwt.fromAuthHeader()(request);
+            } : ExtractJwt.fromAuthHeader()
         },
         function(jwt_payload, done) {
             done(null, jwt_payload);

@@ -1,9 +1,7 @@
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
-var schema = new Schema(
-{
-    fechaHora: Date,
+var schema = new Schema({
     // ****************************** Necesidad de Oxigenación ******************************
     FR: Number,
     SAT2: Number,
@@ -31,7 +29,7 @@ var schema = new Schema(
     vomitosCaracteristicas: String,
     nauseas: Boolean,
     otrosNutricion: String,
-    piezasDentarias:  Boolean,    // Incompletas=true, Completas=false,
+    piezasDentarias: Boolean, // Incompletas=true, Completas=false,
     protesis: Boolean,
     protesisTipo: String,
     dificultadesDeglutir: Boolean,
@@ -189,17 +187,11 @@ var schema = new Schema(
     observacionesAprender: String,
     // ****************************** Observaciones Generales ******************************
     observacionesGenerales: String,
-    idUsuario: {
-        type: Schema.Types.ObjectId,
-        ref: 'Usuario',
-        default: null
-    },
     servicio: {
-        id: Number, // 1='clínica médica' 2='clínica quirúrgica'
+        id: Number,
         nombre: String,
     },
 });
 
-// Config
-schema.plugin(require('../common/mongoose-config'));
+schema.plugin(require('../mongoose/audit'));
 module.exports = schema;

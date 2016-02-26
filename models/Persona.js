@@ -23,7 +23,7 @@ var schema = new Schema({
     },
     sexo: {
         type: String,
-        enum: ['masculino', 'femenino', 'indeterminado']
+        enum: ['Masculino', 'Femenino', 'Indeterminado']
     },
     nacionalidad: String,
     fechaNacimiento: Date,
@@ -48,7 +48,7 @@ var schema = new Schema({
     },
     estadoCivil: {
         type: String,
-        enum: ['Casado', 'Separado', 'Soltero', 'Viudo']
+        enum: ['casado', 'separado', 'soltero', 'viudo']
     },
     contactoReferencia: {
         texto: String,
@@ -71,7 +71,5 @@ var schema = new Schema({
     }
 });
 
-schema.plugin(require('../common/mongoose-config'), {
-    elasticSearch: true
-});
+schema.plugin(require('../mongoose/elasticSearch'));
 module.exports = mongoose.model('Persona', schema, 'personas')

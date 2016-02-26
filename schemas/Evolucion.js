@@ -1,5 +1,6 @@
 var mongoose = require('mongoose'),
-    Schema = mongoose.Schema;
+    Schema = mongoose.Schema,
+    schemaUbicacion = require('../schemas/Ubicacion.js')
 
 var schema = new Schema(
 {
@@ -36,13 +37,8 @@ var schema = new Schema(
         ref: 'Usuario',
         default: null
     },
-    servicio: {
-        id: Number, // 1='clínica médica' 2='clínica quirúrgica'
-        nombre: String,
-    },
+    servicio: schemaUbicacion
 });
 
-// Config
-schema.plugin(require('../common/mongoose-config'));
-// module.exports = mongoose.model('Evolucion', schema);
+schema.plugin(require('../mongoose/audit'));
 module.exports = schema;
