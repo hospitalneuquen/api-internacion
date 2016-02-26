@@ -66,23 +66,33 @@ var schema = new Schema({
     otrosEliminacion: Boolean,
     estadoMucosas: {
         integra: Boolean,
-        hidratada: Boolean,
+        lesiones: Boolean,
+        hidratada:Boolean,
+        deshidratada: Boolean,
     },
     estadoPiel: {
         integra: Boolean,
-        hidratada: Boolean,
+        lesiones: Boolean,
+        hidratada:Boolean,
+        deshidratada: Boolean,
     },
     estadoPie: {
         integra: Boolean,
-        hidratada: Boolean,
+        lesiones: Boolean,
+        hidratada:Boolean,
+        deshidratada: Boolean,
     },
     estadoBoca: {
         integra: Boolean,
-        hidratada: Boolean,
+        lesiones: Boolean,
+        hidratada:Boolean,
+        deshidratada: Boolean,
     },
     estadoGenitales: {
         integra: Boolean,
-        hidratada: Boolean,
+        lesiones: Boolean,
+        hidratada:Boolean,
+        deshidratada: Boolean,
     },
     observacionesTegumentos: String,
     // ****************************** Necesidad de Movilizarse/Vestirse ******************************
@@ -115,13 +125,24 @@ var schema = new Schema({
     ETS: Boolean,
     riesgoCardiovascular: Boolean,
     otrosDescriba: String,
-    riesgoCaidas: String,
+    riesgoCaida: {
+        caidasPrevias: Number,
+        marcha: Number,
+        ayudaDeambular: Number,
+        venoclisis: Number,
+        comorbilidad: Number,
+        estadoMental: Number,
+        total: {
+            type: Number,
+            default: 0
+        },
+    },
     // valoracionRiesgoCaidas: {    //formulario de Riesgo de Caidas
     //     type: Schema.Types.ObjectId,
     //     ref: 'RiesgoCaidas',
     //     default: null
     // },
-    riesgoUPP: String,
+    //riesgoUPP: String,
     // valoracionRiesgoUPP: {    //formulario de Riesgo de Ulceras por Presion
     //     type: Schema.Types.ObjectId,
     //     ref: 'RiesgoUPP',
@@ -133,9 +154,21 @@ var schema = new Schema({
     orientado: Boolean,
     glasgow: String,
     idioma: String,
-    vision: ['Normal', 'Deficiente', 'Ausente'],
-    audicion: ['Normal', 'Deficiente', 'Ausente'],
-    lenguaje: ['Normal', 'Deficiente', 'Ausente'],
+    vision: {
+                normal: Boolean,
+                deficiente: Boolean,
+                ausente: Boolean
+            },
+    audicion: {
+                normal: Boolean,
+                deficiente: Boolean,
+                ausente: Boolean
+              },
+    lenguaje: {
+                normal: Boolean,
+                deficiente: Boolean,
+                ausente: Boolean
+              },
     describaSensopercepcion: String,
     dolor: Boolean,
     dolorLocalizacion: String,
