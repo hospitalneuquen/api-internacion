@@ -21,17 +21,6 @@ app.use(bodyParser.urlencoded({
     extended: false
 }));
 
-// Passport config
-passportConfig();
-app.use(passport.initialize());
-
-// Configura rutas con autenticación JWT
-var routes = requireDir('./routes/');
-for (var route in routes)
-    app.use('/', passport.authenticate('jwt', {
-        session: false
-    }), routes[route]);
-
 // swagger docs
 // ... initialize swagger-jsdoc
 var swaggerSpec = swagger({
@@ -49,5 +38,20 @@ app.get('/docs.json', function(req, res) {
     res.send(swaggerSpec);
 });
 app.use('/docs', express.static(path.join(__dirname, './node_modules/swagger-ui/dist')));
+
+// Passport config
+passportConfig();
+app.use(passport.initialize());
+
+
+
+// Configura rutas con autenticación JWT
+var routes = requireDir('./routes/');
+for (var route in routes)
+    app.use('/', passport.authenticate('jwt', {
+        session: false
+    }), routes[route]);
+
+
 
 module.exports = app;
