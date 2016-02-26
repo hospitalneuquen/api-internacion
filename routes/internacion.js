@@ -155,111 +155,110 @@ router
     })
 
 .patch('/internacion/:idInternacion/evolucion/:idEvolucion*?', function(req, res, next) {
-    async.waterfall([
-            // 1. Busca internación
-            function(asyncCallback) {
-                Internacion.findOne({
-                    _id: req.params.idInternacion
-                }, function(err, internacion) {
-                    if (err) return asyncCallback(err);
-                    if (!internacion) return asyncCallback(404);
+        async.waterfall([
+                // 1. Busca internación
+                function(asyncCallback) {
+                    Internacion.findOne({
+                        _id: req.params.idInternacion
+                    }, function(err, internacion) {
+                        if (err) return asyncCallback(err);
+                        if (!internacion) return asyncCallback(404);
 
-                    // Verifica que exista la evolución
-                    if (req.params.idEvolucion && !internacion.evoluciones.find(function(i) {
-                            return i._id == req.params.idEvolucion
-                        }))
-                        return asyncCallback(404);
+                        // Verifica que exista la evolución
+                        if (req.params.idEvolucion && !internacion.evoluciones.find(function(i) {
+                                return i._id == req.params.idEvolucion
+                            }))
+                            return asyncCallback(404);
 
-                    asyncCallback(null, internacion);
-                })
-            },
-            // 2. Crea/modifica evolución y resuelve servicio
-            function(internacion, asyncCallback) {
-                Ubicacion.findOne({
-                    _id: req.body.servicio
-                }, function(err, servicio) {
-                    if (err) return asyncCallback(err);
-                    if (!servicio) return asyncCallback(404);
+                        asyncCallback(null, internacion);
+                    })
+                },
+                // 2. Crea/modifica evolución y resuelve servicio
+                function(internacion, asyncCallback) {
+                    Ubicacion.findOne({
+                        _id: req.body.servicio
+                    }, function(err, servicio) {
+                        if (err) return asyncCallback(err);
+                        if (!servicio) return asyncCallback(404);
 
-                    var evolucion;
-                    if (req.params.idEvolucion) { // Update
-                        evolucion = internacion.evoluciones.find(function(i) {
-                            return i._id == req.params.idEvolucion
-                        });
-                        evolucion.merge(req.body);
-                        evolucion.servicio = servicio;
-                    } else { // Insert
-                        evolucion = new Evolucion(req.body);
-                        evolucion.servicio = servicio;
-                        if (!internacion.evoluciones)
-                            internacion.evoluciones = [];
-                        internacion.evoluciones.push(evolucion);
-                    }
+                        var evolucion;
+                        if (req.params.idEvolucion) { // Update
+                            evolucion = internacion.evoluciones.find(function(i) {
+                                return i._id == req.params.idEvolucion
+                            });
+                            evolucion.merge(req.body);
+                            evolucion.servicio = servicio;
+                        } else { // Insert
+                            evolucion = new Evolucion(req.body);
+                            evolucion.servicio = servicio;
+                            if (!internacion.evoluciones)
+                                internacion.evoluciones = [];
+                            internacion.evoluciones.push(evolucion);
+                        }
 
-                    asyncCallback(err, internacion, evolucion);
-                })
-            },
-            // 3. Guarda la internacion modificada
-            function(internacion, evolucion, asyncCallback) {
-                internacion.audit(req.user);
-                internacion.save(function(err) {
-                    asyncCallback(err, internacion, evolucion);
-                });
-            },
-            // 4. Actualiza el mapa de camas
-            function(internacion, evolucion, asyncCallback) {
-                Cama.findOneAndUpdate({
-                    idInternacion: req.params.idInternacion
-                }, {
-                    'ultimaEvolucion.fechaHora': req.body.fechaHora
-                }, function(err) {
-                    asyncCallback(err, internacion, evolucion);
-                });
-            },
-        ],
-        function(err, internacion, evolucion) {
-            if (err) return next(err);
-            res.json(evolucion);
-        });
-    }
-})
-.patch('/internacion/:idInternacion/riesgoCaidas/', function(req, res, next) {
-    if (req.params.idInternacion) {
-
-        Internacion.findById(req.params.idInternacion, function(err, internacion) {
-            // Maneja errores en MongoDB
-            if (err) return next(err);
-            // Error 404: NotFound
-            if (!internacion) return next(404);
-
-            //var valoracionInicial = new ValoracionEnfermeria(req.body);
-            internacion.enfermeria.riesgoCaida = req.body;
-
-            internacion.save(function(err, internacion) {
+                        asyncCallback(err, internacion, evolucion);
+                    })
+                },
+                // 3. Guarda la internacion modificada
+                function(internacion, evolucion, asyncCallback) {
+                    internacion.audit(req.user);
+                    internacion.save(function(err) {
+                        asyncCallback(err, internacion, evolucion);
+                    });
+                },
+                // 4. Actualiza el mapa de camas
+                function(internacion, evolucion, asyncCallback) {
+                    Cama.findOneAndUpdate({
+                        idInternacion: req.params.idInternacion
+                    }, {
+                        'ultimaEvolucion.fechaHora': req.body.fechaHora
+                    }, function(err) {
+                        asyncCallback(err, internacion, evolucion);
+                    });
+                },
+            ],
+            function(err, internacion, evolucion) {
                 if (err) return next(err);
-                res.json(Internacion);
+                res.json(evolucion);
             });
-        });
-    }
-})
-.patch('/internacion/:idInternacion/valoracionEnfermeria/', function(req, res, next) {
-    if (req.params.idInternacion) {
+    })
+    .patch('/internacion/:idInternacion/riesgoCaidas/', function(req, res, next) {
+        if (req.params.idInternacion) {
 
-        Internacion.findById(req.params.idInternacion, function(err, internacion) {
-            // Maneja errores en MongoDB
-            if (err) return next(err);
-            // Error 404: NotFound
-            if (!internacion) return next(404);
-
-            //var valoracionInicial = new ValoracionEnfermeria(req.body);
-            internacion.enfermeria = req.body;
-
-            internacion.save(function(err, internacion) {
+            Internacion.findById(req.params.idInternacion, function(err, internacion) {
+                // Maneja errores en MongoDB
                 if (err) return next(err);
-                res.json(Internacion);
+                // Error 404: NotFound
+                if (!internacion) return next(404);
+
+                //var valoracionInicial = new ValoracionEnfermeria(req.body);
+                internacion.enfermeria.riesgoCaida = req.body;
+
+                internacion.save(function(err, internacion) {
+                    if (err) return next(err);
+                    res.json(Internacion);
+                });
             });
-        });
-    }
-});
+        }
+    })
+    .patch('/internacion/:idInternacion/valoracionEnfermeria/', function(req, res, next) {
+        if (req.params.idInternacion) {
+
+            Internacion.findById(req.params.idInternacion, function(err, internacion) {
+                // Maneja errores en MongoDB
+                if (err) return next(err);
+                // Error 404: NotFound
+                if (!internacion) return next(404);
+
+                //var valoracionInicial = new ValoracionEnfermeria(req.body);
+                internacion.enfermeria = req.body;
+
+                internacion.save(function(err, internacion) {
+                    if (err) return next(err);
+                    res.json(Internacion);
+                });
+            });
+        }
+    });
 
 module.exports = router;
