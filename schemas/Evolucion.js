@@ -2,43 +2,32 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema,
     schemaUbicacion = require('../schemas/Ubicacion.js')
 
-var schema = new Schema(
-{
+var schema = new Schema({
     fechaHora: {
-        type: Date
-    },
-    pulso: {
-        type: Number
-    },
-    tensionSistolica: {
-        type: Number
-    },
-    tensionDiastolica: {
-        type: Number
-    },
-    temperatura: {
-        type: Number
-    },
-    respiracion: {
-        type: Number
-    },
-    spo2: {
-        type: Number
-    },
-    peso: {
-        type: Number
+        type: Date,
+        required: true,
     },
     texto: String,
-    // tipo: {
-    //     Enfermeria / Medica
-    // },
-    idUsuario: {
-        type: Schema.Types.ObjectId,
-        ref: 'Usuario',
-        default: null
+    tipo: {
+        type: String,
+        enum: ['medico', 'enfermero'],
+        required: true,
     },
-    servicio: schemaUbicacion
+    servicio: {
+        type: schemaUbicacion,
+        required: true,
+    },
+    // Valores para tipo 'enfemero'
+    pulso: Number,
+    tensionSistolica: Number,
+    tensionDiastolica: Number,
+    temperatura: Number,
+    respiracion: Number,
+    spo2: Number,
+    peso: Number
 });
 
 schema.plugin(require('../mongoose/audit'));
+// Por un bug(?) de mongoose no aplica el plugin global. Hay que habilitarlo acá.
+schema.plugin(require('mongoose-merge-plugin'));
 module.exports = schema;

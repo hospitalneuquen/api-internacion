@@ -14,6 +14,7 @@ var express = require('express'),
 // Mongoose config
 mongoose.connect(config.mongo);
 mongoose.plugin(require('./mongoose/defaults'));
+mongoose.plugin(require('mongoose-merge-plugin'));
 mongoose.set('debug', app.get('env') === 'development');
 
 // Express

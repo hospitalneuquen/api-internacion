@@ -23,7 +23,7 @@ var schema = new Schema({
     },
     sexo: {
         type: String,
-        enum: ['Masculino', 'Femenino', 'Indeterminado']
+        enum: ['masculino', 'femenino', 'indeterminado']
     },
     nacionalidad: String,
     fechaNacimiento: Date,
