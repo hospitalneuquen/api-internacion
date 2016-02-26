@@ -1,6 +1,8 @@
 var express = require('express'),
     router = express.Router(),
+    async = require('async'),
     Internacion = require('../models/Internacion.js'),
+    Ubicacion = require('../models/Ubicacion.js'),
     Evolucion = require('../models/Evolucion.js'),
     Cama = require('../models/Cama.js');
 
@@ -178,57 +180,72 @@ router
     })
 
 .patch('/internacion/:idInternacion/evolucion/:idEvolucion*?', function(req, res, next) {
-    if (req.params.idInternacion) {
+    async.waterfall([
+            // 1. Busca internación
+            function(asyncCallback) {
+                console.log("************** BUSCANDO *******************");                Internacion.findOne({
+                    _id: req.params.idInternacion
+                }, function(err, internacion) {
+                    if (err) return asyncCallback(err);
+                    if (!internacion) return asyncCallback(404);
 
-        var params = {};
+                    // Verifica que exista la evolución
+                    if (req.params.idEvolucion && !internacion.evoluciones.find(function(i) {
+                            return i._id == req.params.idEvolucion
+                        }))
+                        return asyncCallback(404);
 
-        if (req.params.idInternacion) {
-            params = {
-                _id: req.params.idInternacion
-            }
-        }
+                    asyncCallback(null, internacion);
+                })
+            },
+            // 2. Crea/modifica evolución y resuelve servicio
+            function(internacion, asyncCallback) {
+                Ubicacion.findOne({
+                    _id: req.body.servicio
+                }, function(err, servicio) {
+                    if (err) return asyncCallback(err);
+                    if (!servicio) return asyncCallback(404);
 
-        if (req.params.idEvolucion) {
-            params = {
-                'evoluciones._id': req.params.idEvolucion
-            };
+                    var evolucion;
+                    if (req.params.idEvolucion) { // Update
+                        evolucion = internacion.evoluciones.find(function(i) {
+                            return i._id == req.params.idEvolucion
+                        });
+                        evolucion.merge(req.body);
+                        evolucion.servicio = servicio;
+                    } else { // Insert
+                        evolucion = new Evolucion(req.body);
+                        evolucion.servicio = servicio;
+                        if (!internacion.evoluciones)
+                            internacion.evoluciones = [];
+                        internacion.evoluciones.push(evolucion);
+                    }
 
-            var evolucion = req.body;
-            var action = {
-                $set: {
-                    'evoluciones.$': evolucion
-                }
-            }
-        } else {
-            // var evolucion = new objEvolucion(req.body);
-            var evolucion = new Evolucion(req.body);
-
-            var action = {
-                $addToSet: {
-                    evoluciones: evolucion
-                }
-            }
-
-        }
-
-        Internacion.update(params, action, function(err, data) {
+                    asyncCallback(err, internacion, evolucion);
+                })
+            },
+            // 3. Guarda la internacion modificada
+            function(internacion, evolucion, asyncCallback) {
+                internacion.audit(req.user);
+                internacion.save(function(err) {
+                    asyncCallback(err, internacion, evolucion);
+                });
+            },
+            // 4. Actualiza el mapa de camas
+            function(internacion, evolucion, asyncCallback) {
+                Cama.findOneAndUpdate({
+                    idInternacion: req.params.idInternacion
+                }, {
+                    'ultimaEvolucion.fechaHora': req.body.fechaHora
+                }, function(err) {
+                    asyncCallback(err, internacion, evolucion);
+                });
+            },
+        ],
+        function(err, internacion, evolucion) {
             if (err) return next(err);
-            if (!data) return next(404);
-
-            // buscamos la cama y actualizamos con los datos de la evolucion
-            Cama.findOneAndUpdate({
-                idInternacion: req.params.idInternacion
-            }, {
-                'ultimaEvolucion.fechaHora': req.body.fechaHora
-            }, function(err, data) {
-                if (err) return next(err);
-            });
-
             res.json(evolucion);
-
         });
-    }
-
-    // res.next(404);
 });
+
 module.exports = router;

@@ -3,10 +3,22 @@ var User = require('../schemas/User')
 // Plugin para configurar auditoría
 module.exports = function(schema, options) {
     schema.add({
-        createdAt: Date,
-        updatedAt: Date,
-        createdBy: User,
-        updatedBy: User
+        createdAt: {
+            type: Date,
+            mergeable: false
+        },
+        createdBy: {
+            type: User,
+            mergeable: false
+        },
+        updatedAt: {
+            type: Date,
+            mergeable: false
+        },
+        updatedBy: {
+            type: User,
+            mergeable: false
+        }
     });
 
     // Define un método que debe llamarse en el documento principal antes de ejecutar .save()
@@ -18,7 +30,7 @@ module.exports = function(schema, options) {
         user = (this.ownerDocument && this.ownerDocument().$audit) || this.$audit;
         if (!user)
             return next(new Error("AUDIT PLUGIN ERROR: Inicialice el plugin utilizando el método audit(). Ejemplo: myModel.audit(req.user)"));
-
+            
         // Todo ok...
         if (this.isNew) {
             this.createdAt = new Date();
