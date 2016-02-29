@@ -118,6 +118,9 @@ router
                     cama: req.body.cama,
                 }] : null
             });
+
+            data.audit(req.user);
+
             data.save(function(err, data) {
                 if (err) return next(err);
                 res.json(data);
@@ -203,23 +206,23 @@ router
                 function(internacion, evolucion, asyncCallback) {
                     internacion.audit(req.user);
                     internacion.save(function(err) {
-                        asyncCallback(err, internacion, evolucion);
+                        asyncCallback(err, internacion);
                     });
                 },
                 // 4. Actualiza el mapa de camas
-                function(internacion, evolucion, asyncCallback) {
+                function(internacion, asyncCallback) {
                     Cama.findOneAndUpdate({
                         idInternacion: req.params.idInternacion
                     }, {
-                        'ultimaEvolucion.fechaHora': req.body.fechaHora
+                        'ultimaEvolucion' : internacion.evoluciones[internacion.evoluciones.length-1]
                     }, function(err) {
-                        asyncCallback(err, internacion, evolucion);
+                        asyncCallback(err, internacion);
                     });
                 },
             ],
-            function(err, internacion, evolucion) {
+            function(err, internacion) {
                 if (err) return next(err);
-                res.json(evolucion);
+                res.json(internacion.evoluciones[internacion.evoluciones.length-1]);
             });
     })
     .patch('/internacion/:idInternacion/riesgoCaidas/', function(req, res, next) {
@@ -252,6 +255,8 @@ router
 
                 //var valoracionInicial = new ValoracionEnfermeria(req.body);
                 internacion.enfermeria = req.body;
+
+                internacion.audit(req.user);
 
                 internacion.save(function(err, internacion) {
                     if (err) return next(err);
