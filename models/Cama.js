@@ -2,7 +2,8 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema,
     Persona = require('../models/Persona.js'),
     Internacion = require('../models/Internacion.js'),
-    schemaUbicacion = require("../schemas/Ubicacion.js");
+    schemaUbicacion = require("../schemas/Ubicacion.js")
+    schemaEvolucion = require("../schemas/Evolucion.js");
 
 var schema = new Schema({
     habitacion: Number,
@@ -59,14 +60,7 @@ var schema = new Schema({
             enum: ['masculino', 'femenino', 'indeterminado']
         }
     },
-    ultimaEvolucion: {
-        idUsuario: {
-            type: Schema.Types.ObjectId,
-            ref: 'Usuario',
-            default: null
-        },
-        fechaHora: Date
-    }
+    ultimaEvolucion: schemaEvolucion
 });
 
 // middleware
