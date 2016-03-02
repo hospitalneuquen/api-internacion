@@ -3,7 +3,8 @@ var mongoose = require('mongoose'),
     Ubicacion = require('../models/Ubicacion.js'),
     Cama = require('../models/Cama.js'),
     Persona = require('../models/Persona.js'),
-    schemaEvolucion = require('../schemas/Evolucion.js');
+    schemaEvolucion = require('../schemas/Evolucion.js'),
+    schemaPase = require('../schemas/Pase.js'),
     schemaValoracionEnfermeria = require('../schemas/ValoracionEnfermeria.js');
 
 var schema = new Schema({
@@ -33,37 +34,28 @@ var schema = new Schema({
         },
         motivo: String,
         diagnosticoPresuntivo: String,
-        situacionPaciente: {
-            educacion: String,
-            trabajo: String,
-            ocupacion: String,
-        },
-        antecedentes: {
-            hta: Boolean,
-            diabetes: Boolean,
-            alergias: String,
-            estiloVida: String,
-            obstetricos: {
-                gestas: Number,
-                partos: Number,
-                cesareas: Number,
-                abortos: Number,
-            },
-            quirurgicos: String
-        }
+        enfermeria: schemaValoracionEnfermeria,
+        // situacionPaciente: {
+        //     educacion: String,
+        //     trabajo: String,
+        //     ocupacion: String,
+        // },
+        // antecedentes: {
+        //     hta: Boolean,
+        //     diabetes: Boolean,
+        //     alergias: String,
+        //     estiloVida: String,
+        //     obstetricos: {
+        //         gestas: Number,
+        //         partos: Number,
+        //         cesareas: Number,
+        //         abortos: Number,
+        //     },
+        //     quirurgicos: String
+        // },
     },
-    pases: [{
-        fechaHora: {
-            type: Date,
-            required: true
-        },
-        cama: {
-            type: Schema.Types.ObjectId,
-            ref: 'Cama'
-        }
-    }],
+    pases: [schemaPase],
     evoluciones: [schemaEvolucion],
-    enfermeria: schemaValoracionEnfermeria
 });
 
 // Middleware: validar 'paciente'
@@ -75,7 +67,7 @@ schema.pre('validate', true, function(next, done) {
             if (count > 0)
                 done();
             else
-                done(new Error("Paciente no encontrado"))
+                done(new Error("Paciente no encontrado"));
         }
     );
     next();
@@ -83,23 +75,31 @@ schema.pre('validate', true, function(next, done) {
 
 // Middleware: validar 'pases.cama'
 schema.pre('validate', true, function(next, done) {
-    if (!this.pases)
+    var self = this;
+    if (!self.pases || !self.pases.length)
         done();
     else {
-        var camas = this.pases.map(function(i) {
-            return i.cama
+        // Obtiene el listado de camas sin duplicados
+        var camas = self.pases.map(function(i) {
+            return i.cama.toString();
         });
+        camas = camas.filter(function(i, pos) {
+            console.log(i);
+            return camas.indexOf(i) == pos;
+        });
+
+        // WTF??!?!? Pierde la referencia al modelo ????
+        Cama = require('../models/Cama.js');
         Cama.count({
                 _id: {
                     $in: camas
                 }
             },
             function(err, count) {
-                console.log("%d %d", count, camas.length);
                 if (count == camas.length)
                     done();
                 else
-                    done(new Error("Cama no encontrada"))
+                    done(new Error("Cama no encontrada"));
             }
         );
     }

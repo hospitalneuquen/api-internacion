@@ -2,7 +2,7 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema,
     Persona = require('../models/Persona.js'),
     Internacion = require('../models/Internacion.js'),
-    schemaUbicacion = require("../schemas/Ubicacion.js")
+    schemaUbicacion = require('../schemas/Ubicacion.js'),
     schemaEvolucion = require("../schemas/Evolucion.js");
 
 var schema = new Schema({
@@ -75,7 +75,7 @@ schema.pre('validate', function(next) {
             }).populate('paciente')
             .exec(function(err, data) {
                 if (err)
-                    return next("Internacion no encontrada")
+                    return next("Internacion no encontrada");
 
                 // asignamos los valores del paciente
                 parent.paciente = data.paciente;
