@@ -73,38 +73,5 @@ schema.pre('validate', true, function(next, done) {
     next();
 });
 
-// Middleware: validar 'pases.cama'
-schema.pre('validate', true, function(next, done) {
-    var self = this;
-    if (!self.pases || !self.pases.length)
-        done();
-    else {
-        // Obtiene el listado de camas sin duplicados
-        var camas = self.pases.map(function(i) {
-            return i.cama.toString();
-        });
-        camas = camas.filter(function(i, pos) {
-            console.log(i);
-            return camas.indexOf(i) == pos;
-        });
-
-        // WTF??!?!? Pierde la referencia al modelo ????
-        Cama = require('../models/Cama.js');
-        Cama.count({
-                _id: {
-                    $in: camas
-                }
-            },
-            function(err, count) {
-                if (count == camas.length)
-                    done();
-                else
-                    done(new Error("Cama no encontrada"));
-            }
-        );
-    }
-    next();
-});
-
 schema.plugin(require('../mongoose/audit'));
 module.exports = mongoose.model('Internacion', schema, 'internaciones');

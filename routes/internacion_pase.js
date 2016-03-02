@@ -11,7 +11,7 @@ var express = require('express'),
  * /internacion/{idInternacion}/pase:
  *   post:
  *     tags:
- *       - Pasees
+ *       - Pases
  *     summary: Crea un nuevo pase
  *     produces:
  *       - application/json
@@ -32,7 +32,7 @@ var express = require('express'),
  * /internacion/{idInternacion}/pase/{idPase}:
  *   post:
  *     tags:
- *       - Pasees
+ *       - Pases
  *     summary: Modifica un pase
  *     produces:
  *       - application/json
