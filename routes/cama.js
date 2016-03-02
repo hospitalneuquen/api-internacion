@@ -140,6 +140,10 @@ router.post('/cama/cambiarEstado/:idCama', function(req, res, next) {
             // actualizamos el estadode la cama
             cama.estado = 'desocupada';
 
+            cama.paciente = undefined;
+            cama.idInternacion = null;
+            cama.desinfectada = false;
+
         } else if (req.body.estado == 'ocupada') {
 
             if (!cama.desinfectada) {
@@ -149,8 +153,8 @@ router.post('/cama/cambiarEstado/:idCama', function(req, res, next) {
 
             cama.idInternacion = req.body.idInternacion;
             cama.estado = 'ocupada';
-        } else if (req.body.estado == 'desocupada') {
-            // TODO: Todooo
+        // } else if (req.body.estado == 'desocupada') {
+
         } else if (req.body.estado == 'desinfectada') {
             cama.desinfectada = true;
         }
