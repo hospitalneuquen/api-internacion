@@ -160,6 +160,10 @@ router.post('/internacion/:id', function(req, res, next) {
 router.post('/internacion', function(req, res, next) {
     var data = new Internacion(req.body);
     data.audit(req.user);
+
+    if (data.pases && data.pases.length)
+        data.pases[0].servicio._id = req.body.pases[0].servicio; // Necesario para 'validarServicio'
+
     data.save(function(err, data) {
         if (err) return next(err);
         res.json(data);
