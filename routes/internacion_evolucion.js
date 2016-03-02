@@ -1,3 +1,5 @@
+'use strict';
+
 var express = require('express'),
     router = express.Router(),
     async = require('async'),
@@ -55,7 +57,7 @@ var express = require('express'),
  */
 router.post('/internacion/:idInternacion/evolucion/:idEvolucion*?', function(req, res, next) {
     async.waterfall([
-            // 1. Busca internación
+            // 1. Busca internación y la modifica
             function(asyncCallback) {
                 Internacion.findOne({
                     _id: req.params.idInternacion
@@ -63,62 +65,49 @@ router.post('/internacion/:idInternacion/evolucion/:idEvolucion*?', function(req
                     if (err) return asyncCallback(err);
                     if (!internacion) return asyncCallback(404);
 
-                    // Verifica que exista la evolución
-                    if (req.params.idEvolucion && !internacion.evoluciones.find(function(i) {
-                            return i._id == req.params.idEvolucion;
-                        })) {
-                        return asyncCallback(404);
-                    }
-                    asyncCallback(null, internacion);
-                });
-            },
-            // 2. Crea/modifica evolución y resuelve servicio
-            function(internacion, asyncCallback) {
-                Ubicacion.findOne({
-                    _id: req.body.servicio
-                }, function(err, servicio) {
-                    if (err) return asyncCallback(err);
-                    if (!servicio) return asyncCallback(404);
-
+                    // Crea o modifica la evolución
                     var evolucion;
                     if (req.params.idEvolucion) { // Update
                         evolucion = internacion.evoluciones.find(function(i) {
                             return i._id == req.params.idEvolucion;
                         });
+                        if (!evolucion)
+                            return asyncCallback(404);
                         evolucion.merge(req.body);
-                        evolucion.servicio = servicio;
+                        if (req.body.servicio)
+                            evolucion.servicio._id = req.body.servicio; // Necesario para 'validarServicio'
                     } else { // Insert
-                        evolucion = new Evolucion(req.body);
-                        evolucion.servicio = servicio;
                         if (!internacion.evoluciones)
                             internacion.evoluciones = [];
+                        evolucion = new Evolucion(req.body);
+                        if (req.body.servicio)
+                            evolucion.servicio._id = req.body.servicio; // Necesario para 'validarServicio'
                         internacion.evoluciones.push(evolucion);
                     }
-
-                    asyncCallback(err, internacion);
+                    asyncCallback(err, internacion, evolucion);
                 });
             },
-            // 3. Guarda la internacion modificada
-            function(internacion, asyncCallback) {
+            // 2. Guarda la internacion modificada
+            function(internacion, evolucion, asyncCallback) {
                 internacion.audit(req.user);
                 internacion.save(function(err) {
-                    asyncCallback(err, internacion);
+                    asyncCallback(err, evolucion);
                 });
             },
-            // 4. Actualiza el mapa de camas
-            function(internacion, asyncCallback) {
+            // 3. Actualiza el mapa de camas
+            function(evolucion, asyncCallback) {
                 Cama.findOneAndUpdate({
                     idInternacion: req.params.idInternacion
                 }, {
-                    'ultimaEvolucion': internacion.evoluciones[internacion.evoluciones.length - 1]
+                    'ultimaEvolucion': evolucion
                 }, function(err) {
-                    asyncCallback(err, internacion);
+                    asyncCallback(err, evolucion);
                 });
             },
         ],
-        function(err, internacion) {
+        function(err, evolucion) {
             if (err) return next(err);
-            res.json(internacion.evoluciones[internacion.evoluciones.length - 1]);
+            res.json(evolucion);
         });
 });
 
