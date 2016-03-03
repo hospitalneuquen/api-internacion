@@ -16,6 +16,10 @@ var schema = new Schema({
     servicio: {
         type: schemaUbicacion,
         required: true,
+        validar: {
+            modelo: require('../models/Ubicacion.js'),
+            resolver: true,
+        }
     },
     // Valores para tipo 'enfemero'
     pulso: Number,
@@ -28,6 +32,6 @@ var schema = new Schema({
 });
 
 schema.plugin(require('../mongoose/audit'));
-schema.plugin(require('../mongoose/validarServicio'), true); // true indica que desea resolver el id a un objeto completo
+schema.plugin(require('../mongoose/validar'));
 schema.plugin(require('mongoose-merge-plugin')); // Por un bug(?) de mongoose no aplica el plugin global. Hay que habilitarlo acá.
 module.exports = schema;

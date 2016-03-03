@@ -31,7 +31,7 @@ var swaggerSpec = swagger({
         basePath: '/api/internacion'
     },
     apis: fs.readdirSync(path.join(__dirname, './routes/')).map(function(i) {
-        return path.join(__dirname, './routes/') + i
+        return path.join(__dirname, './routes/') + i;
     })
 });
 

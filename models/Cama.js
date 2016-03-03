@@ -1,7 +1,6 @@
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema,
     Persona = require('../models/Persona.js'),
-    Internacion = require('../models/Internacion.js'),
     schemaUbicacion = require('../schemas/Ubicacion.js'),
     schemaEvolucion = require("../schemas/Evolucion.js");
 
@@ -41,7 +40,7 @@ var schema = new Schema({
     },
     idInternacion: {
         type: Schema.Types.ObjectId,
-        ref: 'Internacion'
+        ref: 'Internacion',
     },
     paciente: {
         // Al final se declara un virtual 'paciente.id'
@@ -69,7 +68,8 @@ schema.pre('validate', function(next) {
 
     // validamos la internacion y hacemos un populate de los datos del paciente
     if (parent.idInternacion) {
-        // buscamos la internacion correspondiente
+        // Por alguna razón hay que inyectar el modelo acá para no crear referencias circulares
+        var Internacion = require('../models/Internacion.js');
         Internacion.findOne({
                 _id: parent.idInternacion
             }).populate('paciente')
@@ -92,5 +92,4 @@ schema.virtual('paciente.id').get(function() {
 });
 
 schema.plugin(require('../mongoose/audit'));
-
 module.exports = mongoose.model('Cama', schema);

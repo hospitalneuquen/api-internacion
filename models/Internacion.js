@@ -1,7 +1,6 @@
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema,
     Ubicacion = require('../models/Ubicacion.js'),
-    Cama = require('../models/Cama.js'),
     Persona = require('../models/Persona.js'),
     schemaEvolucion = require('../schemas/Evolucion.js'),
     schemaPase = require('../schemas/Pase.js'),
@@ -11,7 +10,8 @@ var schema = new Schema({
     paciente: {
         ref: 'Persona',
         type: Schema.Types.ObjectId,
-        required: true
+        required: true,
+        validar: require('./Persona.js'),            
     },
     obrasSociales: [String],
     estado: {
@@ -75,20 +75,6 @@ var schema = new Schema({
     }
 });
 
-// Middleware: validar 'paciente'
-schema.pre('validate', true, function(next, done) {
-    Persona.count({
-            _id: this.paciente
-        },
-        function(err, count) {
-            if (count > 0)
-                done();
-            else
-                done(new Error("Paciente no encontrado"));
-        }
-    );
-    next();
-});
-
+schema.plugin(require('../mongoose/validar'));
 schema.plugin(require('../mongoose/audit'));
 module.exports = mongoose.model('Internacion', schema, 'internaciones');
