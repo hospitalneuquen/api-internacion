@@ -56,6 +56,23 @@ var schema = new Schema({
     },
     pases: [schemaPase],
     evoluciones: [schemaEvolucion],
+    egreso: {
+        fechaHora: {
+            type: Date,
+            // required: true
+        },
+        tipo: {
+            type: String,
+            enum: ['alta', 'defuncion'],
+            // required: true
+        },
+        descripcion: String,
+        cama: {
+            type: Schema.Types.ObjectId,
+            ref: 'Cama',
+            // required: true
+        }
+    }
 });
 
 // Middleware: validar 'paciente'

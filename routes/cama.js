@@ -134,7 +134,8 @@ router.post('/cama/cambiarEstado/:idCama', function(req, res, next) {
                     if (err) throw err;
                 });
 
-                cama.reparacion = '';
+                cama.reparacion = {};
+
             }
 
             // actualizamos el estadode la cama
@@ -153,7 +154,6 @@ router.post('/cama/cambiarEstado/:idCama', function(req, res, next) {
 
             cama.idInternacion = req.body.idInternacion;
             cama.estado = 'ocupada';
-        // } else if (req.body.estado == 'desocupada') {
 
         } else if (req.body.estado == 'desinfectada') {
             cama.desinfectada = true;
@@ -174,9 +174,12 @@ router.post('/cama/cambiarEstado/:idCama', function(req, res, next) {
                 cama.reparacion = {
                     "idCamaEstado": cama_estado._id,
                     "motivo": cama_estado.motivo,
-                    "createdAt": cama_estado.createdAt
+                    "createdAt": cama_estado.audit.createdAt
                 }
             }
+
+            // agregamos log
+            cama.audit(req.user);
 
             cama.save(function(err, cama) {
                 if (err) return next(err);
