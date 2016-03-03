@@ -74,15 +74,13 @@ router.post('/internacion/:idInternacion/evolucion/:idEvolucion*?', function(req
                         if (!evolucion)
                             return asyncCallback(404);
                         evolucion.merge(req.body);
-                        if (req.body.servicio)
-                            evolucion.servicio._id = req.body.servicio; // Necesario para 'validarServicio'
+                        evolucion.validar('servicio', req.body.servicio);
                     } else { // Insert
                         if (!internacion.evoluciones)
                             internacion.evoluciones = [];
-                        evolucion = new Evolucion(req.body);
-                        if (req.body.servicio)
-                            evolucion.servicio._id = req.body.servicio; // Necesario para 'validarServicio'
-                        internacion.evoluciones.push(evolucion);
+                        internacion.evoluciones.push(new Evolucion(req.body));
+                        evolucion = internacion.evoluciones[internacion.evoluciones.length - 1];
+                        evolucion.validar('servicio', req.body.servicio);
                     }
                     asyncCallback(err, internacion, evolucion);
                 });

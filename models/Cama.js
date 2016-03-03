@@ -1,7 +1,6 @@
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema,
     Persona = require('../models/Persona.js'),
-    Internacion = require('../models/Internacion.js'),
     schemaUbicacion = require('../schemas/Ubicacion.js'),
     schemaEvolucion = require("../schemas/Evolucion.js");
 

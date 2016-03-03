@@ -1,6 +1,6 @@
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema,
-    schemaUbicacion = require('../schemas/Ubicacion.js');
+    schemaUbicacion = require('./Ubicacion.js');
 
 var schema = new Schema({
     fechaHora: {
@@ -10,17 +10,24 @@ var schema = new Schema({
     servicio: {
         type: schemaUbicacion,
         required: true,
+        validar: {
+            modelo: require('../models/Ubicacion.js'),
+            resolver: true,
+        }
     },
     cama: {
         type: Schema.Types.ObjectId,
         ref: 'Cama',
         required: true,
+        validar: {
+            modelo: require('../models/Cama.js'),
+            resolver: false,
+        }
     },
     descripcion: String,
 });
 
 schema.plugin(require('../mongoose/audit'));
-schema.plugin(require('../mongoose/validarServicio'), true); // true indica que desea resolver el id a un objeto completo
-schema.plugin(require('../mongoose/validarCama'));
+schema.plugin(require('../mongoose/validar'));
 schema.plugin(require('mongoose-merge-plugin')); // Por un bug(?) de mongoose no aplica el plugin global. Hay que habilitarlo acá.
 module.exports = schema;
