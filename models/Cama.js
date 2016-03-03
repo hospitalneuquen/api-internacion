@@ -86,8 +86,10 @@ schema.pre('validate', function(next) {
 });
 
 // declaramos la variable paciente id de forma manual
-schema.virtual('paciente.id').get(function(){
+schema.virtual('paciente.id').get(function() {
     return this.paciente._id;
 });
+
+schema.plugin(require('../mongoose/audit'));
 
 module.exports = mongoose.model('Cama', schema);

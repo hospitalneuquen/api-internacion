@@ -5,7 +5,6 @@ var mongoose = require('mongoose'),
     Persona = require('../models/Persona.js'),
     schemaEvolucion = require('../schemas/Evolucion.js'),
     schemaPase = require('../schemas/Pase.js'),
-    schemaPrestacion = require('../schemas/Prestacion.js'),
     schemaValoracionEnfermeria = require('../schemas/ValoracionEnfermeria.js');
 
 var schema = new Schema({
@@ -57,7 +56,23 @@ var schema = new Schema({
     },
     pases: [schemaPase],
     evoluciones: [schemaEvolucion],
-    prestaciones: [schemaPrestacion],
+    egreso: {
+        fechaHora: {
+            type: Date,
+            // required: true
+        },
+        tipo: {
+            type: String,
+            enum: ['alta', 'defuncion'],
+            // required: true
+        },
+        descripcion: String,
+        cama: {
+            type: Schema.Types.ObjectId,
+            ref: 'Cama',
+            // required: true
+        }
+    }
 });
 
 // Middleware: validar 'paciente'
