@@ -11,7 +11,7 @@ var schema = new Schema({
         ref: 'Persona',
         type: Schema.Types.ObjectId,
         required: true,
-        validar: require('./Persona.js'),            
+        validar: require('./Persona.js'),
     },
     obrasSociales: [String],
     estado: {

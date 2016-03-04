@@ -1,5 +1,6 @@
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema,
+    schemaCama = require('./Cama.js'),
     schemaUbicacion = require('./Ubicacion.js');
 
 var schema = new Schema({
@@ -16,12 +17,11 @@ var schema = new Schema({
         }
     },
     cama: {
-        type: Schema.Types.ObjectId,
-        ref: 'Cama',
+        type: schemaCama,
         required: true,
         validar: {
             modelo: require('../models/Cama.js'),
-            resolver: false,
+            resolver: true,
         }
     },
     descripcion: String,
