@@ -230,6 +230,7 @@ router.patch('/cama/:idCama/cambiarPaciente/:idPaciente', function(req, res, nex
                 idPersona: (req.params.idPaciente) ? req.params.idPaciente : null
             });
 
+            cama.audit(req.user);
             cama.save(function(err, cama) {
                 if (err) return next(err);
 
