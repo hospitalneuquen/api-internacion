@@ -28,7 +28,28 @@ var schema = new Schema({
     temperatura: Number,
     respiracion: Number,
     spo2: Number,
-    peso: Number
+    peso: Number,
+
+    ingresos: {
+        ph: Number,
+        ph2: Number,
+        atb: Number,
+        hemo: Number,
+        np: Number,
+        prep: Number,
+        h2o: Number
+    },
+    egresos: {
+        lavadoVesicalI: Number,
+        lavadoVesicalE: Number,
+        diuresis: Number,
+        catarsis: Number,
+        sng: Number,
+        drenajes: Number,
+        drenajes2: Number,
+        ostiomas: Number,
+        ostiomas2: Number
+    }
 });
 
 schema.plugin(require('../mongoose/audit'));

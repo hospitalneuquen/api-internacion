@@ -63,14 +63,6 @@ router.post('/internacion/:idInternacion/pase/:idPase*?', function(req, res, nex
                     if (err) return asyncCallback(err);
                     if (!internacion) return asyncCallback(404);
 
-                    // // Verifica que exista el pase
-                    // if (req.params.idPase && !internacion.pases.find(function(i) {
-                    //         return i._id == req.params.idPase;
-                    //     })) {
-                    //     return asyncCallback(404);
-                    // }
-                    // asyncCallback(null, internacion);
-
                     // Crea o modifica un pase
                     var pase;
                     if (req.params.idPase) { // Update
@@ -100,16 +92,7 @@ router.post('/internacion/:idInternacion/pase/:idPase*?', function(req, res, nex
                     asyncCallback(err, internacion);
                 });
             },
-            // // 4. Actualiza el mapa de camas
-            // function(internacion, asyncCallback) {
-            //     Cama.findOneAndUpdate({
-            //         idInternacion: req.params.idInternacion
-            //     }, {
-            //         'ultimaPase': internacion.pase[internacion.pase.length - 1]
-            //     }, function(err) {
-            //         asyncCallback(err, internacion);
-            //     });
-            // },
+
         ],
         function(err, internacion) {
             if (err) return next(err);
