@@ -39,6 +39,7 @@ var schema = new Schema({
     // ****************************** Necesidad de Eliminación ******************************
     espontaneaVesical: Boolean,
     incontinenciaVesical: Boolean,
+    urostomiaVesical: Boolean,
     sondaVesical: Boolean,
     tallaVesical: Boolean,
     otrosVesical: Boolean,
@@ -62,38 +63,16 @@ var schema = new Schema({
     higieneAyuda: Boolean,
     edemas: Boolean,
     edemasLocalizacion: String,
-    estadoMucosas: Boolean,
-    otrosEliminacion: Boolean,
-    estadoMucosas: {
-        integra: Boolean,
-        lesiones: Boolean,
-        hidratada:Boolean,
-        deshidratada: Boolean,
-    },
-    estadoPiel: {
-        integra: Boolean,
-        lesiones: Boolean,
-        hidratada:Boolean,
-        deshidratada: Boolean,
-    },
-    estadoPie: {
-        integra: Boolean,
-        lesiones: Boolean,
-        hidratada:Boolean,
-        deshidratada: Boolean,
-    },
-    estadoBoca: {
-        integra: Boolean,
-        lesiones: Boolean,
-        hidratada:Boolean,
-        deshidratada: Boolean,
-    },
-    estadoGenitales: {
-        integra: Boolean,
-        lesiones: Boolean,
-        hidratada:Boolean,
-        deshidratada: Boolean,
-    },
+    mucosasLesiones: Boolean,
+    mucosasDeshidratadas: Boolean,
+    pielLesiones: Boolean,
+    pielDeshidratada: Boolean,
+    piesLesiones:Boolean,
+    piesDeshidratados: Boolean,
+    bocaLesiones:Boolean,
+    bocaDeshidratada:Boolean,
+    genitalesLesiones:Boolean,
+    genitalesDeshidratados: Boolean,
     observacionesTegumentos: String,
     // ****************************** Necesidad de Movilizarse/Vestirse ******************************
     ayudaVestirse: Boolean,
@@ -125,6 +104,7 @@ var schema = new Schema({
     ETS: Boolean,
     riesgoCardiovascular: Boolean,
     otrosDescriba: String,
+    riesgoCaidas:Boolean,
     riesgoCaida: {
         caidasPrevias: Number,
         marcha: Number,
@@ -137,6 +117,7 @@ var schema = new Schema({
             default: 0
         },
     },
+    riesgoUPP:Boolean,
     // valoracionRiesgoCaidas: {    //formulario de Riesgo de Caidas
     //     type: Schema.Types.ObjectId,
     //     ref: 'RiesgoCaidas',
@@ -155,19 +136,16 @@ var schema = new Schema({
     glasgow: String,
     idioma: String,
     vision: {
-                normal: Boolean,
-                deficiente: Boolean,
-                ausente: Boolean
+                type: String,
+                enum: ['normal', 'deficiente', 'ausente'],
             },
     audicion: {
-                normal: Boolean,
-                deficiente: Boolean,
-                ausente: Boolean
+                type: String,
+                enum: ['normal', 'deficiente', 'ausente'],
               },
     lenguaje: {
-                normal: Boolean,
-                deficiente: Boolean,
-                ausente: Boolean
+                type: String,
+                enum: ['normal', 'deficiente', 'ausente'],
               },
     describaSensopercepcion: String,
     dolor: Boolean,
@@ -193,5 +171,6 @@ var schema = new Schema({
     },
 });
 
-schema.plugin(require('../mongoose/audit'));
+// schema.plugin(require('../mongoose/validar'));
+// schema.plugin(require('../mongoose/audit'));
 module.exports = schema;
