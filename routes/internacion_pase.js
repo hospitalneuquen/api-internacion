@@ -63,42 +63,37 @@ router.post('/internacion/:idInternacion/pase/:idPase*?', function(req, res, nex
                     if (err) return asyncCallback(err);
                     if (!internacion) return asyncCallback(404);
 
-                    // Verifica que exista el pase
-                    if (req.params.idPase && !internacion.pases.find(function(i) {
-                            return i._id == req.params.idPase;
-                        })) {
-                        return asyncCallback(404);
-                    }
-                    asyncCallback(null, internacion);
-                });
-            },
-            // 2. Crea/modifica pase y resuelve servicio
-            function(internacion, asyncCallback) {
-                Ubicacion.findOne({
-                    _id: req.body.servicio
-                }, function(err, servicio) {
-                    if (err) return asyncCallback(err);
-                    if (!servicio) return asyncCallback(404);
+                    // // Verifica que exista el pase
+                    // if (req.params.idPase && !internacion.pases.find(function(i) {
+                    //         return i._id == req.params.idPase;
+                    //     })) {
+                    //     return asyncCallback(404);
+                    // }
+                    // asyncCallback(null, internacion);
 
+                    // Crea o modifica un pase
                     var pase;
                     if (req.params.idPase) { // Update
                         pase = internacion.pases.find(function(i) {
                             return i._id == req.params.idPase;
                         });
+                        if (!pase)
+                            return asyncCallback(404);
                         pase.merge(req.body);
-                        pase.servicio = servicio;
+                        pase.validar('servicio', req.body.servicio);
+                        pase.validar('cama', req.body.cama);
                     } else { // Insert
-                        pase = new Pase(req.body);
-                        pase.servicio = servicio;
                         if (!internacion.pases)
                             internacion.pases = [];
-                        internacion.pases.push(pase);
+                        internacion.pases.push(new Pase(req.body));
+                        pase = internacion.pases[internacion.pases.length - 1];
+                        pase.validar('servicio', req.body.servicio);
+                        pase.validar('cama', req.body.cama);
                     }
-
                     asyncCallback(err, internacion);
                 });
             },
-            // 3. Guarda la internacion modificada
+            // 2. Guarda la internacion modificada
             function(internacion, asyncCallback) {
                 internacion.audit(req.user);
                 internacion.save(function(err) {
