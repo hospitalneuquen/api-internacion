@@ -21,12 +21,12 @@ var schema = new Schema({
     ingreso: {
         fechaHora: {
             type: Date,
-            required: true
+            //required: true
         },
         tipo: {
             type: String,
             enum: ['ambulatorio', 'guardia', 'derivacion'],
-            required: true
+            //required: true
         },
         derivadoDesde: {
             ref: 'Ubicacion',

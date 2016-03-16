@@ -168,21 +168,26 @@ router.post('/cama/cambiarEstado/:idCama', function(req, res, next) {
                 idPersona: (cama.paciente.id) ? cama.paciente.id : null
             });
 
+            // agregamos log a la cama
+            cama.audit(req.user);
+
             if (cama.estado == 'reparacion') {
                 // duplicamos y dejamos en el objeto de camas los valores
                 // para la lectura de la reparacion
                 cama.reparacion = {
                     "idCamaEstado": cama_estado._id,
                     "motivo": cama_estado.motivo,
-                    "createdAt": cama_estado.audit.createdAt
-                }
-            }
+                    //"createdAt": cama_estado.audit.createdAt
+                    "createdAt": new Date()
+                };
 
-            // agregamos log
-            cama.audit(req.user);
+            }
 
             cama.save(function(err, cama) {
                 if (err) return next(err);
+
+                // agregamos log al estado de la cama
+                cama_estado.audit(req.user);
 
                 cama_estado.save(function(err) {
                     if (err) return next(err);
@@ -204,7 +209,7 @@ router.post('/cama/cambiarEstado/:idCama', function(req, res, next) {
 
                 });
 
-                res.send(cama);
+                res.json(cama);
             });
         }
     });
