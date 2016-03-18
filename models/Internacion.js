@@ -4,7 +4,8 @@ var mongoose = require('mongoose'),
     Persona = require('../models/Persona.js'),
     schemaEvolucion = require('../schemas/Evolucion.js'),
     schemaPase = require('../schemas/Pase.js'),
-    schemaValoracionEnfermeria = require('../schemas/ValoracionEnfermeria.js');
+    schemaValoracionEnfermeria = require('../schemas/ValoracionEnfermeria.js'),
+    schemaUbicacion = require('../schemas/Ubicacion.js');
 
 var schema = new Schema({
     paciente: {
@@ -71,6 +72,21 @@ var schema = new Schema({
             type: Schema.Types.ObjectId,
             ref: 'Cama',
             // required: true
+        },
+        resumenInternacion: String,
+        tratamientoaSeguir: String,
+        diagnosticoAlta: String,
+        tipoAlta: {
+            type: String,
+            enum: ['medica', 'derivacion', 'voluntaria']
+        },
+        derivadoHacia: {
+            type: schemaUbicacion,
+            required: false,
+            validar: {
+                modelo: require('../models/Ubicacion.js'),
+                resolver: true,
+            }
         }
     }
 });
