@@ -47,8 +47,8 @@ var schema = new Schema({
         sng: Number,
         drenajes: Number,
         drenajes2: Number,
-        ostiomas: Number,
-        ostiomas2: Number
+        ostomias: Number,
+        ostomias2: Number
     }
 });
 
