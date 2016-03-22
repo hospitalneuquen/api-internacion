@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+schemaAntecedentes = require('../schemas/Antecedente.js');
 
 var schema = new Schema({
     activo: {
@@ -55,6 +56,10 @@ var schema = new Schema({
         relacion: String,
     },
     obrasSociales: [String],
+    antecedentesPersonales: [{
+        antecedente: schemaAntecedentes,
+        observaciones: String,
+    }],
     relaciones: [{
         id: Schema.Types.ObjectId, // Referencia a una instancia de Persona
         tipo: String,
