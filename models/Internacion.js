@@ -75,8 +75,8 @@ var schema = new Schema({
             type: schemaCama,
             // required: true,
             validar: {
-                modelo: require('../models/Cama.js'),
-                resolver: true,
+                modelo: require('./Cama.js'),
+                resolver: true
             }
         },
         resumenInternacion: String,
@@ -90,7 +90,7 @@ var schema = new Schema({
             type: schemaUbicacion,
             // required: true,
             validar: {
-                modelo: require('../models/Ubicacion.js'),
+                modelo: require('./Ubicacion.js'),
                 resolver: true,
             }
         },
@@ -99,7 +99,7 @@ var schema = new Schema({
             type: schemaUbicacion,
             // required: true,
             validar: {
-                modelo: require('../models/Ubicacion.js'),
+                modelo: require('./Ubicacion.js'),
                 resolver: true,
             }
         }

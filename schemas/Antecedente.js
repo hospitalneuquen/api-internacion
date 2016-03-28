@@ -6,7 +6,7 @@ var mongoose = require('mongoose'),
 var schema = new Schema({
     nombre: {
         type: String,
-        required: true,
+        //required: true,
     },
     //el id lo declaramos para poder hacer la busqueda por idAntecedenteTipo
     idAntecedenteTipo: {
