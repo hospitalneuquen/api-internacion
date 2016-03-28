@@ -118,4 +118,49 @@ router.get('/persona/:id*?', function(req, res, next) {
     }
 });
 
+/**
+ * @swagger
+ * /persona/{id}:
+ *   post:
+ *     tags:
+ *       - Persona
+ *     summary: Modifica una persona por Id
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: id
+ *         description: Id de la persona
+ *         in: path
+ *         required: true
+ *         type: string
+ *       - name: body
+ *         description: Objeto
+ *         in: body
+ *         required: true
+ *     responses:
+ *       200:
+ *         description: Ok
+ *       404:
+ *         description: Not found
+ */
+router.post('/persona/:id', function(req, res, next) {
+    Persona.findOne({
+        _id: req.params.id
+    }, function(err, data) {
+        if (err) return next(err);
+        if (!data) return next(404);
+
+        if (req.body.antecedentesPersonales)
+            data.antecedentesPersonales = req.body.antecedentesPersonales;
+
+        // Si está todo OK guarda los datos
+        data.audit(req.user);
+        data.save(function(err, data) {
+            if (err) return next(err);
+            res.json(data);
+        });
+    });
+});
+
+
 module.exports = router;
