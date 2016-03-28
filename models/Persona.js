@@ -77,4 +77,7 @@ var schema = new Schema({
 });
 
 schema.plugin(require('../mongoose/elasticSearch'));
+schema.plugin(require('../mongoose/audit'));
+schema.plugin(require('../mongoose/validar'));
+// schema.plugin(require('mongoose-merge-plugin')); // Por un bug(?) de mongoose no aplica el plugin global. Hay que habilitarlo acá.
 module.exports = mongoose.model('Persona', schema, 'personas')

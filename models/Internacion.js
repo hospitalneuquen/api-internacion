@@ -1,7 +1,10 @@
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema,
-    Ubicacion = require('../models/Ubicacion.js'),
+    Cama = require('../models/Cama.js'),
     Persona = require('../models/Persona.js'),
+    Ubicacion = require('../models/Ubicacion.js'),
+
+    schemaCama = require('../schemas/Cama.js'),
     schemaEvolucion = require('../schemas/Evolucion.js'),
     schemaPase = require('../schemas/Pase.js'),
     schemaValoracionEnfermeria = require('../schemas/ValoracionEnfermeria.js'),
@@ -69,9 +72,12 @@ var schema = new Schema({
         },
         descripcion: String,
         cama: {
-            type: Schema.Types.ObjectId,
-            ref: 'Cama',
-            // required: true
+            type: schemaCama,
+            // required: true,
+            validar: {
+                modelo: require('./Cama.js'),
+                resolver: true
+            }
         },
         resumenInternacion: String,
         tratamientoaSeguir: String,
@@ -80,15 +86,25 @@ var schema = new Schema({
             type: String,
             enum: ['medica', 'derivacion', 'voluntaria']
         },
+        servicio: {
+            type: schemaUbicacion,
+            // required: true,
+            validar: {
+                modelo: require('./Ubicacion.js'),
+                resolver: true,
+            }
+        },
+        // si es una derivacion especificar hacia que hospital
         derivadoHacia: {
             type: schemaUbicacion,
-            required: false,
+            // required: true,
             validar: {
-                modelo: require('../models/Ubicacion.js'),
+                modelo: require('./Ubicacion.js'),
                 resolver: true,
             }
         }
     }
+
 });
 
 schema.plugin(require('../mongoose/validar'));
