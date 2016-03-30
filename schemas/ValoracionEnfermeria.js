@@ -13,7 +13,7 @@ var schema = new Schema({
     otrosExamenes: String,
     impresionDiagnostica: String,
     conducta: String,
-    
+
     // ****************************** Necesidad de Oxigenación ******************************
     FR: Number,
     SAT2: Number,
@@ -27,6 +27,8 @@ var schema = new Schema({
     observacionesOxigenacion: String,
     // ****************************** Necesidad de Circulación ******************************
     TA: Number,
+    tensionSistolica: Number,
+    tensionDiastolica: Number,
     FC: Number,
     carotideo: Number,
     radial: Number,
