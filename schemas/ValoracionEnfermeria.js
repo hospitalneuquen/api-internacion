@@ -2,6 +2,18 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
 var schema = new Schema({
+    // ****************************** Valoración inicial médica *****************************
+    enfermedadActualAntecedentes: String,
+    otrosAntecedentes: String,
+    medicaciones: String,
+    examenesTraidos: String,
+    examenFisico: String,
+    ECG: String,
+    rxTorax: String,
+    otrosExamenes: String,
+    impresionDiagnostica: String,
+    conducta: String,
+    
     // ****************************** Necesidad de Oxigenación ******************************
     FR: Number,
     SAT2: Number,
