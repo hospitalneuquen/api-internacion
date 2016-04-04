@@ -9,16 +9,10 @@ var express = require('express'),
  *   get:
  *     tags:
  *       - Antecedente
- *     summary: Devuelve los antecedentes segun el id
+ *     summary: Devuelve todos los antecedentes
  *     produces:
  *       - application/json
- *     parameters:
- *       - name: idAntecedenteTipo
- *         description: Id del tipo de antecedente
- *         in: path
- *         required: true
- *         type: string
- *     responses:
+  *     responses:
  *       200:
  *         description: Ok
  *       404:
@@ -36,6 +30,27 @@ router.get('/antecedente', function(req, res, next) {
     });
 });
 
+/**
+ * @swagger
+ * /antecedente_tipo/{id}:
+ *   get:
+ *     tags:
+ *       - Antecedente
+ *     summary: Devuelve los antecedentes segun el id
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: id
+ *         description: Id del tipo de antecedente
+ *         in: path
+ *         required: true
+ *         type: string
+ *     responses:
+ *       200:
+ *         description: Ok
+ *       404:
+ *         description: Not found
+ */
 router.get('/antecedente/:id', function(req, res, next) {
     Antecedente.findOne({
             _id: req.params.id

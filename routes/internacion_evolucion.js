@@ -10,27 +10,6 @@ var express = require('express'),
 
 /**
  * @swagger
- * /internacion/{idInternacion}/evolucion:
- *   post:
- *     tags:
- *       - Evoluciones
- *     summary: Crea una nueva evolución
- *     produces:
- *       - application/json
- *     parameters:
- *       - name: idInternacion
- *         description: Id de la internación
- *         in: path
- *         required: true
- *         type: string
- *     responses:
- *       200:
- *         description: Ok
- *       404:
- *         description: Not found
- */
-/**
- * @swagger
  * /internacion/{idInternacion}/evolucion/{idEvolucion}:
  *   post:
  *     tags:
