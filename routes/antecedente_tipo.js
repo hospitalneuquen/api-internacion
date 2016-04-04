@@ -82,12 +82,12 @@ router.get('/antecedente_tipo/:id', function(req, res, next) {
  */
 router.get('/antecedente_tipo/:id/antecedentes', function(req, res, next) {
     Antecedente.find({
-            idAntecedenteTipo : req.params.id
-        }, function(err, data) {
-            if (err) return next(err);
-            if (!data) return next(404);
-            res.json(data);
-        });
+        idAntecedenteTipo: req.params.id
+    }, function(err, data) {
+        if (err) return next(err);
+        if (!data) return next(404);
+        res.json(data);
+    });
 });
 
 module.exports = router;

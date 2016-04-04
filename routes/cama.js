@@ -6,7 +6,27 @@ var Internacion = require('../models/Internacion.js');
 
 var ObjectId = require('mongoose').Types.ObjectId;
 
-
+/**
+ * @swagger
+ * /cama/{id}:
+ *   get:
+ *     tags:
+ *       - Camas
+ *     summary: Devuelve una cama segun el id de la cama
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: id
+ *         description: Id de la cama
+ *         in: path
+ *         required: true
+ *         type: string
+ *     responses:
+ *       200:
+ *         description: Ok
+ *       404:
+ *         description: Not found
+ */
 router.get('/cama/:id', function(req, res, next) {
     // Devuelve una cama por id
     Cama.findOne({
@@ -17,61 +37,6 @@ router.get('/cama/:id', function(req, res, next) {
         res.json(data);
     });
 })
-// router.get('/cama/servicios', function(req, res, next) {
-//
-//     Cama.find().distinct('servicio.id', function(err, data) {
-//     // Cama.find({}, function(err, data) {
-//         if (err) return next(err);
-//         if (!data) return next(404);
-//         res.json(data);
-//     });
-//
-// })
-
-
-// /**
-//  * @swagger
-//  * /cama/desinfectar/{idCama}/{desinfectar}:
-//  *   post:
-//  *     tags:
-//  *       - Cama
-//  *     summary: Setea el estado de desinfección de una cama
-//  *     produces:
-//  *       - application/json
-//  *     parameters:
-//  *       - name: idCama
-//  *         description: Id de la cama a cambiar el estado de desinfeccion
-//  *         in: path
-//  *         required: true
-//  *         type: integer
-//  *       - name: desinfectar
-//  *         description: Valor true/false a cambiar
-//  *         in: path
-//  *         required: true
-//  *         type: boolean
-//  *     responses:
-//  *       200:
-//  *         description: Ok
-//  *       404:
-//  *         description: No se pudo cambiar el estado de desinfección de la cama
-//  *
-//  */
-// router.get('/cama/desinfectar/:idCama/:desinfectar', function(req, res, next) {
-//     Cama.findById(req.params.idCama, function(err, cama){
-//         // Maneja errores en MongoDB
-//         if (err) return next(err);
-//         // Error 404: NotFound
-//         if (!cama) return next(404);
-//
-//         cama.desinfectada = req.params.desinfectar;
-//
-//         cama.save(function(err, cama){
-//             if (err) return next(err);
-//
-//             res.send(cama);
-//         });
-//     });
-// });
 
 /**
  * @swagger
@@ -175,10 +140,10 @@ router.post('/cama/cambiarEstado/:idCama', function(req, res, next) {
                 // duplicamos y dejamos en el objeto de camas los valores
                 // para la lectura de la reparacion
                 cama.reparacion = {
-                    "idCamaEstado": cama_estado._id,
-                    "motivo": cama_estado.motivo,
+                    idCamaEstado: cama_estado._id,
+                    motivo: cama_estado.motivo,
                     //"createdAt": cama_estado.audit.createdAt
-                    "createdAt": new Date()
+                    createdAt: new Date()
                 };
 
             }
@@ -216,39 +181,60 @@ router.post('/cama/cambiarEstado/:idCama', function(req, res, next) {
 
 });
 
-router.patch('/cama/:idCama/cambiarPaciente/:idPaciente', function(req, res, next) {
-    var error = false;
-
-    // buscamos la cama
-    Cama.findById(req.params.idCama, function(err, cama) {
-        // Maneja errores en MongoDB
-        if (err) return next(err);
-        // Error 404: NotFound
-        if (!cama) return next(404);
-
-        if (!error) {
-            // generamos el objeto para guardar el estado en la tabla de historial
-            var cama_estado = new CamaEstado({
-                estado: 'ocupada',
-                motivo: (req.body.motivo) ? req.body.motivo : 'Cambio de paciente en cama',
-                idCama: req.params.idCama,
-                idPersona: (req.params.idPaciente) ? req.params.idPaciente : null
-            });
-
-            cama.audit(req.user);
-            cama.save(function(err, cama) {
-                if (err) return next(err);
-
-                cama_estado.save(function(err) {
-                    if (err) return next(err);
-                });
-
-                res.json(cama);
-            });
-        }
-    });
-
-});
+/**
+ * @swagger
+ * /cama/{idCama}/cambiarPaciente/{idPaciente}:
+ *   get:
+ *     tags:
+ *       - Cama
+ *     summary: Asignar un paciente a una camaDevuelve los estados de una cama segun el id de la cama
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: id
+ *         description: Id de la cama
+ *         in: path
+ *         required: true
+ *         type: string
+ *     responses:
+ *       200:
+ *         description: Ok
+ *       404:
+ *         description: Not found
+ */
+// router.patch('/cama/:idCama/cambiarPaciente/:idPaciente', function(req, res, next) {
+//     var error = false;
+//
+//     // buscamos la cama
+//     Cama.findById(req.params.idCama, function(err, cama) {
+//         // Maneja errores en MongoDB
+//         if (err) return next(err);
+//         // Error 404: NotFound
+//         if (!cama) return next(404);
+//
+//         if (!error) {
+//             // generamos el objeto para guardar el estado en la tabla de historial
+//             var cama_estado = new CamaEstado({
+//                 estado: 'ocupada',
+//                 motivo: (req.body.motivo) ? req.body.motivo : 'Cambio de paciente en cama',
+//                 idCama: req.params.idCama,
+//                 idPersona: (req.params.idPaciente) ? req.params.idPaciente : null
+//             });
+//
+//             cama.audit(req.user);
+//             cama.save(function(err, cama) {
+//                 if (err) return next(err);
+//
+//                 cama_estado.save(function(err) {
+//                     if (err) return next(err);
+//                 });
+//
+//                 res.json(cama);
+//             });
+//         }
+//     });
+//
+// });
 
 /**
  * @swagger
