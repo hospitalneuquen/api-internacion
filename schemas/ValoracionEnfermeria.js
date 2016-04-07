@@ -193,7 +193,7 @@ var schema = new Schema({
         dolorCaracteristicasMedica: String,
         dolorIntensidadMedica: String,
         dolorAvisa: String,
-        dolorAcude: String,
+        dolorAcude: Boolean,
         informaAnalgesico: Boolean,
         dolorDisminuye: Boolean,
         dolorProvoca: String,
