@@ -63,6 +63,7 @@ router.get('/persona/:id*?', function(req, res, next) {
             res.json(data);
         });
     } else {
+        var query;
         if (req.query.fulltext) {
             // TODO: Implementar ElasticSearch
             // Persona.search({
@@ -78,7 +79,7 @@ router.get('/persona/:id*?', function(req, res, next) {
             // }, function(err, data) {
             //     res.json(data.hits.hits);
             // });
-            var query = Persona.find({
+            query = Persona.find({
                 $text: {
                     $search: req.query.fulltext
                 }
@@ -100,7 +101,7 @@ router.get('/persona/:id*?', function(req, res, next) {
             if (!(req.query.documento || req.query.apellido || req.query.nombre))
                 return next(400);
 
-            var query = Persona.find({});
+            query = Persona.find({});
             if (req.query.documento)
                 query.where('documento').equals(req.query.documento);
             if (req.query.apellido)
@@ -117,50 +118,5 @@ router.get('/persona/:id*?', function(req, res, next) {
         }
     }
 });
-
-/**
- * @swagger
- * /persona/{id}:
- *   post:
- *     tags:
- *       - Persona
- *     summary: Modifica una persona por Id
- *     produces:
- *       - application/json
- *     parameters:
- *       - name: id
- *         description: Id de la persona
- *         in: path
- *         required: true
- *         type: string
- *       - name: body
- *         description: Objeto
- *         in: body
- *         required: true
- *     responses:
- *       200:
- *         description: Ok
- *       404:
- *         description: Not found
- */
-router.post('/persona/:id', function(req, res, next) {
-    Persona.findOne({
-        _id: req.params.id
-    }, function(err, data) {
-        if (err) return next(err);
-        if (!data) return next(404);
-
-        if (req.body.antecedentesPersonales)
-            data.antecedentesPersonales = req.body.antecedentesPersonales;
-
-        // Si está todo OK guarda los datos
-        data.audit(req.user);
-        data.save(function(err, data) {
-            if (err) return next(err);
-            res.json(data);
-        });
-    });
-});
-
 
 module.exports = router;

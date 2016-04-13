@@ -4,10 +4,12 @@ var mongoose = require('mongoose'),
     Persona = require('../models/Persona.js'),
     Ubicacion = require('../models/Ubicacion.js'),
 
+    schemaAntecedenteBinario = require('../schemas/AntecedenteBinario.js'),
     schemaCama = require('../schemas/Cama.js'),
     schemaEvolucion = require('../schemas/Evolucion.js'),
     schemaPase = require('../schemas/Pase.js'),
     schemaValoracionEnfermeria = require('../schemas/ValoracionEnfermeria.js'),
+    schemaValoracionMedica = require('../schemas/ValoracionMedica.js'),
     schemaUbicacion = require('../schemas/Ubicacion.js');
 
 var schema = new Schema({
@@ -39,23 +41,32 @@ var schema = new Schema({
         motivo: String,
         diagnosticoPresuntivo: String,
         enfermeria: schemaValoracionEnfermeria,
+        medico: schemaValoracionMedica,
+        antecedentes: {
+            binarios: [{
+                antecedente: schemaAntecedenteBinario,
+                activo: Boolean,
+                observaciones: String,
+            }],
+            ginecoobstetricos: {
+                gestas: Number,
+                partos: Number,
+                cesareas: Number,
+                abortos: Number,
+            },
+            medicacion: String,
+            quirurgicos: String,
+            familiares: String,
+        },
+        estudiosPrevios: {
+            pap: String,
+            mamografia: String,
+            otros: String,
+        },
         // situacionPaciente: {
         //     educacion: String,
         //     trabajo: String,
         //     ocupacion: String,
-        // },
-        // antecedentes: {
-        //     hta: Boolean,
-        //     diabetes: Boolean,
-        //     alergias: String,
-        //     estiloVida: String,
-        //     obstetricos: {
-        //         gestas: Number,
-        //         partos: Number,
-        //         cesareas: Number,
-        //         abortos: Number,
-        //     },
-        //     quirurgicos: String
         // },
     },
     pases: [schemaPase],
