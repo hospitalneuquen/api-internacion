@@ -1,5 +1,6 @@
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema,
+    schemaDrenaje = require('../schemas/Drenaje.js');
     schemaUbicacion = require('../schemas/Ubicacion.js');
 
 var schema = new Schema({
@@ -45,7 +46,19 @@ var schema = new Schema({
         diuresis: Number,
         catarsis: Number,
         sng: Number,
-        drenajes: Number,
+        drenajes: [{
+            id: {
+                ref: 'Drenaje',
+                type: Schema.Types.ObjectId,
+                required: true,
+                validar: require('./Drenaje.js'),
+            },
+            caracteristicaLiquido: {
+                type: String,
+                enum: ['Hemático', 'Seroso', 'Serohemático', 'Purulento']
+            },
+            observaciones: String
+        }],
         drenajes2: Number,
         ostomias: Number,
         ostomias2: Number

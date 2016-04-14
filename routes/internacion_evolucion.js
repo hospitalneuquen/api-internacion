@@ -52,6 +52,7 @@ router.post('/internacion/:idInternacion/evolucion/:idEvolucion*?', function(req
                         });
                         if (!evolucion)
                             return asyncCallback(404);
+                            console.log("******************************",req.body);
                         evolucion.merge(req.body);
                         evolucion.validar('servicio', req.body.servicio);
                     } else { // Insert

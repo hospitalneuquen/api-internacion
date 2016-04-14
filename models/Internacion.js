@@ -6,6 +6,7 @@ var mongoose = require('mongoose'),
 
     schemaAntecedenteBinario = require('../schemas/AntecedenteBinario.js'),
     schemaCama = require('../schemas/Cama.js'),
+    schemaDrenaje = require('../schemas/Drenaje.js'),
     schemaEvolucion = require('../schemas/Evolucion.js'),
     schemaPase = require('../schemas/Pase.js'),
     schemaValoracionEnfermeria = require('../schemas/ValoracionEnfermeria.js'),
@@ -70,6 +71,7 @@ var schema = new Schema({
         // },
     },
     pases: [schemaPase],
+    drenajes: [schemaDrenaje],
     evoluciones: [schemaEvolucion],
     egreso: {
         fechaHora: {
