@@ -25,4 +25,4 @@ module.exports = function() {
         function(jwt_payload, done) {
             done(null, jwt_payload);
         }));
-}
+};
