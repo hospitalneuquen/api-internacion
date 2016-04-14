@@ -8,27 +8,6 @@ var express = require('express'),
 
 /**
  * @swagger
- * /internacion/{idInternacion}/pase:
- *   post:
- *     tags:
- *       - Pases
- *     summary: Crea un nuevo pase
- *     produces:
- *       - application/json
- *     parameters:
- *       - name: idInternacion
- *         description: Id de la internación
- *         in: path
- *         required: true
- *         type: string
- *     responses:
- *       200:
- *         description: Ok
- *       404:
- *         description: Not found
- */
-/**
- * @swagger
  * /internacion/{idInternacion}/pase/{idPase}:
  *   post:
  *     tags:
