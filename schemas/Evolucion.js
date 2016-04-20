@@ -47,19 +47,18 @@ var schema = new Schema({
         catarsis: Number,
         sng: Number,
         drenajes: [{
-            id: {
-                ref: 'Drenaje',
+            idDrenaje: {
                 type: Schema.Types.ObjectId,
-                required: true,
-                validar: require('./Drenaje.js'),
+                ref: 'Drenaje'
             },
             caracteristicaLiquido: {
                 type: String,
                 enum: ['Hemático', 'Seroso', 'Serohemático', 'Purulento']
             },
+            cantidad: Number,
             observaciones: String
         }],
-        drenajes2: Number,
+        // drenajes2: Number,
         ostomias: Number,
         ostomias2: Number
     }
