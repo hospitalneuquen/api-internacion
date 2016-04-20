@@ -12,7 +12,7 @@ var schema = new Schema({
     },
     fechaDesde: {
         type: Date,
-        required: true,
+        // required: true,
     },
     fechaHasta: {
         type: Date
