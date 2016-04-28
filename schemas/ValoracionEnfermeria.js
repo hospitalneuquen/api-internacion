@@ -25,16 +25,6 @@ var schema = new Schema({
     secrecionesCaracteristicas: String,
     musculosCuales: String,
     observacionesOxigenacion: String,
-    // ****************************** Necesidad de Circulación ******************************
-    TA: Number,
-    tensionSistolica: Number,
-    tensionDiastolica: Number,
-    FC: Number,
-    carotideo: Number,
-    radial: Number,
-    popliteo: Number,
-    pedio: Number,
-    observacionesCirculacion: String,
     // ****************************** Necesidad de Nutrición ******************************
     peso: Number,
     talla: Number,

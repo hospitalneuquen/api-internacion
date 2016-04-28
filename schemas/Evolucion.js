@@ -30,7 +30,16 @@ var schema = new Schema({
     respiracion: Number,
     spo2: Number,
     peso: Number,
-
+    // ****************************** Necesidad de Circulación ******************************
+    TA: Number,
+    tensionSistolica: Number,
+    tensionDiastolica: Number,
+    FC: Number,
+    carotideo: Number,
+    radial: Number,
+    popliteo: Number,
+    pedio: Number,
+    observacionesCirculacion: String,
     ingresos: {
         ph: Number,
         ph2: Number,
