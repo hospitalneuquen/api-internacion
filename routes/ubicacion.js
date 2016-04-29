@@ -166,6 +166,7 @@ router
                 res.json(data);
             });
         } else {
+
             if (!(req.query.tipo || req.query.nombre))
                 return next(400);
 
@@ -179,6 +180,7 @@ router
                 if (err) return next(err);
                 res.json(data);
             });
+
         }
     })
 
