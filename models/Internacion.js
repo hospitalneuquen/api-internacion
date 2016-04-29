@@ -88,7 +88,7 @@ var schema = new Schema({
             type: String,
             enum: ['medica', 'derivacion', 'voluntaria']
         },
-        servicio: {
+        servicio: { // servicio desde donde se genera el egreso
             type: schemaUbicacion,
             // required: true,
             validar: {
@@ -97,6 +97,7 @@ var schema = new Schema({
             }
         },
         // si es una derivacion especificar hacia que hospital
+        // si es un pase el servicio al que se envia
         derivadoHacia: {
             type: schemaUbicacion,
             // required: true,
