@@ -167,58 +167,19 @@ router
             });
         } else {
 
-            if (req.query.fulltext) {
-                // TODO: Implementar ElasticSearch
-                // Persona.search({
-                //     // match: {
-                //     //     _all: req.query.fulltext
-                //     // }
-                //     query_string: {
-                //         "query": req.query.fulltext
-                //     }
-                // }, {
-                //     size: 100,
-                //     hydrate: true
-                // }, function(err, data) {
-                //     res.json(data.hits.hits);
-                // });
-                var query = Ubicacion.find({
-                    $text: {
-                        $search: req.query.fulltext
-                    }
-                }, {
-                    score: {
-                        $meta: "textScore"
-                    }
-                });
-                query.limit(100);
-                query.sort({
-                    score: {
-                        $meta: "textScore"
-                    }
-                });
+            if (!(req.query.tipo || req.query.nombre))
+                return next(400);
 
-                if (req.query.tipo)
-                    query.where('tipo').equals(req.query.tipo);
+            var query = Ubicacion.find({});
+            if (req.query.tipo)
+                query.where('tipo').equals(req.query.tipo);
+            if (req.query.nombre)
+                query.where('_fulltext').regex(new RegExp(req.query.nombre.toLowerCase()));
 
-                query.exec(function(err, data) {
-                    res.json(data);
-                });
-            }else{
-                if (!(req.query.tipo || req.query.nombre))
-                    return next(400);
-
-                var query = Ubicacion.find({});
-                if (req.query.tipo)
-                    query.where('tipo').equals(req.query.tipo);
-                if (req.query.nombre)
-                    query.where('_fulltext').regex(new RegExp(req.query.nombre.toLowerCase()));
-
-                query.exec(function(err, data) {
-                    if (err) return next(err);
-                    res.json(data);
-                });
-            }
+            query.exec(function(err, data) {
+                if (err) return next(err);
+                res.json(data);
+            });
 
         }
     })
