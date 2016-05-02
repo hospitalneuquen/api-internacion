@@ -42,6 +42,22 @@ router.post('/internacion/:idInternacion/pase/:idPase*?', function(req, res, nex
                     if (err) return asyncCallback(err);
                     if (!internacion) return asyncCallback(404);
 
+                    var fechaPase = new Date(req.body.fechaHora);
+                    var fechaInternacion = new Date(internacion.ingreso.fechaHora);
+
+                    // si la fecha del pase es menor a la fecha de inicio de internacion
+                    if ( (fechaPase.getTime() - fechaInternacion.getTime()) < 0){
+                        res.status(400).send({status:400, message: "La fecha del pase no puede ser anterior a la fecha de internación", type:'internal'});
+                    }
+
+                    if (internacion.estado == 'egresado'){
+                        var fechaEgreso = new Date(internacion.egreso.fechaHora);
+
+                        if ( (fechaPase.getTime() - fechaEgreso.getTime()) > 0){
+                            res.status(400).send({status:400, message: "La fecha del pase no puede ser posterior a la fecha de fin de internación", type:'internal'});
+                        }
+                    }
+
                     // Crea o modifica un pase
                     var pase;
                     if (req.params.idPase) { // Update
@@ -52,6 +68,10 @@ router.post('/internacion/:idInternacion/pase/:idPase*?', function(req, res, nex
                             return asyncCallback(404);
                         pase.merge(req.body);
                         pase.validar('servicio', req.body.servicio);
+
+                        if (req.body.servicioSugerido){
+                            pase.validar('servicioSugerido', req.body.servicioSugerido);
+                        }
                         pase.validar('cama', req.body.cama);
                     } else { // Insert
                         if (!internacion.pases)
@@ -59,6 +79,10 @@ router.post('/internacion/:idInternacion/pase/:idPase*?', function(req, res, nex
                         internacion.pases.push(new Pase(req.body));
                         pase = internacion.pases[internacion.pases.length - 1];
                         pase.validar('servicio', req.body.servicio);
+
+                        if (req.body.servicioSugerido){
+                            pase.validar('servicioSugerido', req.body.servicioSugerido);
+                        }
                         pase.validar('cama', req.body.cama);
                     }
                     asyncCallback(err, internacion);

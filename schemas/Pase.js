@@ -16,6 +16,13 @@ var schema = new Schema({
             resolver: true,
         }
     },
+    servicioSugerido: {
+        type: schemaUbicacion,
+        validar: {
+            modelo: require('../models/Ubicacion.js'),
+            resolver: true,
+        }
+    },
     cama: {
         type: schemaCama,
         required: true,
@@ -24,7 +31,7 @@ var schema = new Schema({
             resolver: true,
         }
     },
-    descripcion: String,
+    resumenInternacion: String,
 });
 
 schema.plugin(require('../mongoose/audit'));
