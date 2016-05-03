@@ -47,11 +47,19 @@ router.post('/internacion/:idInternacion/evolucion/:idEvolucion*?', function(req
                     // Crea o modifica la evolución
                     var evolucion;
                     if (req.params.idEvolucion) { // Update
+
                         evolucion = internacion.evoluciones.find(function(i) {
                             return i._id == req.params.idEvolucion;
                         });
                         if (!evolucion)
                             return asyncCallback(404);
+
+                        // verificamos que el usuario a editar sea el usuario que
+                        // ha creado la evolucion, de lo contrario no tiene permisos
+                        if (evolucion.createdBy.id != req.user.id){
+                            res.status(400).send({status:400, message: "No tiene permisos para editar la evolución", type:'internal'});
+                        }
+
                         evolucion.merge(req.body);
                         evolucion.validar('servicio', req.body.servicio);
                     } else { // Insert
