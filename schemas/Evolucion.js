@@ -108,7 +108,9 @@ var schema = new Schema({
         // drenajes2: Number,
         ostomias: Number,
         ostomias2: Number
-    }
+    },
+    flebitis: Boolean,
+    observacionesFlebitis: String
 });
 
 schema.plugin(require('../mongoose/audit'));
