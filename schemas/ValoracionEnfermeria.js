@@ -91,13 +91,6 @@ var schema = new Schema({
     dormirSomnolencia: Boolean,
     observacionesDormir: String,
     // ****************************** Necesidad de Seguridad ******************************
-    tabaco: Boolean,
-    tabacoCuantos: String,
-    alcohol: Boolean,
-    alcoholCuanto: String,
-    drogas: Boolean,
-    drogasCuales: String,
-    otrosAdicciones: String,
     riesgosFisicos: Boolean,
     riesgosQuimicos: Boolean,
     riesgosCuales: String,
