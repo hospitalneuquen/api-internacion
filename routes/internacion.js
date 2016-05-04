@@ -127,13 +127,26 @@ router.post('/internacion/:id', function(req, res, next) {
             data.paciente = req.body.paciente;
         if (req.body.ingreso)
             data.ingreso = req.body.ingreso;
-        if (req.body.egreso)
+
+        if (req.body.egreso){
+            console.log("ENTRA");
             data.egreso = req.body.egreso;
+
+            // data.egreso.validar('cama', req.body.egreso.cama);
+            // data.egreso.validar('servicio', req.body.egreso.servicio);
+            //
+            // if (req.body.egreso.derivadoHacia){
+            //     data.egreso.validar('derivadoHacia', req.body.egreso.derivadoHacia.id);
+            // }
+
+        }
 
         // Si está todo OK guarda los datos
         data.audit(req.user);
+
         data.save(function(err, data) {
             if (err) return next(err);
+
             res.json(data);
         });
     });

@@ -67,24 +67,20 @@ router.post('/internacion/:idInternacion/pase/:idPase*?', function(req, res, nex
                         if (!pase)
                             return asyncCallback(404);
                         pase.merge(req.body);
-                        pase.validar('servicio', req.body.servicio);
-
-                        if (req.body.servicioSugerido){
-                            pase.validar('servicioSugerido', req.body.servicioSugerido);
-                        }
-                        pase.validar('cama', req.body.cama);
                     } else { // Insert
                         if (!internacion.pases)
                             internacion.pases = [];
                         internacion.pases.push(new Pase(req.body));
                         pase = internacion.pases[internacion.pases.length - 1];
-                        pase.validar('servicio', req.body.servicio);
-
-                        if (req.body.servicioSugerido){
-                            pase.validar('servicioSugerido', req.body.servicioSugerido);
-                        }
-                        pase.validar('cama', req.body.cama);
                     }
+
+                    pase.validar('servicio', req.body.servicio);
+
+                    // if (req.body.servicioSugerido){
+                    //     pase.validar('servicioSugerido', req.body.servicioSugerido);
+                    // }
+                    pase.validar('cama', req.body.cama);
+
                     asyncCallback(err, internacion);
                 });
             },

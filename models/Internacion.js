@@ -108,13 +108,11 @@ var schema = new Schema({
             }
         },
         // si es una derivacion especificar hacia que hospital
-        // si es un pase el servicio al que se envia
         derivadoHacia: {
             type: schemaUbicacion,
-            // required: true,
             validar: {
                 modelo: require('./Ubicacion.js'),
-                resolver: true,
+                resolver: true
             }
         }
     }
