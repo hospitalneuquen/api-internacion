@@ -2,22 +2,25 @@ var express = require('express'),
     router = express.Router(),
     async = require('async'),
     Internacion = require('../models/Internacion.js'),
-    Ubicacion = require('../models/Ubicacion.js'),
-    Pase = require('../models/Pase.js'),
-    Cama = require('../models/Cama.js');
+    SolicitudPrestaciones = require('../models/SolicitudPrestaciones.js');
 
 /**
  * @swagger
- * /internacion/{idInternacion}/pase:
+ * /internacion/{idInternacion}/prestaciones/{idSolicitudPrestacion}:
  *   post:
  *     tags:
  *       - Pases
- *     summary: Crea un nuevo pase
+ *     summary: Crea / Modifica un pedido de prestacion
  *     produces:
  *       - application/json
  *     parameters:
  *       - name: idInternacion
  *         description: Id de la internación
+ *         in: path
+ *         required: true
+ *         type: string
+ *       - name: idSolicitudPrestacion
+ *         description: Id de la solicitud de prestacion
  *         in: path
  *         required: true
  *         type: string
@@ -27,33 +30,7 @@ var express = require('express'),
  *       404:
  *         description: Not found
  */
-/**
- * @swagger
- * /internacion/{idInternacion}/pase/{idPase}:
- *   post:
- *     tags:
- *       - Pases
- *     summary: Modifica un pase
- *     produces:
- *       - application/json
- *     parameters:
- *       - name: idInternacion
- *         description: Id de la internación
- *         in: path
- *         required: true
- *         type: string
- *       - name: idPase
- *         description: Id del pase
- *         in: path
- *         required: true
- *         type: string
- *     responses:
- *       200:
- *         description: Ok
- *       404:
- *         description: Not found
- */
-router.post('/internacion/:idInternacion/pase/:idPase*?', function(req, res, next) {
+router.post('/internacion/:idInternacion/prestacion/:idSolicitudPrestacion*?', function(req, res, next) {
     async.waterfall([
             // 1. Busca internación
             function(asyncCallback) {
@@ -63,62 +40,66 @@ router.post('/internacion/:idInternacion/pase/:idPase*?', function(req, res, nex
                     if (err) return asyncCallback(err);
                     if (!internacion) return asyncCallback(404);
 
-                    // Verifica que exista el pase
-                    if (req.params.idPase && !internacion.pases.find(function(i) {
-                            return i._id == req.params.idPase;
-                        })) {
-                        return asyncCallback(404);
-                    }
-                    asyncCallback(null, internacion);
-                });
-            },
-            // 2. Crea/modifica pase y resuelve servicio
-            function(internacion, asyncCallback) {
-                Ubicacion.findOne({
-                    _id: req.body.servicio
-                }, function(err, servicio) {
-                    if (err) return asyncCallback(err);
-                    if (!servicio) return asyncCallback(404);
+                    var fechaPrestacion = new Date(req.body.fechaHora);
+                    var fechaInternacion = new Date(internacion.ingreso.fechaHora);
 
-                    var pase;
-                    if (req.params.idPase) { // Update
-                        pase = internacion.pases.find(function(i) {
-                            return i._id == req.params.idPase;
+                    // si la fecha del pase es menor a la fecha de inicio de internacion
+                    if ( (fechaPrestacion.getTime() - fechaInternacion.getTime()) < 0){
+                        res.status(400).send({status:400, message: "La fecha de la prestación no puede ser anterior a la fecha de internación", type:'internal'});
+                    }
+
+                    if (internacion.estado == 'egresado'){
+                        var fechaEgreso = new Date(internacion.egreso.fechaHora);
+
+                        if ( (fechaPase.getTime() - fechaEgreso.getTime()) > 0){
+                            res.status(400).send({status:400, message: "La fecha de la prestación no puede ser posterior a la fecha de fin de internación", type:'internal'});
+                        }
+                    }
+
+                    // Crea o modifica la prestacion
+                    var prestacion;
+                    if (req.params.idPrestacion) { // Update
+
+                        prestacion = internacion.prestaciones.find(function(i) {
+                            return i._id == req.params.idPrestacion;
                         });
-                        pase.merge(req.body);
-                        pase.servicio = servicio;
+                        if (!prestacion)
+                            return asyncCallback(404);
+
+                        // verificamos que el usuario a editar sea el usuario que
+                        // ha creado la evolucion, de lo contrario no tiene permisos
+                        if (prestacion.createdBy.id != req.user.id){
+                            res.status(400).send({status:400, message: "No tiene permisos para editar la prestacion", type:'internal'});
+                        }
+
+                        prestacion.merge(req.body);
+                        prestacion.validar('servicio', req.body.servicio);
+                        prestacion.validar('tipoPrestacion', req.body.tipoPrestacion);
                     } else { // Insert
-                        pase = new Pase(req.body);
-                        pase.servicio = servicio;
-                        if (!internacion.pases)
-                            internacion.pases = [];
-                        internacion.pases.push(pase);
+                        if (!internacion.prestaciones)
+                            internacion.prestaciones = [];
+
+                        internacion.prestaciones.push(new SolicitudPrestaciones(req.body));
+                        prestacion = internacion.prestaciones[internacion.prestaciones.length - 1];
+
+                        prestacion.validar('servicio', req.body.servicio);
+                        prestacion.validar('tipoPrestacion', req.body.tipoPrestacion);
                     }
 
                     asyncCallback(err, internacion);
                 });
             },
-            // 3. Guarda la internacion modificada
+            // 2. Guarda la internacion modificada
             function(internacion, asyncCallback) {
                 internacion.audit(req.user);
                 internacion.save(function(err) {
                     asyncCallback(err, internacion);
                 });
             },
-            // // 4. Actualiza el mapa de camas
-            // function(internacion, asyncCallback) {
-            //     Cama.findOneAndUpdate({
-            //         idInternacion: req.params.idInternacion
-            //     }, {
-            //         'ultimaPase': internacion.pase[internacion.pase.length - 1]
-            //     }, function(err) {
-            //         asyncCallback(err, internacion);
-            //     });
-            // },
         ],
         function(err, internacion) {
             if (err) return next(err);
-            res.json(internacion.pases[internacion.pases.length - 1]);
+            res.json(internacion.prestaciones[internacion.prestaciones.length - 1]);
         });
 });
 

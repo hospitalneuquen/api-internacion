@@ -76,9 +76,9 @@ router.post('/internacion/:idInternacion/pase/:idPase*?', function(req, res, nex
 
                     pase.validar('servicio', req.body.servicio);
 
-                    // if (req.body.servicioSugerido){
-                    //     pase.validar('servicioSugerido', req.body.servicioSugerido);
-                    // }
+                    if (req.body.servicioSugerido){
+                        pase.validar('servicioSugerido', req.body.servicioSugerido);
+                    }
                     pase.validar('cama', req.body.cama);
 
                     asyncCallback(err, internacion);

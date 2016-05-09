@@ -129,15 +129,13 @@ router.post('/internacion/:id', function(req, res, next) {
             data.ingreso = req.body.ingreso;
 
         if (req.body.egreso){
-            console.log("ENTRA");
             data.egreso = req.body.egreso;
 
-            // data.egreso.validar('cama', req.body.egreso.cama);
-            // data.egreso.validar('servicio', req.body.egreso.servicio);
-            //
-            // if (req.body.egreso.derivadoHacia){
-            //     data.egreso.validar('derivadoHacia', req.body.egreso.derivadoHacia.id);
-            // }
+            if (req.body.egreso.derivadoHacia){
+                data.validar('egreso.derivadoHacia', req.body.egreso.derivadoHacia);
+                // FORMA VIEJA
+                // data.egreso.validar('derivadoHacia', req.body.egreso.derivadoHacia);
+            }
 
         }
 
