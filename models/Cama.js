@@ -4,7 +4,6 @@ var mongoose = require('mongoose'),
 // middleware
 schema.pre('validate', function(next) {
     var parent = this;
-
     // validamos la internacion y hacemos un populate de los datos del paciente
     if (parent.idInternacion) {
         // Por alguna razón hay que inyectar el modelo acá para no crear referencias circulares

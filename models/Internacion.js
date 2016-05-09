@@ -12,6 +12,7 @@ var mongoose = require('mongoose'),
     schemaValoracionEnfermeria = require('../schemas/ValoracionEnfermeria.js'),
     schemaValoracionMedica = require('../schemas/ValoracionMedica.js'),
     schemaUbicacion = require('../schemas/Ubicacion.js');
+    schemaSolicitudPrestaciones = require('../schemas/SolicitudPrestaciones.js');
 
 var schema = new Schema({
     paciente: {
@@ -73,6 +74,7 @@ var schema = new Schema({
     pases: [schemaPase],
     drenajes: [schemaDrenaje],
     evoluciones: [schemaEvolucion],
+    prestaciones: [schemaSolicitudPrestaciones],
     egreso: {
         fechaHora: {
             type: Date,
@@ -84,14 +86,14 @@ var schema = new Schema({
             // required: true
         },
         descripcion: String,
-        cama: {
-            type: schemaCama,
-            // required: true,
-            validar: {
-                modelo: require('./Cama.js'),
-                resolver: true
-            }
-        },
+        // cama: {
+        //     type: schemaCama,
+        //     // required: true,
+        //     validar: {
+        //         modelo: require('./Cama.js'),
+        //         resolver: true
+        //     }
+        // },
         resumenInternacion: String,
         tratamientoaSeguir: String,
         diagnosticoAlta: String,
@@ -99,22 +101,20 @@ var schema = new Schema({
             type: String,
             enum: ['medica', 'derivacion', 'voluntaria']
         },
-        servicio: { // servicio desde donde se genera el egreso
-            type: schemaUbicacion,
-            // required: true,
-            validar: {
-                modelo: require('./Ubicacion.js'),
-                resolver: true,
-            }
-        },
+        // servicio: { // servicio desde donde se genera el egreso
+        //     type: schemaUbicacion,
+        //     // required: true,
+        //     validar: {
+        //         modelo: require('./Ubicacion.js'),
+        //         resolver: true,
+        //     }
+        // },
         // si es una derivacion especificar hacia que hospital
-        // si es un pase el servicio al que se envia
         derivadoHacia: {
             type: schemaUbicacion,
-            // required: true,
             validar: {
                 modelo: require('./Ubicacion.js'),
-                resolver: true,
+                resolver: true
             }
         }
     }
