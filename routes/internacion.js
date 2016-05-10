@@ -1,6 +1,9 @@
 var express = require('express'),
     router = express.Router(),
-    Internacion = require('../models/Internacion.js');
+    async = require('async'),
+    Internacion = require('../models/Internacion.js'),
+    Diagnostico = require('../models/Diagnostico.js'), // utilizado para resolver manualmente
+    Ubicacion = require('../models/Ubicacion.js'); // utilizado para resolver manualmente
 
 /**
  * @swagger
@@ -114,41 +117,132 @@ router.get('/internacion/', function(req, res, next) {
  *         description: Not found
  */
 router.post('/internacion/:id', function(req, res, next) {
-    Internacion.findOne({
-        _id: req.params.id
-    }, function(err, data) {
-        if (err) return next(err);
-        if (!data) return next(404);
+    async.waterfall([
+        // 1. Busca internación y la modifica
+        function(asyncCallback) {
+            Internacion.findOne({
+                _id: req.params.id
+            }, function(err, internacion) {
+                if (err) return asyncCallback(err);
+                if (!internacion) return asyncCallback(404);
 
-        // TODO: implementar controles de qué se puede modificar y cuándo
-        if (req.body.estado)
-            data.estado = req.body.estado;
-        if (req.body.paciente)
-            data.paciente = req.body.paciente;
-        if (req.body.ingreso)
-            data.ingreso = req.body.ingreso;
+                // agregar validaciones iniciales
 
-        if (req.body.egreso){
-            data.egreso = req.body.egreso;
+                // asignamos variables
+                if (req.body.estado)
+                    internacion.estado = req.body.estado;
+                if (req.body.paciente)
+                    internacion.paciente = req.body.paciente;
+                if (req.body.ingreso)
+                    internacion.ingreso = req.body.ingreso;
 
-            if (req.body.egreso.derivadoHacia){
-                data.validar('egreso.derivadoHacia', req.body.egreso.derivadoHacia);
-                // FORMA VIEJA
-                // data.egreso.validar('derivadoHacia', req.body.egreso.derivadoHacia);
+                if (req.body.egreso) {
+                    internacion.egreso = req.body.egreso;
+
+                    if (req.body.egreso.derivadoHacia) {
+                        // por un bug en validar() cuando trata de resolver en subdocumentos
+                        // omitimos que resuelva hacia donde lo deriva y lo resolvemos a mano
+                        Ubicacion.findOne({_id: req.body.egreso.derivadoHacia}, function(err, ubicacion) {
+                            if (err) return next(err);
+
+                            internacion.egreso.derivadoHacia = ubicacion;
+
+                            asyncCallback(err, internacion);
+                        });
+                    }
+                }else{
+                    asyncCallback(err, internacion);
+                }
+
+            });
+        },
+        // 2. Verificamos si el egreso tiene diagnosticos y los resolvemos
+        function(internacion, asyncCallback) {
+            if (req.body.egreso.diagnosticoAlta) {
+
+                internacion.egreso['diagnosticoAlta'] = [];
+
+                req.body.egreso.diagnosticoAlta.forEach(function(diagnostico, index){
+                    Diagnostico.findOne({_id: diagnostico}, function(err, data) {
+                        if (err) return next(err);
+
+                        internacion.egreso.diagnosticoAlta.push(data);
+
+                        console.log(internacion);
+                    });
+                }, function(){
+                    // console.log(internacion.egreso);
+                    // internacion.egreso = egreso;
+                    // console.log(egreso);
+                    asyncCallback(err, internacion);
+                });
+
+            }else{
+                asyncCallback(err, internacion);
             }
-
+        },
+        // Guarda la internacion modificada
+        function(internacion, asyncCallback) {
+            internacion.audit(req.user);
+            internacion.save(function(err) {
+                asyncCallback(err, internacion);
+            });
         }
+    ],
+    function(err, internacion) {
+        if (err) return next(err);
 
-        // Si está todo OK guarda los datos
-        data.audit(req.user);
-
-        data.save(function(err, data) {
-            if (err) return next(err);
-
-            res.json(data);
-        });
+        res.json(internacion);
     });
 });
+// router.post('/internacion/:id', function(req, res, next) {
+//     Internacion.findOne({
+//         _id: req.params.id
+//     }, function(err, data) {
+//         if (err) return next(err);
+//         if (!data) return next(404);
+//
+//         // TODO: implementar controles de qué se puede modificar y cuándo
+//         if (req.body.estado)
+//             data.estado = req.body.estado;
+//         if (req.body.paciente)
+//             data.paciente = req.body.paciente;
+//         if (req.body.ingreso)
+//             data.ingreso = req.body.ingreso;
+//
+//         if (req.body.egreso) {
+//             data.egreso = req.body.egreso;
+//
+//             if (req.body.egreso.derivadoHacia) {
+//                 // por un bug en validar() cuando trata de resolver en subdocumentos
+//                 // omitimos que resuelva hacia donde lo deriva y lo resolvemos a mano
+//                 Ubicacion.findOne({_id: req.body.egreso.derivadoHacia}, function(err, ubicacion) {
+//                     if (err) return next(err);
+//
+//                     data.egreso.derivadoHacia = ubicacion;
+//
+//                     data.audit(req.user);
+//                     data.save(function(err, data) {
+//                         if (err) return next(err);
+//
+//                         res.json(data);
+//                     });
+//                 });
+//             }
+//         } else {
+//             // Si está todo OK guarda los datos
+//             data.audit(req.user);
+//
+//             data.save(function(err, data) {
+//                 if (err) return next(err);
+//
+//                 res.json(data);
+//             });
+//         }
+//
+//
+//     });
+// });
 
 /**
  * @swagger
