@@ -12,10 +12,7 @@ var schema = new Schema({
         required: true,
     },
     esCronico: Boolean,
-    estado: {
-        type: String,
-        enum: ['Activo','Inactivo','Resuelto','Transformado'],
-    },
+    estado: String,
     servicio: {
         type: schemaUbicacion,
         validar: {
