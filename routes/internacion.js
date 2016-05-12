@@ -161,7 +161,7 @@ router.post('/internacion/:id', function(req, res, next) {
 
         // 2. Verificamos si el egreso tiene diagnosticos y los resolvemos
         function(internacion, asyncCallback) {
-            if (req.body.egreso.diagnosticoAlta) {
+            if (req.body.egreso && typeof req.body.egreso.diagnosticoAlta !== "undefined") {
 
                 // internacion.egreso['diagnosticoAlta'] = [];
                 //
