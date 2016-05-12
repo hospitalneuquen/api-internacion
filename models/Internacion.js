@@ -7,6 +7,7 @@ var mongoose = require('mongoose'),
     schemaAntecedenteBinario = require('../schemas/AntecedenteBinario.js'),
     schemaCama = require('../schemas/Cama.js'),
     schemaDrenaje = require('../schemas/Drenaje.js'),
+    schemaDiagnostico = require('../schemas/Diagnostico.js'),
     schemaEvolucion = require('../schemas/Evolucion.js'),
     schemaPase = require('../schemas/Pase.js'),
     schemaProblema = require('../schemas/Problema.js'),
@@ -88,37 +89,30 @@ var schema = new Schema({
             // required: true
         },
         descripcion: String,
-        // cama: {
-        //     type: schemaCama,
-        //     // required: true,
-        //     validar: {
-        //         modelo: require('./Cama.js'),
-        //         resolver: true
-        //     }
-        // },
         resumenInternacion: String,
         tratamientoaSeguir: String,
-        diagnosticoAlta: String,
+        // diagnosticoAlta: String,
+        diagnosticoAlta: [schemaDiagnostico],
+        // diagnosticoAlta: [{
+        //     type: schemaDiagnostico,
+        //     validar: {
+        //         modelo: require('./Diagnostico.js'),
+        //         resolver: true
+        //     }
+        // }],
         tipoAlta: {
             type: String,
             enum: ['medica', 'derivacion', 'voluntaria']
         },
-        // servicio: { // servicio desde donde se genera el egreso
+        // si es una derivacion especificar hacia que hospital
+        derivadoHacia: schemaUbicacion
+        // derivadoHacia: {
         //     type: schemaUbicacion,
-        //     // required: true,
         //     validar: {
         //         modelo: require('./Ubicacion.js'),
-        //         resolver: true,
+        //         resolver: true
         //     }
-        // },
-        // si es una derivacion especificar hacia que hospital
-        derivadoHacia: {
-            type: schemaUbicacion,
-            validar: {
-                modelo: require('./Ubicacion.js'),
-                resolver: true
-            }
-        }
+        // }
     }
 
 });

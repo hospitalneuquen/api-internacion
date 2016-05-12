@@ -1,6 +1,9 @@
 var express = require('express'),
     router = express.Router(),
-    Internacion = require('../models/Internacion.js');
+    async = require('async'),
+    Internacion = require('../models/Internacion.js'),
+    Diagnostico = require('../models/Diagnostico.js'), // utilizado para resolver manualmente
+    Ubicacion = require('../models/Ubicacion.js'); // utilizado para resolver manualmente
 
 /**
  * @swagger
@@ -114,39 +117,95 @@ router.get('/internacion/', function(req, res, next) {
  *         description: Not found
  */
 router.post('/internacion/:id', function(req, res, next) {
-    Internacion.findOne({
-        _id: req.params.id
-    }, function(err, data) {
-        if (err) return next(err);
-        if (!data) return next(404);
+    async.waterfall([
+        // 1. Busca internación y la modifica
+        function(asyncCallback) {
+            Internacion.findOne({
+                _id: req.params.id
+            }, function(err, internacion) {
+                if (err) return asyncCallback(err);
+                if (!internacion) return asyncCallback(404);
 
-        // TODO: implementar controles de qué se puede modificar y cuándo
-        if (req.body.estado)
-            data.estado = req.body.estado;
-        if (req.body.paciente)
-            data.paciente = req.body.paciente;
-        if (req.body.ingreso)
-            data.ingreso = req.body.ingreso;
+                // agregar validaciones iniciales
 
-        if (req.body.egreso){
-            data.egreso = req.body.egreso;
+                // asignamos variables
+                if (req.body.estado)
+                    internacion.estado = req.body.estado;
+                if (req.body.paciente)
+                    internacion.paciente = req.body.paciente;
+                if (req.body.ingreso)
+                    internacion.ingreso = req.body.ingreso;
 
-            if (req.body.egreso.derivadoHacia){
-                data.validar('egreso.derivadoHacia', req.body.egreso.derivadoHacia);
-                // FORMA VIEJA
-                // data.egreso.validar('derivadoHacia', req.body.egreso.derivadoHacia);
+                if (req.body.egreso) {
+                    internacion.egreso = req.body.egreso;
+
+                    if (req.body.egreso.derivadoHacia) {
+                        // por un bug en validar() cuando trata de resolver en subdocumentos,
+                        // omitimos que resuelva el campo derivadoHacia y lo resolvemos a mano
+                        Ubicacion.findOne({
+                            _id: req.body.egreso.derivadoHacia
+                        }, function(err, ubicacion) {
+                            if (err) return next(err);
+
+                            internacion.egreso.derivadoHacia = ubicacion;
+
+                            asyncCallback(err, internacion);
+                        });
+                    }
+                } else {
+                    asyncCallback(err, internacion);
+                }
+
+            });
+        },
+
+        // 2. Verificamos si el egreso tiene diagnosticos y los resolvemos
+        function(internacion, asyncCallback) {
+            if (req.body.egreso.diagnosticoAlta) {
+
+                // internacion.egreso['diagnosticoAlta'] = [];
+                //
+                //
+                // // creamos la cola con la funcionalidad a realizar
+                // var queue = async.queue(function(diagnostico, callback) {
+                //     Diagnostico.findOne({
+                //         _id: diagnostico
+                //     }, function(err, data) {
+                //         // asignamos el diagnostico al egreso
+                //         internacion.egreso.diagnosticoAlta.push(data);
+                //
+                //         // procesamos siguiente valor de la cola
+                //         callback();
+                //     });
+                // }, 1);
+                //
+                // // asignamos el callback para cuando la cola ha sido completada
+                // queue.drain = function() {
+                //     asyncCallback(null, internacion);
+                // }
+                //
+                // // asignamos los ids de los diagnosticos a buscar a la cola
+                // req.body.egreso.diagnosticoAlta.forEach(function(diagnostico, index) {
+                //     if (diagnostico) queue.push(diagnostico);
+                // });
+
+            } else {
+                asyncCallback(null, internacion);
             }
+        },
 
+        // Guarda la internacion modificada
+        function(internacion, asyncCallback) {
+            internacion.audit(req.user);
+
+            internacion.save(function(err, internacion) {
+                asyncCallback(err, internacion);
+            });
         }
+    ], function(err, internacion) {
+        if (err) return next(err);
 
-        // Si está todo OK guarda los datos
-        data.audit(req.user);
-
-        data.save(function(err, data) {
-            if (err) return next(err);
-
-            res.json(data);
-        });
+        res.json(internacion);
     });
 });
 
@@ -170,6 +229,15 @@ router.post('/internacion/:id', function(req, res, next) {
  */
 router.post('/internacion', function(req, res, next) {
     var data = new Internacion(req.body);
+
+    if (!data.paciente){
+        res.status(400).send({status:400, message: "Debe seleccionar el paciente a internar", type:'internal'});
+    }
+
+    if (!data.ingreso.motivo){
+        res.status(400).send({status:400, message: "Debe indicar el motivo de internación", type:'internal'});
+    }
+
     data.audit(req.user);
 
     if (req.body.pases && req.body.pases.length) {

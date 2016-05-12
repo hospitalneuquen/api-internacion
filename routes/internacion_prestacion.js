@@ -3,6 +3,7 @@ var express = require('express'),
     async = require('async'),
     Internacion = require('../models/Internacion.js'),
     SolicitudPrestaciones = require('../models/SolicitudPrestaciones.js');
+    TipoPrestacion = require('../models/TipoPrestacion.js');
 
 /**
  * @swagger
@@ -58,10 +59,9 @@ router.post('/internacion/:idInternacion/prestacion/:idSolicitudPrestacion*?', f
 
                     // Crea o modifica la prestacion
                     var prestacion;
-                    if (req.params.idPrestacion) { // Update
-
+                    if (req.body.id) { // Update
                         prestacion = internacion.prestaciones.find(function(i) {
-                            return i._id == req.params.idPrestacion;
+                            return i._id == req.body.id;
                         });
                         if (!prestacion)
                             return asyncCallback(404);

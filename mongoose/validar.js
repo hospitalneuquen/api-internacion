@@ -51,18 +51,45 @@ module.exports = function(schema, opciones) {
                             // ¿Reemplaza el ID por el objeto entero?
                             if (validar.resolver) {
                                 self[path] = data;
-                                // var _path = path.split('.');
-                                //
-                                // if (_path.length > 1) {
-                                //     var d = new DataObjectParser();
-                                //     d.set(path,data);
-                                //
-                                //     self.push(d.data());
-                                //     console.log(d.data());
-                                // } else {
-                                //     self[path] = data;
-                                // }
-
+//                                 var _path = path.split('.');
+//
+//                                 if (_path.length > 1) {
+// //                                     var d = new DataObjectParser();
+// //                                     d.set(path, data);
+// // console.log(d.data());
+// //                                     Object.defineProperty(self, 'algo', d.data());
+//                                     // console.log(d.data());
+//                                     // // self.push(d.data());
+//                                     // var arr = ['algo']
+//                                     // console.log(self);
+//                                     // self.push(arr);
+//                                     for (var i = 0; i <= _path.length; i++){
+//                                         // console.log(_path[i]);
+//                                         self._path[i] = {};
+//                                         self = self[]
+//                                         // self[_path[i]] = new Object();
+//                                         // console.log(self);
+//
+//                                     }
+//                                     //
+//                                     //
+//                                     // self[_path[i-1]] = data;
+//
+//                                     // self.egreso.derivadoHacia = data;
+//                                     // console.log("PATH:" + path);
+//                                     // self[path] = data;
+//                                     // console.log(self.path);
+//
+//                                     // self[_path[_path.length-1]] = data;
+//                                     // self["hola_que_ace"] = "HOla";
+//                                     // self.hola_que_aces = "HOla2";
+//                                     //  console.log(self);
+//                                     //  console.log(data);
+//
+//                                     // self.push(arr);
+//                                 } else {
+//                                     self[path] = data;
+//                                 }
                             }
 
                             done();
@@ -74,6 +101,17 @@ module.exports = function(schema, opciones) {
         }
     });
 };
+
+function setValue(object) {
+  for(var key in object) {
+    if (object[key] instanceof Object) {
+      iterate(object[key]);
+    }
+    else {
+      console.log(key + ": " + object[key]);
+    }
+  }
+}
 
 var dotSet = function(str, value, obj) {
     console.log("*****************################################################################################################################### INGRESO");
