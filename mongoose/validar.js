@@ -1,4 +1,4 @@
-DataObjectParser = require('../node_modules/dataobject-parser');
+// DataObjectParser = require('../node_modules/dataobject-parser');
 // Plugin para validar propidades y opcionalmente resolverlas a un objeto completo
 module.exports = function(schema, opciones) {
     // Define un método que debe llamarse para inicializar los datos
