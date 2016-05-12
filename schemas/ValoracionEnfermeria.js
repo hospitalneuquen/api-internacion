@@ -23,6 +23,7 @@ var schema = new Schema({
     secreciones: Boolean,
     usoMusculos: Boolean,
     secrecionesCaracteristicas: String,
+    secrecionesColor: String,
     musculosCuales: String,
     observacionesOxigenacion: String,
     // ****************************** Necesidad de Nutrición ******************************
@@ -38,7 +39,8 @@ var schema = new Schema({
     protesisTipo: String,
     dificultadesDeglutir: Boolean,
     dificultadesMasticar: Boolean,
-    lactanciaMaterna: String,
+    lactanciaMaterna: Boolean,
+    observacionesLactancia: String,
     observacionesNutricion: String,
     // ****************************** Necesidad de Eliminación ******************************
     espontaneaVesical: Boolean,
