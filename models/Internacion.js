@@ -103,13 +103,14 @@ var schema = new Schema({
             enum: ['medica', 'derivacion', 'voluntaria']
         },
         // si es una derivacion especificar hacia que hospital
-        derivadoHacia: {
-            type: schemaUbicacion,
-            validar: {
-                modelo: require('./Ubicacion.js'),
-                resolver: true
-            }
-        }
+        derivadoHacia: schemaUbicacion
+        // derivadoHacia: {
+        //     type: schemaUbicacion,
+        //     validar: {
+        //         modelo: require('./Ubicacion.js'),
+        //         resolver: true
+        //     }
+        // }
     }
 
 });
