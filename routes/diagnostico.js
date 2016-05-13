@@ -65,14 +65,34 @@ router.get('/diagnostico/:id*?', function(req, res, next) {
         });
     } else {
 
-        var query = Diagnostico.find({});
-        query.limit(100);
+        if (req.query.nombre) {
 
-        if (req.query.nombre)
-            query.where('nombre').regex(new RegExp(req.query.nombre.toLowerCase()));
+                var query = Diagnostico.find(
+                        { $text : { $search : req.query.nombre } },
+                        { score : { $meta: "textScore" } }
+                    );
+
+                query.sort({
+                    score: {
+                        $meta: "textScore"
+                    }
+                });
+        }else {
+            var query = Diagnostico.find({});
+        }
+        // if (req.query.nombre)
+        //     query.where('nombre').regex(new RegExp(req.query.nombre.toLowerCase()));
+
+        // query.where('nombre').regex(new RegExp(req.query.nombre.toLowerCase()));
+        // query.where('nombre').equals(RegExp('^' + req.query.nombre + '$', "i"));
+
+        query.where('idPadre').ne(null);
+        query.limit(100);
 
         query.exec(function(err, data) {
             if (err) return next(err);
+
+            console.log(data);
             res.json(data);
         });
 

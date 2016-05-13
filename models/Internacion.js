@@ -91,7 +91,6 @@ var schema = new Schema({
         descripcion: String,
         resumenInternacion: String,
         tratamientoaSeguir: String,
-        // diagnosticoAlta: String,
         diagnosticoAlta: [schemaDiagnostico],
         // diagnosticoAlta: [{
         //     type: schemaDiagnostico,
