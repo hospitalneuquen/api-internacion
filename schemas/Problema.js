@@ -7,9 +7,9 @@ var schema = new Schema({
         type: String,
         required: true,
     },
-    activoDesde: {
+    fechaDesde: {
         type: Date,
-        required: true,
+        required: true
     },
     esCronico: Boolean,
     estado: String,
