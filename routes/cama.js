@@ -84,6 +84,11 @@ router.post('/cama/cambiarEstado/:idCama', function(req, res, next) {
                 res.status(500).send('La cama está actualmente ocupada, no se puede enviar a reparación');
             }
 
+            if (req.motivo == ""){
+                error = true;
+                res.status(400).send({status:400, message: "Debe indicar el motivo de envío a reparación", type:'internal'});
+            }
+
             // actualizamos el estadode la cama
             cama.estado = 'reparacion';
         } else if (req.body.estado == "desocupada") {
