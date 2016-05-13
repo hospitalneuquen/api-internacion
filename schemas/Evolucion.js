@@ -32,8 +32,6 @@ var schema = new Schema({
     peso: Number,
     // ****************************** Necesidad de Circulación ******************************
     TA: Number,
-    tensionSistolica: Number,
-    tensionDiastolica: Number,
     FC: Number,
     carotideo: Number,
     radial: Number,
