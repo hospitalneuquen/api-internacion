@@ -67,17 +67,22 @@ router.get('/diagnostico/:id*?', function(req, res, next) {
 
         if (req.query.nombre) {
 
-                var query = Diagnostico.find(
-                        { $text : { $search : req.query.nombre } },
-                        { score : { $meta: "textScore" } }
-                    );
+            var query = Diagnostico.find({
+                $text: {
+                    $search: req.query.nombre
+                }
+            }, {
+                score: {
+                    $meta: "textScore"
+                }
+            });
 
-                query.sort({
-                    score: {
-                        $meta: "textScore"
-                    }
-                });
-        }else {
+            query.sort({
+                score: {
+                    $meta: "textScore"
+                }
+            });
+        } else {
             var query = Diagnostico.find({});
         }
         // if (req.query.nombre)
@@ -92,7 +97,6 @@ router.get('/diagnostico/:id*?', function(req, res, next) {
         query.exec(function(err, data) {
             if (err) return next(err);
 
-            console.log(data);
             res.json(data);
         });
 
