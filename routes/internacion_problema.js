@@ -58,6 +58,7 @@ router.post('/internacion/:idInternacion/problema/:idProblema*?', function(req, 
 
                         problema.merge(req.body);
                         problema.validar('servicio', req.body.servicio);
+                        problema.validar('diagnostico', req.body.diagnostico);
                     } else { // Insert
                         if (!internacion.problemas)
                             internacion.problemas = [];
@@ -66,6 +67,7 @@ router.post('/internacion/:idInternacion/problema/:idProblema*?', function(req, 
                         problema = internacion.problemas[internacion.problemas.length - 1];
 
                         problema.validar('servicio', req.body.servicio);
+                        problema.validar('diagnostico', req.body.diagnostico);
                     }
 
                     asyncCallback(err, internacion);

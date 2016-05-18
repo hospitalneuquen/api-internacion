@@ -26,11 +26,11 @@ var schema = new Schema({
     },
     estado: {
         type: String,
-        enum: ['ocupada', 'desocupada', 'reparacion'],
+        enum: ['ocupada', 'desocupada', 'reparacion', 'bloqueada'],
         required: true,
         default: 'desocupada'
     },
-    reparacion: {
+    ultimoEstado: {
         idCamaEstado: {
             type: Schema.Types.ObjectId,
             ref: 'CamaEstado'

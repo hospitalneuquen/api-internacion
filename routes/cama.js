@@ -72,6 +72,7 @@ router.post('/cama/cambiarEstado/:idCama', function(req, res, next) {
         if (!cama) return next(404);
 
         if (req.body.estado == "reparacion") {
+
             // validamos que la cama no este ya en reparacion
             if (cama.estado == "reparacion") {
                 error = true;
@@ -91,20 +92,22 @@ router.post('/cama/cambiarEstado/:idCama', function(req, res, next) {
 
             // actualizamos el estadode la cama
             cama.estado = 'reparacion';
+
         } else if (req.body.estado == "desocupada") {
+
             // verificamos si el estado anterior era en reparacion
             // y de esa forma hacemos el update sobre el historial
             // y limpiamos los campos de la reparacion
-            if (cama.estado == 'reparacion' && cama.reparacion.idCamaEstado) {
+            if (cama.estado == 'reparacion' && cama.ultimoEstado.idCamaEstado) {
                 CamaEstado.findOneAndUpdate({
-                    '_id': cama.reparacion.idCamaEstado
+                    '_id': cama.ultimoEstado.idCamaEstado
                 }, {
                     'updatedAt': Date.now()
                 }, function(err, _cama_estado) {
                     if (err) throw err;
                 });
 
-                cama.reparacion = {};
+                cama.ultimoEstado = {};
 
             }
 
@@ -126,7 +129,19 @@ router.post('/cama/cambiarEstado/:idCama', function(req, res, next) {
             cama.estado = 'ocupada';
 
         } else if (req.body.estado == 'desinfectada') {
+
             cama.desinfectada = true;
+
+        } else if (req.body.estado == 'bloqueada') {
+
+            // validamos que la cama no este ocupada
+            if (cama.estado == "ocupada" || cama.paciente.id) {
+                error = true;
+                res.status(500).send('La cama está actualmente ocupada, no se puede bloquear.');
+            }
+
+            cama.estado = 'bloqueada';
+
         }
 
         if (!error) {
@@ -141,10 +156,10 @@ router.post('/cama/cambiarEstado/:idCama', function(req, res, next) {
             // agregamos log a la cama
             cama.audit(req.user);
 
-            if (cama.estado == 'reparacion') {
+            if (cama.estado == 'reparacion' || cama.estado == 'bloqueada') {
                 // duplicamos y dejamos en el objeto de camas los valores
                 // para la lectura de la reparacion
-                cama.reparacion = {
+                cama.ultimoEstado = {
                     idCamaEstado: cama_estado._id,
                     motivo: cama_estado.motivo,
                     //"createdAt": cama_estado.audit.createdAt
