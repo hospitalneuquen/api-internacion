@@ -4,6 +4,38 @@ var express = require('express'),
 
 /**
  * @swagger
+ * /diagnostico/codificadores:
+ *   get:
+ *     tags:
+ *       - Diagnostico
+ *     summary: Devuelve los codificadores de los diagnosticos
+ *     produces:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: Ok
+ *       404:
+ *         description: Codificador no encontrado
+ */
+router.get('/diagnostico/codificadores', function(req, res, next) {
+    var query = Diagnostico.find({
+            idPadre: {
+                $eq: ""
+            }
+        })
+        .limit(100)
+        .sort('nombre')
+
+    query.exec(function(err, data) {
+        if (err) return next(err);
+
+        res.json(data);
+    });
+
+});
+
+/**
+ * @swagger
  * /ubicacion/{id}:
  *   get:
  *     tags:
@@ -53,54 +85,32 @@ var express = require('express'),
  *       400:
  *         description: No se ingresó ninguna opción de búsqueda
  */
-router.get('/diagnostico/:id*?', function(req, res, next) {
-    if (req.params.id) {
-        Diagnostico.findOne({
-            _id: req.params.id
-        }).exec(function(err, data) {
-            if (err) return next(err);
-            if (!data) return next(404);
+router.get('/diagnostico/:idPadre*?', function(req, res, next) {
+    var conditions = {};
 
-            res.json(data);
-        });
-    } else {
-
-        if (req.query.nombre) {
-
-            var query = Diagnostico.find({
-                $text: {
-                    $search: req.query.nombre
-                }
-            }, {
-                score: {
-                    $meta: "textScore"
-                }
-            });
-
-            query.sort({
-                score: {
-                    $meta: "textScore"
-                }
-            });
-        } else {
-            var query = Diagnostico.find({});
+    if (req.params.idPadre) {
+        conditions.idPadre = {
+            "$eq": parseInt(req.params.idPadre)
         }
-        // if (req.query.nombre)
-        //     query.where('nombre').regex(new RegExp(req.query.nombre.toLowerCase()));
-
-        // query.where('nombre').regex(new RegExp(req.query.nombre.toLowerCase()));
-        // query.where('nombre').equals(RegExp('^' + req.query.nombre + '$', "i"));
-
-        query.where('idPadre').ne(null);
-        query.limit(100);
-
-        query.exec(function(err, data) {
-            if (err) return next(err);
-
-            res.json(data);
-        });
-
     }
+
+    if (req.query.nombre) {
+        conditions["$text"] = {
+            "$search" : req.query.nombre
+        }
+    }
+
+    var query = Diagnostico.find(conditions);
+
+    query.limit(100);
+    query.sort({nombre: 1});
+
+    query.exec(function(err, data) {
+        if (err) return next(err);
+
+        res.json(data);
+    });
+
 });
 
 module.exports = router;

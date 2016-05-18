@@ -127,6 +127,8 @@ router.post('/internacion/:id', function(req, res, next) {
                 if (!internacion) return asyncCallback(404);
 
                 // agregar validaciones iniciales
+                //
+                //
 
                 // asignamos variables
                 if (req.body.estado)
@@ -151,7 +153,7 @@ router.post('/internacion/:id', function(req, res, next) {
 
                             asyncCallback(err, internacion);
                         });
-                    }else{
+                    } else {
                         asyncCallback(err, internacion);
                     }
                 } else {
@@ -166,6 +168,52 @@ router.post('/internacion/:id', function(req, res, next) {
 
             // if (req.body.egreso && req.body.egreso.diagnosticoAlta && typeof req.body.egreso.diagnosticoAlta.length) {
             //     internacion.egreso['diagnosticoAlta'] = [];
+            //
+            //     // asignamos los ids de los diagnosticos a buscar a la cola
+            //     async.eachSeries(req.body.egreso.diagnosticoAlta, function(idDiagnostico, callback) {
+            //         Diagnostico.findOne({
+            //             _id: idDiagnostico
+            //         }, function(err, data) {
+            //             // asignamos el diagnostico al egreso
+            //             internacion.egreso.diagnosticoAlta.push(data);
+            //
+            //             // procesamos siguiente valor de la cola
+            //             callback();
+            //         });
+            //     }, function(err) {
+            //         if (err) asyncCallback(err);
+            //
+            //         asyncCallback(null, internacion);
+            //     });
+            // } else {
+            //     asyncCallback(null, internacion);
+            // }
+
+            //  if (req.body.egreso && req.body.egreso.diagnosticoAlta && typeof req.body.egreso.diagnosticoAlta.length) {
+            //      internacion.egreso['diagnosticoAlta'] = [];
+            //
+            //      // asignamos los ids de los diagnosticos a buscar a la cola
+            //      async.forEachOf(req.body.egreso.diagnosticoAlta, function(idDiagnostico, key, callback) {
+            //          Diagnostico.findOne({
+            //              _id: idDiagnostico
+            //          }, function(err, data) {
+            //              // asignamos el diagnostico al egreso
+            //              internacion.egreso.diagnosticoAlta.push(data);
+            //
+            //              // procesamos siguiente valor de la cola
+            //              callback();
+            //          });
+            //      }, function(err) {
+            //          if (err) console.error(err.message);
+            //          // configs is now a map of JSON data
+            //          asyncCallback(null, internacion);
+            //      });
+            //  } else {
+            //      asyncCallback(null, internacion);
+            //  }
+
+            // if (req.body.egreso && req.body.egreso.diagnosticoAlta && typeof req.body.egreso.diagnosticoAlta.length) {
+            //     internacion.egreso.diagnosticoAlta = [];
             //
             //     // creamos la cola con la funcionalidad a realizar
             //     var queue = async.queue(function(diagnostico, callback) {
@@ -190,14 +238,14 @@ router.post('/internacion/:id', function(req, res, next) {
             //         if (diagnostico) queue.push(diagnostico);
             //     });
             // } else {
-                asyncCallback(null, internacion);
+            //    asyncCallback(null, internacion);
             // }
         },
 
-        // Guarda la internacion modificada
+        // 3 Guarda la internacion modificada
         function(internacion, asyncCallback) {
             internacion.audit(req.user);
-
+            console.log(internacion);
             internacion.save(function(err, internacion) {
                 asyncCallback(err, internacion);
             });
@@ -230,12 +278,20 @@ router.post('/internacion/:id', function(req, res, next) {
 router.post('/internacion', function(req, res, next) {
     var data = new Internacion(req.body);
 
-    if (!data.paciente){
-        res.status(400).send({status:400, message: "Debe seleccionar el paciente a internar", type:'internal'});
+    if (!data.paciente) {
+        res.status(400).send({
+            status: 400,
+            message: "Debe seleccionar el paciente a internar",
+            type: 'internal'
+        });
     }
 
-    if (!data.ingreso.motivo){
-        res.status(400).send({status:400, message: "Debe indicar el motivo de internación", type:'internal'});
+    if (!data.ingreso.motivo) {
+        res.status(400).send({
+            status: 400,
+            message: "Debe indicar el motivo de internación",
+            type: 'internal'
+        });
     }
 
     data.egreso = null;
@@ -250,7 +306,7 @@ router.post('/internacion', function(req, res, next) {
     // if (data.pases && data.pases.length)
     //     data.pases[0].servicio._id = req.body.pases[0].servicio; // Necesario para 'validarServicio'
 
-console.log(data);
+    console.log(data);
     data.save(function(err, data) {
         if (err) return next(err);
         console.log(data);

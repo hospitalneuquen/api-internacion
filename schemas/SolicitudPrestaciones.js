@@ -32,7 +32,10 @@ var schema = new Schema({
             modelo: require('../models/Ubicacion.js'),
             resolver: true
         }
-    }
+    },
+    turnoFechaHora: {
+        type: Date
+    },
 });
 
 schema.plugin(require('../mongoose/audit'));
