@@ -86,20 +86,21 @@ router.post('/internacion/:idInternacion/prestacion/:idSolicitudPrestacion*?', f
                         prestacion.validar('tipoPrestacion', req.body.tipoPrestacion);
                     }
 
-                    asyncCallback(err, internacion);
+                    asyncCallback(err, internacion, prestacion);
                 });
             },
             // 2. Guarda la internacion modificada
-            function(internacion, asyncCallback) {
+            function(internacion, prestacion, asyncCallback) {
                 internacion.audit(req.user);
                 internacion.save(function(err) {
                     asyncCallback(err, internacion);
                 });
             },
         ],
-        function(err, internacion) {
+        function(err, internacion, prestacion) {
             if (err) return next(err);
-            res.json(internacion.prestaciones[internacion.prestaciones.length - 1]);
+
+            res.json(prestacion);
         });
 });
 
