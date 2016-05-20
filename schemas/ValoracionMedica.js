@@ -21,6 +21,7 @@ var schema = new Schema({
         otros: String,
     },
     impresionDiagnostica: String,
+    enfermedadActual: String,
 });
 
 // schema.plugin(require('../mongoose/validar'));
