@@ -71,9 +71,9 @@ router.post('/internacion/:idInternacion/drenaje/:idDrenaje*?', function(req, re
                 });
             },
         ],
-        function(err, evolucion) {
+        function(err, drenaje) {
             if (err) return next(err);
-            res.json(evolucion);
+            res.json(drenaje);
         });
 });
 

@@ -71,25 +71,26 @@ router.post('/internacion/:idInternacion/problema/:idProblema*?', function(req, 
 
                         problema.validar('servicio', req.body.servicio);
 
-                        if (req.body.diagnostico){                        
+                        if (req.body.diagnostico){
                             problema.validar('diagnostico', req.body.diagnostico);
                         }
                     }
 
-                    asyncCallback(err, internacion);
+                    asyncCallback(err, internacion, problema);
                 });
             },
             // 2. Guarda la internacion modificada
-            function(internacion, asyncCallback) {
+            function(internacion, problema, asyncCallback) {
                 internacion.audit(req.user);
                 internacion.save(function(err) {
-                    asyncCallback(err, internacion);
+                    asyncCallback(err, internacion, problema);
                 });
             },
         ],
-        function(err, internacion) {
+        function(err, internacion, problema) {
             if (err) return next(err);
-            res.json(internacion.problemas[internacion.problemas.length - 1]);
+
+            res.json(problema);
         });
 });
 
