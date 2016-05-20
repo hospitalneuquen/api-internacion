@@ -11,6 +11,7 @@ var mongoose = require('mongoose'),
     schemaEvolucion = require('../schemas/Evolucion.js'),
     schemaPase = require('../schemas/Pase.js'),
     schemaProblema = require('../schemas/Problema.js'),
+    schemaTratamiento = require('../schemas/Tratamiento.js'),
     schemaValoracionEnfermeria = require('../schemas/ValoracionEnfermeria.js'),
     schemaValoracionMedica = require('../schemas/ValoracionMedica.js'),
     schemaUbicacion = require('../schemas/Ubicacion.js');
@@ -78,6 +79,7 @@ var schema = new Schema({
     evoluciones: [schemaEvolucion],
     prestaciones: [schemaSolicitudPrestaciones],
     problemas: [schemaProblema],
+    tratamientos: [schemaTratamiento],
     egreso: {
         fechaHora: {
             type: Date,
