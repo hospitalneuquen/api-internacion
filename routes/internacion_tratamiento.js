@@ -31,6 +31,7 @@ var express = require('express'),
  *         description: Not found
  */
 router.post('/internacion/:idInternacion/tratamiento/:idTratamiento*?', function(req, res, next) {
+    console.log("***********************************************************************ENTRAMOS");
     async.waterfall([
             // 1. Busca internación
             function(asyncCallback) {
@@ -68,20 +69,22 @@ router.post('/internacion/:idInternacion/tratamiento/:idTratamiento*?', function
                         tratamiento.validar('servicio', req.body.servicio);
                     }
 
-                    asyncCallback(err, internacion);
+                    asyncCallback(err, internacion, tratamiento);
                 });
             },
             // 2. Guarda la internacion modificada
-            function(internacion, asyncCallback) {
+            function(internacion, tratamiento, asyncCallback) {
                 internacion.audit(req.user);
+                
                 internacion.save(function(err) {
-                    asyncCallback(err, internacion);
+                    asyncCallback(err, internacion, tratamiento);
                 });
             },
         ],
-        function(err, internacion) {
+        function(err, internacion, tratamiento) {
             if (err) return next(err);
-            res.json(internacion.tratamientos[internacion.tratamientos.length - 1]);
+
+            res.json(tratamiento);
         });
 });
 
