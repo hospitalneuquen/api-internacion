@@ -93,6 +93,21 @@ var schema = new Schema({
         descripcion: String,
         resumenInternacion: String,
         tratamientoaSeguir: String,
+        situacionPendiente: Boolean,
+        descripcionSituacionPendiente: String,
+        estadoPacienteAlta: String,
+        pronosticoEvolucion: String,
+        pautasAlarma: String, //Pautas de alarma y Dieta al alta son de la epicrisis de clínica quirúrgica
+        dietaGeneral: Boolean,
+        dietaHepatoprotectora: Boolean,
+        dietaEspecial: Boolean,
+        dietaSoporteNutricional: Boolean,
+        // Agregar los campos de:
+        // Revisar documento O2 / O3 y agregar:
+        // Situacion pendiente, estado del paciente al alta, pronostico de la evolucion
+        // Pautas de alarma (texto)
+        // Tratamiento (texto)
+        // Dieta de alta (checkbox)
         diagnosticoAlta: [schemaDiagnostico],
         // diagnosticoAlta: [{
         //     type: schemaDiagnostico,
