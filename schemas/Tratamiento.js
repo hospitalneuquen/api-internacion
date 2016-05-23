@@ -7,12 +7,21 @@ var schema = new Schema({
         type: Date,
         //required: true,
     },
-    descripcion: {
-        type: String,
-        //required: true,
-    },
-    via: String,
-    frecuencia: String,
+    indicaciones: [{
+        tipo: {
+            type: String,
+            enum: ['Plan Hidratación', 'Heparina o profilaxis', 'Protección gástrica', 'Otra medicación', 'Otra indicación']
+        },
+        descripcion: {
+            type: String,
+            //required: true,
+        },
+        via: String,
+        frecuencia: {
+            type: String,
+            enum: ['24', '12', '8', '6', '4', 'unica'],
+        }
+    }],
     /************ Controles **************/
     controlSignosVitales: Boolean,
     frecuenciaSignosVitales: String,
