@@ -6,11 +6,32 @@ var express = require('express'),
 
 /**
  * @swagger
- * /internacion/{idInternacion}/prestaciones/{idSolicitudPrestacion}:
+ * /internacion/tratamiento/tipos:
+ *   get:
+ *     tags:
+ *       - Internación
+ *     summary: Devuelve los tipos de tratamientos declarados en el enum del schema
+ *     produces:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: Ok
+ *       404:
+ *         description: Not found
+ */
+router.get('/internacion/tratamiento/tipos/:tipo', function(req, res, next) {
+    sTratamiento = require('../schemas/Tratamiento.js'),
+
+    res.json(sTratamiento.path('indicaciones.0.' + req.params.tipo).enumValues);
+});
+
+/**
+ * @swagger
+ * /internacion/{idInternacion}/tratamiento/{idTratamiento}:
  *   post:
  *     tags:
  *       - Pases
- *     summary: Crea / Modifica un pedido de prestacion
+ *     summary: Crea / Modifica un tratamiento
  *     produces:
  *       - application/json
  *     parameters:
@@ -19,8 +40,8 @@ var express = require('express'),
  *         in: path
  *         required: true
  *         type: string
- *       - name: idSolicitudPrestacion
- *         description: Id de la solicitud de prestacion
+ *       - name: idTratamiento
+ *         description: Id del tratamiento a modificar
  *         in: path
  *         required: true
  *         type: string
@@ -31,7 +52,6 @@ var express = require('express'),
  *         description: Not found
  */
 router.post('/internacion/:idInternacion/tratamiento/:idTratamiento*?', function(req, res, next) {
-    console.log("***********************************************************************ENTRAMOS");
     async.waterfall([
             // 1. Busca internación
             function(asyncCallback) {
@@ -69,13 +89,15 @@ router.post('/internacion/:idInternacion/tratamiento/:idTratamiento*?', function
                         tratamiento.validar('servicio', req.body.servicio);
                     }
 
+                    tratamiento.audit(req.user);
+
                     asyncCallback(err, internacion, tratamiento);
                 });
             },
             // 2. Guarda la internacion modificada
             function(internacion, tratamiento, asyncCallback) {
                 internacion.audit(req.user);
-                
+
                 internacion.save(function(err) {
                     asyncCallback(err, internacion, tratamiento);
                 });

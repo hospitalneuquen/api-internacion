@@ -10,76 +10,97 @@ var schema = new Schema({
     indicaciones: [{
         tipo: {
             type: String,
-            enum: ['Plan Hidratación', 'Heparina o profilaxis', 'Protección gástrica', 'Otra medicación', 'Otra indicación']
-        },
-        descripcion: {
-            type: String,
-            //required: true,
+            enum: [
+                'Plan Hidratación', 'Heparina o profilaxis', 'Protección gástrica',
+                'Otra medicación', 'Controles', 'Cuidados generales', 'Cuidados especiales',
+                'Dieta', 'Otra indicación'
+            ]
         },
         via: String,
         frecuencia: {
             type: String,
-            enum: ['24', '12', '8', '6', '4', 'unica'],
-        }
+            enum: ['24', '12', '8', '6', '4', 'unica']
+        },
+        medicamento: {
+            descripcion: {
+                type: String
+            }
+        },
+        controles: {
+            tipo: {
+                type: String,
+                enum: ['Signos vitales', 'Diuresis', 'Peso', 'Glasgow']
+            }
+            // signosVitales: Boolean,
+            // diuresis: Boolean,
+            // peso: Boolean,
+            // glasgow: Boolean
+        },
+        cuidadosGenerales: {
+            tipo: {
+                type: String,
+                enum: ['Rotar decubito', 'Aspirar secreciones', 'Kinesiología', 'Oxígeno']
+            }
+            // rotarDecubito: Boolean,
+            // aspirarSecreciones: Boolean,
+            // kinesiologia: Boolean,
+            // oxigeno: Boolean
+        },
+        cuidadosEspeciales: {
+            SNG: Boolean,
+            cualSNG: String,
+            sondaVesical: Boolean,
+            aislamiento: Boolean,
+            cualAislamiento: String
+        },
+        dieta: {
+            type: String,
+            // enum: [
+            //         'Ayuno', 'Blando mecánico', 'General', 'Acompañanate',
+            //         'Diabético', 'Licuado', 'Insuficencia Renal', 'Rico en residuo',
+            //         'Hepato/Gastro protectora', 'Astringente', 'Líquido 01', 'Sin sal',
+            //         'Sin gluten', 'Blando sin carne 02', 'Blando con carne 03', 'Todo cocido',
+            //         'Individual', 'Hiper c/colación', 'Pediátrico 1 - 2', 'Nada por boca',
+            //         'Lactante 1 - 2', 'Hipocalórico'
+            //     ]
+            ayuno: Boolean,
+            blandoMecanico: Boolean,
+            general: Boolean,
+            acompanante: Boolean,
+            diabetico: Boolean,
+            licuado: Boolean,
+            insuficienciaRenal: Boolean,
+            ricoEnResiduo: Boolean,
+            hepatoGastroProtectora: Boolean,
+            astringente: Boolean,
+            liquido01: Boolean,
+            sinSal: Boolean,
+            blandoSinCarne02: Boolean,
+            sinGluten: Boolean,
+            blandoConCarne03: Boolean,
+            todoCocido: Boolean,
+            individual: Boolean,
+            hiperConColacion: Boolean,
+            pediatrico1_2: Boolean,
+            nadaPorBoca: Boolean,
+            lactante1_2: Boolean,
+            hipocalorico: Boolean
+        },
+        preparadoEnteral: {
+            tipoPreparadoEnteral: String,
+            volumen24hs: String,
+            cantidadDeTomas: String
+        },
+        servicio: {
+            type: schemaUbicacion,
+            validar: {
+                modelo: require('../models/Ubicacion.js'),
+                resolver: true
+            }
+        },
+        activo: Boolean
     }],
-    /************ Controles **************/
-    controlSignosVitales: Boolean,
-    frecuenciaSignosVitales: String,
-    controlDiuresis: Boolean,
-    frecuenciaDiuresis: String,
-    controlPeso: Boolean,
-    frecuenciaPeso: String,
-    controlGlasgow: Boolean,
-    frecuenciaGlasgow: String,
-    /************ Cuidados generales **************/
-    rotarDecubito: Boolean,
-    frecuenciaRotarDecubito: String,
-    aspirarSecreciones: Boolean,
-    frecuenciaAspirarSecreciones: String,
-    kinesiologia: Boolean,
-    frecuenciaKinesiologia: String,
-    oxigeno: Boolean,
-    frecuenciaOxigeno: String,
-    /************ Cuidados especiales **************/
-    SNG: Boolean,
-    cualSNG: String,
-    sondaVesical: Boolean,
-    aislamiento: Boolean,
-    cualAislamiento: String,
-    /************ Dieta **************/
-    dietaAyuno: Boolean,
-    dietaBlandoMecanico: Boolean,
-    dietaGeneral: Boolean,
-    dietaAcompanante: Boolean,
-    dietaDiabetico: Boolean,
-    dietaLicuado: Boolean,
-    dietaInsuficienciaRenal: Boolean,
-    dietaRicoEnResiduo: Boolean,
-    dietaHepatoGastroProtectora: Boolean,
-    dietaAstringente: Boolean,
-    liquido01: Boolean,
-    sinSal: Boolean,
-    blandoSinCarne02: Boolean,
-    sinGluten: Boolean,
-    blandoConCarne03: Boolean,
-    todoCocido: Boolean,
-    individual: Boolean,
-    hiperConColacion: Boolean,
-    pediatrico1_2: Boolean,
-    nadaPorBoca: Boolean,
-    lactante1_2: Boolean,
-    hipocalorico: Boolean,
-    /************ Cuidados especiales **************/
-    tipoPreparadoEnteral: String,
-    volumen24hs: String,
-    cantidadDeTomas: String,
-    servicio: {
-        type: schemaUbicacion,
-        validar: {
-            modelo: require('../models/Ubicacion.js'),
-            resolver: true
-        }
-    }
+
 });
 
 schema.plugin(require('../mongoose/audit'));
