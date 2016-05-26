@@ -240,7 +240,7 @@ router.post('/internacion/:id', function(req, res, next) {
             // } else {
             //    asyncCallback(null, internacion);
             // }
-               asyncCallback(null, internacion);
+            asyncCallback(null, internacion);
         },
 
         // 3 Guarda la internacion modificada
