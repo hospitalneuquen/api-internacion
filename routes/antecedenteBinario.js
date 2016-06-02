@@ -18,7 +18,7 @@ var express = require('express'),
  *         description: Not found
  */
 router.get('/antecedenteBinario', function(req, res, next) {
-    AntecedenteBinario.find({}).sort({
+    AntecedenteBinario.find({$and: [{grupo: { $ne: "Alergias" }},{grupo: { $ne: "Estilo de vida" }}]}).sort({
         grupo: 1,
         nombre: 1
     }).exec(

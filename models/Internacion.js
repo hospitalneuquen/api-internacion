@@ -54,6 +54,7 @@ var schema = new Schema({
                 observaciones: String,
             }],
             ginecoobstetricos: {
+                anticoncepcion: String,
                 gestas: Number,
                 partos: Number,
                 cesareas: Number,
@@ -95,6 +96,9 @@ var schema = new Schema({
                 drogas: Boolean,
                 cualesDrogas: String,
                 drogaTiempo: String,
+                farmacos: Boolean,
+                cualesFarmacos: String,
+                farmacosTiempo: String,
                 actividadFisica: Boolean,
                 cualActividadFisica: String,
                 alimentacionSaludable: Boolean,
@@ -115,10 +119,24 @@ var schema = new Schema({
                 familiar: String,
                 problema: String,
                 observaciones: String,
+            }],
+            alergias: [{
+                tipoAlergia: String,
+                alergeno: String,
+                severidad: String,
+                reaccion: String,
+                observaciones: String,
+            }],
+            vacunas: [{
+                nombre: String,
+                aplicacion: String,
+                anio: Number,
+                observaciones: String,
             }]
         },
         estudiosPrevios: {
             pap: String,
+            fechaSerologiaPrevia: String,
             mamografia: String,
             otros: String,
         },
