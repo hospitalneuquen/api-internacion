@@ -246,7 +246,6 @@ router.post('/internacion/:id', function(req, res, next) {
         // 3 Guarda la internacion modificada
         function(internacion, asyncCallback) {
             internacion.audit(req.user);
-            console.log(internacion);
             internacion.save(function(err, internacion) {
                 asyncCallback(err, internacion);
             });
@@ -307,10 +306,9 @@ router.post('/internacion', function(req, res, next) {
     // if (data.pases && data.pases.length)
     //     data.pases[0].servicio._id = req.body.pases[0].servicio; // Necesario para 'validarServicio'
 
-    console.log(data);
     data.save(function(err, data) {
         if (err) return next(err);
-        console.log(data);
+
         res.json(data);
     });
 });

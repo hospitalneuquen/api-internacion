@@ -8,12 +8,15 @@ var schema = new Schema({
         //required: true,
     },
     indicaciones: [{
+        // idIndicaciones hace referencia a la indicacion de la cual se modifica
+        idIndicaciones: Schema.Types.ObjectId,
+        fechaHora: Date,
         tipo: {
             type: String,
             enum: [
                 'Plan Hidratación', 'Heparina o profilaxis', 'Protección gástrica',
                 'Otra medicación', 'Controles', 'Cuidados generales', 'Cuidados especiales',
-                'Dieta', 'Otra indicación'
+                'Dieta', 'Solicitud prestaciones', 'Otra indicación'
             ]
         },
         via: String,
@@ -21,31 +24,56 @@ var schema = new Schema({
             type: String,
             enum: ['24', '12', '8', '6', '4', 'unica']
         },
+        // opciones para el tipo Plan Hidratación
+        planHidratacion: {
+            tipoPlan: {
+                type: String,
+                enum: ['Parenteral', 'Enteral']
+            },
+            cantidad: String,
+            tipoSolucion: {
+                type: String,
+                enum: ['Solución fisiológica', 'Dextrosa', 'Ringer-Lactato']
+            },
+            agregados: [{
+                tipoAgregado:{
+                    type: String,
+                    enum: ['Ampollas de electrolitos', 'Polivitamínicos', 'Calcio', 'Otro']
+                },
+                descripcion: String,
+                posicion: Number
+
+            }]
+        },
+        // opciones para los tipos Heparina o profilaxis / Proteccion Gastrica / Otra medicacion / Antibióticos
         medicamento: {
             descripcion: {
                 type: String
             }
         },
+        // opciones para el tipo Controles
         controles: {
             tipo: {
                 type: String,
-                enum: ['Signos vitales', 'Diuresis', 'Peso', 'Glasgow']
+                enum: ['Signos vitales', 'Balance', 'Diuresis', 'Peso', 'Glasgow']
             }
             // signosVitales: Boolean,
             // diuresis: Boolean,
             // peso: Boolean,
             // glasgow: Boolean
         },
+        // opciones para el tipo Cuidados Generales
         cuidadosGenerales: {
             tipo: {
                 type: String,
-                enum: ['Rotar decubito', 'Aspirar secreciones', 'Kinesiología', 'Oxígeno']
+                enum: ['Rotar decubito', 'Aspirar secreciones', 'Kinesiología', 'Oxígeno', 'Cabecera 45º', 'Colchón aire']
             }
             // rotarDecubito: Boolean,
             // aspirarSecreciones: Boolean,
             // kinesiologia: Boolean,
             // oxigeno: Boolean
         },
+        // opciones para el tipo Cuidados especiales
         cuidadosEspeciales: {
             SNG: Boolean,
             cualSNG: String,
@@ -53,6 +81,7 @@ var schema = new Schema({
             aislamiento: Boolean,
             cualAislamiento: String
         },
+        // opciones para el tipo Dieta
         dieta: {
             type: String,
             // enum: [
@@ -84,13 +113,16 @@ var schema = new Schema({
             pediatrico1_2: Boolean,
             nadaPorBoca: Boolean,
             lactante1_2: Boolean,
-            hipocalorico: Boolean
+            hipocalorico: Boolean,
+            preparadoEnteral: {
+                tipoPreparadoEnteral: String,
+                volumen24hs: String,
+                cantidadDeTomas: String
+            },
         },
-        preparadoEnteral: {
-            tipoPreparadoEnteral: String,
-            volumen24hs: String,
-            cantidadDeTomas: String
-        },
+        // opciones para el tipo Otro
+        descripcion: String,
+        posicion: Number,
         servicio: {
             type: schemaUbicacion,
             validar: {
@@ -98,7 +130,11 @@ var schema = new Schema({
                 resolver: true
             }
         },
-        activo: Boolean
+        activo: {
+            type: Boolean,
+            default: true
+        }
+
     }],
 
 });
