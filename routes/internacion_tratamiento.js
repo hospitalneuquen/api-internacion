@@ -2,7 +2,8 @@ var express = require('express'),
     router = express.Router(),
     async = require('async'),
     Internacion = require('../models/Internacion.js'),
-    Tratamiento = require('../models/Tratamiento.js');
+    Tratamiento = require('../models/Tratamiento.js'),
+    TipoPrestacion = require('../models/TipoPrestacion.js');
 
 /**
  * @swagger
@@ -61,40 +62,105 @@ router.post('/internacion/:idInternacion/tratamiento/:idTratamiento*?', function
                     if (err) return asyncCallback(err);
                     if (!internacion) return asyncCallback(404);
 
-                    // Crea o modifica la prestacion
-                    var tratamiento;
-                    if (req.params.idTratamiento) { // Update
+                    var i = 0;
+                    // recorremos el tratamiento a ver si se ha solicitado
+                    // alguna prestacion, y de ser asi resolvemos los objetos
+                    if (req.body.indicaciones.length){
+                        async.each(req.body.indicaciones, function (indicacion, callback) {
+                            if (indicacion.prestaciones != undefined){
+                                TipoPrestacion.findOne({_id: indicacion.prestaciones.tipoPrestacion}, function (err, tipoPrestacion) {
+                                    if (err) next(err);
 
-                        tratamiento = internacion.tratamientos.find(function(i) {
-                            return i._id == req.params.idTratamiento;
+                                    indicacion.prestaciones.tipoPrestacion = tipoPrestacion;
+
+                                    // procesamos siguiente valor de la cola
+                                    callback();
+                                });
+                            }else{
+                                // procesamos siguiente valor de la cola
+                                callback();
+                            }
+                        }, function(err) {
+                            if (err) asyncCallback(err);
+
+                            asyncCallback(null, internacion);
                         });
-                        if (!tratamiento)
-                            return asyncCallback(404);
-
-                        // verificamos que el usuario a editar sea el usuario que
-                        // ha creado la evolucion, de lo contrario no tiene permisos
-                        if (tratamiento.createdBy.id != req.user.id){
-                            res.status(400).send({status:400, message: "No tiene permisos para editar el tratamiento", type:'internal'});
-                        }
-
-                        tratamiento.merge(req.body);
-                        tratamiento.validar('servicio', req.body.servicio);
-                    } else { // Insert
-                        if (!internacion.tratamientos)
-                            internacion.tratamientos = [];
-
-                        internacion.tratamientos.push(new Tratamiento(req.body));
-                        tratamiento = internacion.tratamientos[internacion.tratamientos.length - 1];
-
-                        tratamiento.validar('servicio', req.body.servicio);
+                        // async.each(req.body.indicaciones, function (indicacion, callback) {
+                        //     if (indicacion.prestaciones != undefined){
+                        //         // console.log("si",indicacion.prestaciones)
+                        //
+                        //         TipoPrestacion.findOne({_id: indicacion.prestaciones.tipoPrestacion}, function (err, tipoPrestacion) {
+                        //             if (err) next(err);
+                        //             indicacion.prestaciones.tipoPrestacion = tipoPrestacion;
+                        //             // tratamiento.indicaciones[i].prestaciones.tipoPrestacion.push(tipoPrestacion);
+                        //             // console.log(indicacion);
+                        //             // asyncCallback
+                        //
+                        //             console.log("si",indicacion.prestaciones)
+                        //             // iteramos el siguiente elemento
+                        //             callback();
+                        //         });
+                        //         // console.log(indicacion.prestaciones.tipoPrestacion);
+                        //     }
+                        //
+                        //
+                        // }, function (err) {
+                        //     console.log("yes");
+                        //     if (req.body.indicaciones.length){
+                        //         for (var i =0; i <req.body.indicaciones.length; i++ ){
+                        //             console.log(req.body.indicaciones[i].prestaciones.tipoPrestacion);
+                        //         }
+                        //     }
+                        //     // termina de recorre el each
+                        //     // asyncCallback(err, internacion);
+                        // });
+                    }else{
+                        asyncCallback(null, internacion);
                     }
 
-                    tratamiento.audit(req.user);
-
-                    asyncCallback(err, internacion, tratamiento);
                 });
             },
-            // 2. Guarda la internacion modificada
+            // 2. Si se han solicitado prestaciones
+            function (internacion, asyncCallback){
+
+                // Crea o modifica la prestacion
+                var tratamiento;
+                if (req.params.idTratamiento) { // Update
+
+                    tratamiento = internacion.tratamientos.find(function(i) {
+                        return i._id == req.params.idTratamiento;
+                    });
+                    if (!tratamiento)
+                        return asyncCallback(404);
+
+                    // verificamos que el usuario a editar sea el usuario que
+                    // ha creado la evolucion, de lo contrario no tiene permisos
+                    if (tratamiento.createdBy.id != req.user.id){
+                        res.status(400).send({status:400, message: "No tiene permisos para editar el tratamiento", type:'internal'});
+                    }
+
+                    tratamiento.merge(req.body);
+                    // tratamiento.validar('servicio', req.body.servicio);
+                } else { // Insert
+                    if (!internacion.tratamientos)
+                        internacion.tratamientos = [];
+
+                    internacion.tratamientos.push(new Tratamiento(req.body));
+                    tratamiento = internacion.tratamientos[internacion.tratamientos.length - 1];
+                }
+
+                // console.log(tratamiento);
+                tratamiento.validar('servicio', req.body.servicio);
+                tratamiento.audit(req.user);
+
+                // asyncCallback(err, internacion, tratamiento);
+
+                console.log(tratamiento);
+                // console.log(tratamiento.indicaciones[1].prestaciones);
+
+                asyncCallback(null, internacion, tratamiento);
+            },
+            // 3. Guarda la internacion modificada
             function(internacion, tratamiento, asyncCallback) {
                 internacion.audit(req.user);
 

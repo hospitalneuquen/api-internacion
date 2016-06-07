@@ -15,7 +15,7 @@ var mongoose = require('mongoose'),
     schemaValoracionEnfermeria = require('../schemas/ValoracionEnfermeria.js'),
     schemaValoracionMedica = require('../schemas/ValoracionMedica.js'),
     schemaUbicacion = require('../schemas/Ubicacion.js');
-    schemaSolicitudPrestaciones = require('../schemas/SolicitudPrestaciones.js');
+    // schemaSolicitudPrestaciones = require('../schemas/SolicitudPrestaciones.js');
 
 var schema = new Schema({
     paciente: {
@@ -149,7 +149,7 @@ var schema = new Schema({
     pases: [schemaPase],
     drenajes: [schemaDrenaje],
     evoluciones: [schemaEvolucion],
-    prestaciones: [schemaSolicitudPrestaciones],
+    // prestaciones: [schemaSolicitudPrestaciones],
     problemas: [schemaProblema],
     tratamientos: [schemaTratamiento],
     egreso: {
