@@ -1,6 +1,7 @@
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema,
-    schemaUbicacion = require('./Ubicacion.js');
+    schemaUbicacion = require('./Ubicacion.js'),
+    schemaSolicitudPrestaciones = require('../schemas/SolicitudPrestaciones.js');
 
 var schema = new Schema({
     fecha: {
@@ -75,11 +76,25 @@ var schema = new Schema({
         },
         // opciones para el tipo Cuidados especiales
         cuidadosEspeciales: {
-            SNG: Boolean,
-            cualSNG: String,
-            sondaVesical: Boolean,
-            aislamiento: Boolean,
-            cualAislamiento: String
+            sonda: {
+                tipo: {
+                    type: String,
+                    enum: ['SNG', 'SNY', 'Gastroenteritis']
+                },
+                accion: {
+                    type: String,
+                    enum: ['Colocación', 'Limpieza', 'Extracción']
+                }
+            },
+            // SNG: Boolean,
+            // cualSNG: String,
+            // sondaVesical: Boolean,
+            // aislamiento: Boolean,
+            aislamiento: {
+                type: String,
+                enum: ['Neutropénico', 'Contacto', 'Respiratorio']
+            },
+            // cualAislamiento: String
         },
         // opciones para el tipo Dieta
         dieta: {
@@ -122,6 +137,7 @@ var schema = new Schema({
                 cantidadDeTomas: String
             },
         },
+        prestaciones: schemaSolicitudPrestaciones,
         // opciones para el tipo Otro
         descripcion: String,
         posicion: Number,

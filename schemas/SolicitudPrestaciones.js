@@ -6,10 +6,10 @@ var mongoose = require('mongoose'),
     schemaTipoPrestacion = require('./TipoPrestacion.js');
 
 var schema = new Schema({
-    fechaHora: {
-        type: Date,
-        required: true,
-    },
+    // fechaHora: {
+    //     type: Date,
+    //     required: true,
+    // },
     prioridad: {
         type: String,
         enum: ['No prioritario','Urgente', 'Emergencia']
@@ -26,19 +26,19 @@ var schema = new Schema({
         }
     },
     texto: String,
-    servicio: {
-        type: schemaUbicacion,
-        validar: {
-            modelo: require('../models/Ubicacion.js'),
-            resolver: true
-        }
-    },
+    // servicio: {
+    //     type: schemaUbicacion,
+    //     validar: {
+    //         modelo: require('../models/Ubicacion.js'),
+    //         resolver: true
+    //     }
+    // },
     turnoFechaHora: {
         type: Date
     },
 });
 
-schema.plugin(require('../mongoose/audit'));
-schema.plugin(require('../mongoose/validar'));
+// schema.plugin(require('../mongoose/audit'));
+// schema.plugin(require('../mongoose/validar'));
 schema.plugin(require('mongoose-merge-plugin'));
 module.exports = schema;
