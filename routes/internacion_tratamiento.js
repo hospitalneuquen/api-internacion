@@ -65,7 +65,7 @@ router.post('/internacion/:idInternacion/tratamiento/:idTratamiento*?', function
                     // validamos que se haya cargado al menos una indicacion
                     if (typeof req.body.indicaciones == "undefined") {
                         // res.status(400).send({
-                        anyscCallback({
+                        asyncCallback({
                             status: 400,
                             message: "Debe cargar al menos una indicación para guardar el tratamiento.",
                             type: 'internal'
@@ -75,7 +75,7 @@ router.post('/internacion/:idInternacion/tratamiento/:idTratamiento*?', function
 
                     // recorremos el tratamiento a ver si se ha solicitado
                     // alguna prestacion, y de ser asi resolvemos los objetos
-                    if (typeof req.body.indicaciones != undefined && req.body.indicaciones.length) {
+                    if (typeof req.body.indicaciones != "undefined" && req.body.indicaciones.length) {
                         async.each(req.body.indicaciones, function(indicacion, callback) {
                             if (indicacion.prestaciones != undefined) {
                                 TipoPrestacion.findOne({
