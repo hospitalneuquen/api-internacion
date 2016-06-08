@@ -1,7 +1,7 @@
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema,
     schemaUbicacion = require('./Ubicacion.js'),
-    schemaSolicitudPrestaciones = require('../schemas/SolicitudPrestaciones.js');
+    schemaSolicitudPrestaciones = require('./SolicitudPrestaciones.js');
 
 var schema = new Schema({
     fecha: {
