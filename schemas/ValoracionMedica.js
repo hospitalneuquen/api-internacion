@@ -20,7 +20,13 @@ var schema = new Schema({
         rx: String,
         otros: String,
     },
-    impresionDiagnostica: String,
+    impresionDiagnostica: {
+        listaPositivos: [String],
+        listaSindromes: [String],
+        listaHipotesis: [String],
+        planDiagnostico: String,
+        planTerapeutico: String,
+    },
     enfermedadActual: String,
 });
 
