@@ -50,6 +50,17 @@ var schema = new Schema({
             default: 0
         },
     },
+    riesgoUPP: {
+        estadoFisico: Number,
+        estadoMental: Number,
+        actividad: Number,
+        movilidad: Number,
+        incontinencia: Number,
+        total: {       // 5-9 = Alto, 10-12 Medio, 13-16 Bajo
+            type: Number,
+            default: 0
+        },
+    },
     glasgowOcular: Number,
     glasgowVerbal: Number,
     glasgowMotor: Number,
