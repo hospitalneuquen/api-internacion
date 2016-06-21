@@ -64,6 +64,7 @@ var schema = new Schema({
     glasgowOcular: Number,
     glasgowVerbal: Number,
     glasgowMotor: Number,
+    glasgowTotal: Number,
     dolorValoracion: {
         analgesiaAutomedicacion: Boolean,
         ansioliticosAutomedicacion: Boolean,
