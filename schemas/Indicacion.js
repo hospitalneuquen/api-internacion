@@ -5,7 +5,7 @@ var mongoose = require('mongoose'),
 
 var schema = new Schema({
     // idIndicaciones hace referencia a la indicacion de la cual se modifica
-    idIndicaciones: Schema.Types.ObjectId,
+    idIndicacion: Schema.Types.ObjectId,
     fechaHora: Date,
     tipo: {
         type: String,

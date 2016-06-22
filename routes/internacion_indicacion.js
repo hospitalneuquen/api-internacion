@@ -269,7 +269,21 @@ router.post('/internacion/:idInternacion/indicacion/:idIndicacion*?', function(r
                     asyncCallback(null, internacion, indicacion);
                 }
             },
-            // 3. Guarda la internacion modificada
+            // 3. Verificamos si la indicacion tiene idIndicacion padre
+            // y si esta activa aun, entonces la desactivada
+            function(internacion, indicacion, asyncCallback) {
+                if (typeof indicacion.idIndicacion != "undefined"){
+                    for (var i = 0; i < internacion.indicaciones.length; i++){
+                        if (indicacion.idIndicacion.equals(internacion.indicaciones[i]._id)){
+                            internacion.indicaciones[i].activo = false;
+                        }
+                    }
+                }
+
+                asyncCallback(null, internacion, indicacion);
+            },
+
+            // 4. Guarda la internacion modificada
             function(internacion, indicacion, asyncCallback) {
                 internacion.audit(req.user);
 
