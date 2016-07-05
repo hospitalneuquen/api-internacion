@@ -1,9 +1,14 @@
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema,
-    schemaDrenaje = require('../schemas/Drenaje.js');
+    schemaDrenaje = require('../schemas/Drenaje.js'),
+    schemaIndicacion = require('../schemas/Indicacion.js'),
     schemaUbicacion = require('../schemas/Ubicacion.js');
 
 var schema = new Schema({
+    idIndicacion: {
+        type: Schema.Types.ObjectId,
+        ref: 'Indicacion'
+    },
     fechaHora: {
         type: Date,
         required: true,
@@ -38,6 +43,7 @@ var schema = new Schema({
     popliteo: Number,
     pedio: Number,
     observacionesCirculacion: String,
+    // riesgo de caidas
     riesgoCaida: {
         caidasPrevias: Number,
         marcha: Number,
@@ -50,17 +56,19 @@ var schema = new Schema({
             default: 0
         },
     },
+    // ulceras por presion
     riesgoUPP: {
         estadoFisico: Number,
         estadoMental: Number,
         actividad: Number,
         movilidad: Number,
         incontinencia: Number,
-        total: {       // 5-9 = Alto, 10-12 Medio, 13-16 Bajo
+        total: { // 5-9 = Alto, 10-12 Medio, 13-16 Bajo
             type: Number,
             default: 0
         },
     },
+    // glasgow
     glasgowOcular: Number,
     glasgowVerbal: Number,
     glasgowMotor: Number,
@@ -73,9 +81,9 @@ var schema = new Schema({
             dosisDiaria: Number,
             frecuenciaDiaria: Number,
             via: {
-                    type: String,
-                    enum: ['endovenosa', 'subcutánea', 'intratecal', 'oral'],
-                 },
+                type: String,
+                enum: ['endovenosa', 'subcutánea', 'intratecal', 'oral'],
+            },
         }],
         intensidad: Number,
         punzante: Boolean,
@@ -88,6 +96,7 @@ var schema = new Schema({
         dolorLocalizacion: String,
         observacionesDolor: String,
     },
+    // balances liquidos
     ingresos: {
         ph: Number,
         ph2: Number,

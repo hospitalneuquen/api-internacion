@@ -147,6 +147,23 @@ var schema = new Schema({
         //     ocupacion: String,
         // },
     },
+    aislamiento: [{
+        tipo: {
+            type: String,
+            enum: ['Neutropénico', 'Contacto', 'Respiratorio']
+        },
+        accion: {
+            type: String,
+            enum: ['Aislar', 'Quitar aislamiento']
+        },
+        fechaDesde: {
+            type: Date,
+            // required: true,
+        },
+        fechaHasta: {
+            type: Date
+        }
+    }],
     pases: [schemaPase],
     drenajes: [schemaDrenaje],
     evoluciones: [schemaEvolucion],
