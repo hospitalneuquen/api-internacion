@@ -23,9 +23,14 @@ var schema = new Schema({
     impresionDiagnostica: {
         listaPositivos: [String],
         listaSindromes: [String],
+        listaSindromesSignos: [{
+            nombreSindrome: String,
+            listaSignos: [String],
+        }],
         listaHipotesis: [{
             nombre: String,
             porcentaje: Number,
+            confirmada: Boolean,
         }],
         planDiagnostico: String,
         planTerapeutico: String,
