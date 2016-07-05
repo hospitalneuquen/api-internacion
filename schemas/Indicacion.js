@@ -22,44 +22,59 @@ var schema = new Schema({
     },
     // opciones para el tipo Plan Hidratación
     planHidratacion: {
-        // tipoPlan: {
-        //     type: String,
-        //     enum: ['Parenteral', 'Enteral']
-        // },
-        // cantidad: String,
-        // tipoSolucion: {
-        //     type: String,
-        //     enum: ['Solución fisiológica', 'Dextrosa', 'Ringer-Lactato']
-        // },
-        // soluciones: [{
-        //     tipoSolucion: {
-        //         type: String,
-        //         enum: ['Solución fisiológica', 'Dextrosa', 'Ringer-Lactato']
-        //     },
-        //     dilucion: Number,
-        //     cantidad: Number,
-        //     // graduacion: Number
-        // }],
-        solucionFisiologica: {
-            cantidad: Number
-        },
-        dextrosa: {
-            cantidad: Number,
-            dilucion: Number
-        },
-        ringerLactato: {
-            cantidad: Number
-        },
-        cantidadFrascos: Number,
-        agregados: [{
-            tipoAgregado: {
+        enteralParenteral: {
+            tipo: {
                 type: String,
-                enum: ['Ampollas de electrolitos', 'Polivitamínicos', 'Calcio', 'Otro']
+                enum: ['Parenteral', 'Enteral']
             },
+            solucionFisiologica: {
+                cantidad: Number,
+                frascos: [Number]
+            },
+            dextrosa: {
+                cantidad: Number,
+                dilucion: Number,
+                frascos: [Number]
+            },
+            ringerLactato: {
+                cantidad: Number,
+                frascos: [Number]
+            },
+            // si es parenteral mostraremos la via
+            tipoVia: {
+                type: String,
+                enum: ['Periférica', 'Central']
+            },
+            // si es parenteral mostraremos la velocidad
+            velocidadInfunsion: {
+                velocidad: Number,
+                unidad: {
+                    type: String,
+                    enum: ['ml/hora', 'gotas x minuto']
+                }
+            },
+            // si es enteral mostraremos la sonda
+            sonda: {
+                type: String,
+                enum: ['SNG', 'SNY', 'Gastrostomías', 'Ileostomías']
+            },
+            // si es enteral mostrar durante cuanto tiempo se debe pasar
+            pasarDurante: Number,
+            agregados: [{
+                tipoAgregado: {
+                    type: String,
+                    enum: ['Ampollas de electrolitos', 'Polivitamínicos', 'Calcio', 'Otro']
+                },
+                descripcion: String,
+                posicion: Number,
+                frascos: [Number]
+            }],
+            esExpansion: Boolean
+        },
+        oral: {
             descripcion: String,
-            posicion: Number,
-            frascos: [Number]
-        }]
+            cantidad: Number
+        }
     },
     // opciones para los tipos Heparina o profilaxis / Proteccion Gastrica / Otra medicacion / Antibióticos
     medicamento: {
@@ -83,7 +98,11 @@ var schema = new Schema({
         oxigeno: {
             respiracion: {
                 type: String,
-                enum: ['Mascara', 'Bigotera']
+                enum: ['Bigotera', 'Mascara', 'Reservorio']
+            },
+            tipoReservorio: {
+                type: String,
+                enum: ['AGO', 'Venturi']
             },
             cantidad: Number
         }
@@ -92,12 +111,12 @@ var schema = new Schema({
     cuidadosEspeciales: {
         tipo: {
             type: String,
-            enum: ['Sonda', 'Aislamiento']
+            enum: ['Sonda', 'Aislamiento', 'Drenajes']
         },
         sonda: {
             tipo: {
                 type: String,
-                enum: ['SNG', 'SNY', 'Gastroenteritis', 'Ileostomías']
+                enum: ['SNG', 'SNY', 'Gastrostomías', 'Ileostomías']
             },
             accion: {
                 type: String,
@@ -112,6 +131,13 @@ var schema = new Schema({
             accion: {
                 type: String,
                 enum: ['Aislar', 'Quitar aislamiento']
+            }
+        },
+        drenajes: {
+            idDrenaje: Schema.Types.ObjectId,
+            accion: {
+                type: String,
+                enum: ['Limpieza', 'Extracción']
             }
         }
     },
@@ -140,24 +166,43 @@ var schema = new Schema({
             nadaPorBoca: Boolean,
             lactante1_2: Boolean,
             hipocalorico: Boolean,
-            preparadoOral: Boolean
+            soporteOral: Boolean
         },
-        cantidadPreparadoOral: Number,
-        preparadoEnteral: {
+        cantidadSoporteOral: Number,
+        nutricionEnteral: {
             tipoPreparado: {
                 // agregar objectId de una ABM de preparados a futuro
                 descripcion: String,
             },
             cantidad: Number,
-            agregados: [{
-                descripcion: String,
-                cantidad: Number,
-            }]
+            velocidadInfunsion: {
+                velocidad: Number,
+                unidad: {
+                    type: String,
+                    enum: ['ml/hora', 'gotas x minuto']
+                }
+            },
+            sonda: {
+                type: String,
+                enum: ['SNG', 'SNY', 'Gastrostomías', 'Ileostomías']
+            }
+            // agregados: [{
+            //     descripcion: String,
+            //     cantidad: Number,
+            // }]
         },
+        soporteOral: {
+            tipoPreparado: {
+                // agregar objectId de una ABM de preparados a futuro
+                descripcion: String,
+            },
+            cantidad: Number,
+        }
     },
     prestaciones: schemaSolicitudPrestaciones,
     // opciones para el tipo Otro
     descripcion: String,
+    observacionesGenerales: String,
     posicion: Number,
     servicio: {
         type: schemaUbicacion,
