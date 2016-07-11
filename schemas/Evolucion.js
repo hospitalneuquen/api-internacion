@@ -5,6 +5,10 @@ var mongoose = require('mongoose'),
     schemaUbicacion = require('../schemas/Ubicacion.js');
 
 var schema = new Schema({
+    idEvolucion: {
+        type: Schema.Types.ObjectId,
+        ref: 'Evolucion'
+    },
     idIndicacion: {
         type: Schema.Types.ObjectId,
         ref: 'Indicacion'
@@ -28,21 +32,25 @@ var schema = new Schema({
         }
     },
     // Valores para tipo 'enfemero'
-    pulso: Number,
-    tensionSistolica: Number,
-    tensionDiastolica: Number,
-    temperatura: Number,
-    respiracion: Number,
-    spo2: Number,
-    peso: Number,
-    // ****************************** Necesidad de Circulación ******************************
-    TA: Number,
-    FC: Number,
-    carotideo: Number,
-    radial: Number,
-    popliteo: Number,
-    pedio: Number,
-    observacionesCirculacion: String,
+    signosVitales: {
+        pulso: Number,
+        tensionSistolica: Number,
+        tensionDiastolica: Number,
+        temperatura: Number,
+        respiracion: Number,
+        spo2: Number,
+        peso: Number,
+        // ****************************** Necesidad de Circulación ******************************
+        circulacion: {
+            TA: Number,
+            FC: Number,
+            carotideo: Number,
+            radial: Number,
+            popliteo: Number,
+            pedio: Number,
+            observacionesCirculacion: String
+        }
+    },
     // riesgo de caidas
     riesgoCaida: {
         caidasPrevias: Number,
@@ -69,10 +77,12 @@ var schema = new Schema({
         },
     },
     // glasgow
-    glasgowOcular: Number,
-    glasgowVerbal: Number,
-    glasgowMotor: Number,
-    glasgowTotal: Number,
+    glasgow: {
+        glasgowOcular: Number,
+        glasgowVerbal: Number,
+        glasgowMotor: Number,
+        glasgowTotal: Number
+    },
     dolorValoracion: {
         analgesiaAutomedicacion: Boolean,
         ansioliticosAutomedicacion: Boolean,
@@ -97,37 +107,83 @@ var schema = new Schema({
         observacionesDolor: String,
     },
     // balances liquidos
-    ingresos: {
-        ph: Number,
-        ph2: Number,
-        atb: Number,
-        hemo: Number,
-        np: Number,
-        prep: Number,
-        h2o: Number
-    },
-    egresos: {
-        lavadoVesicalI: Number,
-        lavadoVesicalE: Number,
-        diuresis: Number,
-        catarsis: Number,
-        sng: Number,
-        drenajes: [{
-            idDrenaje: {
+    balance : {
+        ingresos: [{
+            idIndicacion: {
                 type: Schema.Types.ObjectId,
-                ref: 'Drenaje'
+                ref: 'Indicacion'
             },
-            caracteristicaLiquido: {
-                type: String,
-                enum: ['Hemático', 'Seroso', 'Serohemático', 'Purulento']
+            hidratacion: {
+                enteral: {
+                    solucionFisiologica: Number,
+                    dextrosa: Number,
+                    ringerLactato: Number
+                },
+                parenteral: {
+                    solucionFisiologica: Number,
+                    dextrosa: Number,
+                    ringerLactato: Number
+                },
+                oral: {
+                    cantidad: Number
+                }
             },
-            cantidad: Number,
-            observaciones: String
+            medicamentos: {
+                descripcion: String,
+                cantidad: Number
+            },
+            hemoterapia: {
+                descripcion: String,
+                cantidad: Number
+            },
+            nutricion: {
+                enteral: {
+                    cantidad: Number
+                },
+                soporteOral: {
+                    cantidad: Number
+                }
+            }
+            // PH: todos los planes de hidratacion
+            // ATB: todos los antibioticos por EV
+            // HEMO: tranfusiones sanguineas
+            // NP: Nutricion parenteral: Definir
+            // prep: Preparados enterales
+            // h20: Plan hidratacion oral
+            // Soporte oral: Nutricion->soporte oral
+            // ph: Number,
+            // ph2: Number,
+            // atb: Number,
+            // hemo: Number,
+            // np: Number,
+            // prep: Number,
+            // h2o: Number
         }],
-        // drenajes2: Number,
-        ostomias: Number,
-        ostomias2: Number
+        egresos: {
+            lavadoVesicalI: Number,
+            lavadoVesicalE: Number,
+            diuresis: Number,
+            catarsis: Number,
+            sng: Number,
+            sny: Number,
+            drenajes: [{
+                idDrenaje: {
+                    type: Schema.Types.ObjectId,
+                    ref: 'Drenaje'
+                },
+                caracteristicaLiquido: {
+                    type: String,
+                    enum: ['Hemático', 'Seroso', 'Serohemático', 'Purulento']
+                },
+                cantidad: Number,
+                observaciones: String
+            }],
+            // drenajes2: Number,
+            ostomias: Number,
+            ostomias2: Number
+        },
     },
+
     flebitis: Boolean,
     observacionesFlebitis: String
 });
