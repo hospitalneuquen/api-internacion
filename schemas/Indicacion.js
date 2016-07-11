@@ -86,7 +86,7 @@ var schema = new Schema({
     controles: {
         tipo: {
             type: String,
-            enum: ['Signos vitales', 'Balance', 'Diuresis', 'Peso', 'Glasgow']
+            enum: ['Signos vitales', 'Balance', 'Diuresis', 'Peso', 'Glasgow', 'Ulceras por presión', 'Riesgo caídas', 'Nutrición']
         }
     },
     // opciones para el tipo Cuidados Generales
@@ -166,10 +166,10 @@ var schema = new Schema({
             nadaPorBoca: Boolean,
             lactante1_2: Boolean,
             hipocalorico: Boolean,
-            soporteOral: Boolean
+            // soporteOral: Boolean
         },
-        cantidadSoporteOral: Number,
-        nutricionEnteral: {
+        // cantidadSoporteOral: Number,
+        enteral: {
             tipoPreparado: {
                 // agregar objectId de una ABM de preparados a futuro
                 descripcion: String,
