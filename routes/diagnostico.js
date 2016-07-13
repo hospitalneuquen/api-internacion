@@ -1,6 +1,7 @@
 var express = require('express'),
     router = express.Router(),
-    Diagnostico = require('../models/Diagnostico.js');
+    Diagnostico = require('../models/Diagnostico.js'),
+    Utils = require("../utils/Utils.js");
 
 /**
  * @swagger
@@ -88,26 +89,43 @@ router.get('/diagnostico/codificadores', function(req, res, next) {
 router.get('/diagnostico/:idPadre*?', function(req, res, next) {
     var conditions = {};
 
-    if (req.params.idPadre) {
+    if (req.query.idPadre) {
         conditions.idPadre = {
-            "$eq": parseInt(req.params.idPadre)
+            "$eq": parseInt(req.query.idPadre)
         }
     }
 
+    // if (req.query.nombre) {
+    //     // conditions["score"] = {
+    //     //     "$meta": "textScore"
+    //     // };
+    //     conditions["$text"] = {
+    //         "$search": req.query.nombre
+    //         // ,"language": 'none'
+    //         // ,            "$diacriticSensitive": true
+    //     };
+    // }
+
+    // Las busquedas full text de MongoDB no nos funcionaron, por lo tanto
+    // -momentaneamente- antes de incluir ElasticSearch vamos a filtraron los
+    // strings con la libreria que agregamos en utils/Utils.js para crear
+    // patrones para poder buscar mediante expresiones regulares
+    // 13/07 Manu
     if (req.query.nombre) {
-        conditions["$text"] = {
-            "$search" : req.query.nombre
-        }
+        // conditions.nombre = new RegExp(req.query.nombre, "i")
+        conditions["nombre"] = {
+            "$regex": Utils.makePattern(req.query.nombre)
+        };
     }
 
     var query = Diagnostico.find(conditions);
 
     query.limit(100);
-    query.sort({nombre: 1});
-
+    query.sort({
+        nombre: 1
+    });
     query.exec(function(err, data) {
         if (err) return next(err);
-
         res.json(data);
     });
 

@@ -17,8 +17,7 @@ var schema = new Schema({
     },
     diagnosticoTexto: String,
     descripcion: {
-        type: String,
-        required: true,
+        type: String
     },
     fechaDesde: {
         type: Date,
