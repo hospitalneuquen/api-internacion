@@ -15,4 +15,6 @@ var schema = new Schema({
     }
 });
 
+schema.index({ codigo: 'text', nombre: 'text'});
+
 module.exports = schema;

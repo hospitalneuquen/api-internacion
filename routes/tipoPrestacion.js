@@ -1,6 +1,7 @@
 var express = require('express'),
     router = express.Router(),
-    TipoPrestacion = require('../models/TipoPrestacion.js');
+    TipoPrestacion = require('../models/TipoPrestacion.js'),
+    Utils = require("../utils/Utils.js");
 
 /**
  * @swagger
@@ -67,12 +68,21 @@ router.get('/tipoPrestacion/:id*?', function(req, res, next) {
         if (!req.query.nombre)
             return next(400);
 
-        var query = TipoPrestacion.find({});
+        var conditions = "";
 
         if (req.query.nombre){
-            query.where('nombre').regex(new RegExp(req.query.nombre.toLowerCase()));
-            // query.where('grupo').regex(new RegExp(req.query.nombre.toLowerCase()));
+            // query.where('nombre').regex(new RegExp(req.query.nombre.toLowerCase()));
+            conditions["nombre"] = {
+                "$regex": Utils.makePattern(req.query.nombre)
+            };
         }
+
+        var query = TipoPrestacion.find(conditions);
+
+        query.limit(100);
+        query.sort({
+            nombre: 1
+        });
 
         query.exec(function(err, data) {
             if (err) return next(err);
