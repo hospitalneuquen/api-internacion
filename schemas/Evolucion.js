@@ -183,7 +183,6 @@ var schema = new Schema({
             ostomias2: Number
         },
     },
-
     flebitis: Boolean,
     observacionesFlebitis: String
 });

@@ -86,7 +86,7 @@ var schema = new Schema({
     controles: {
         tipo: {
             type: String,
-            enum: ['Signos vitales', 'Balance', 'Diuresis', 'Peso', 'Glasgow', 'Ulceras por presión', 'Riesgo caídas', 'Nutrición']
+            enum: ['Signos vitales', 'Balance', 'Diuresis', 'Peso', 'Glasgow', 'Ulceras por presión', 'Riesgo caídas', 'Nutrición', 'Valoración del dolor']
         }
     },
     // opciones para el tipo Cuidados Generales
