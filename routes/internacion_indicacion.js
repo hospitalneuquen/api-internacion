@@ -190,13 +190,13 @@ router.post('/internacion/:idInternacion/indicacion/:idIndicacion*?', function(r
                     if (typeof req.body.medicamento == "undefined") {
                         asyncCallback( res.status(400).send({status:400, message: "Debe indicar el medicamento y la frecuencia", type:'internal'}));
                     }
-                    if (typeof req.body.via == "undefined" || req.body.via == '') {
+                    if (typeof req.body.via == "undefined" || req.body.via === '') {
                         asyncCallback(res.status(400).send({status: 400,
                             message: "Debe indicar la vía",
                             type: 'internal'
                         }));
                     }
-                    if (typeof req.body.frecuencia == "undefined" || req.body.frecuencia == '') {
+                    if (typeof req.body.frecuencia == "undefined" || req.body.frecuencia === '') {
                         asyncCallback({
                             status: 400,
                             message: "Debe indicar la frecuencia",
@@ -211,7 +211,7 @@ router.post('/internacion/:idInternacion/indicacion/:idIndicacion*?', function(r
                             type: 'internal'
                         }));
                     }
-                    if (typeof req.body.cuidadosGenerales.tipo == "undefined" || req.body.cuidadosGenerales.tipo == '') {
+                    if (typeof req.body.cuidadosGenerales.tipo == "undefined" || req.body.cuidadosGenerales.tipo === '') {
                         asyncCallback(res.status(400).send({
                             status: 400,
                             message: "Debe indicar el tipo de cuidado a realizar",
@@ -222,14 +222,18 @@ router.post('/internacion/:idInternacion/indicacion/:idIndicacion*?', function(r
                     //     asyncCallback({status:400, message: "Debe indicar la frecuencia", type:'internal'});
                     // }
                 } else if (req.body.tipo == 'Cuidados especiales') {} else if (req.body.tipo == 'Nutrición') {} else if (req.body.tipo == 'Solicitud prestaciones') {
-                    if (typeof req.body.prestacion.tipoPrestacion == "undefined" || req.body.prestacion.tipoPrestacion == '') {
+                    //MANU, acá modifiqué req.body.prestacion por req.body.prestaciones, de todas formas en este momento no entra acá porque no está habilitada la opción (línea 111 de iIndicacion.js)
+                    // if (typeof req.body.prestaciones == "undefined") {
+                    //     req.body.prestaciones = {};
+                    // }
+                    if (typeof req.body.prestaciones.tipoPrestacion == "undefined" || req.body.prestaciones.tipoPrestacion === '') {
                         asyncCallback(res.status(400).send({
                             status: 400,
                             message: "Debe indicar el tipo de indicación",
                             type: 'internal'
                         }));
                     }
-                    if (typeof req.body.prestacion.texto == "undefined" || req.body.prestacion.texto == '') {
+                    if (typeof req.body.prestaciones.texto == "undefined" || req.body.prestaciones.texto === '') {
                         asyncCallback(res.status(400).send({
                             status: 400,
                             message: "Debe indicar el texto de la indicación",
@@ -237,14 +241,14 @@ router.post('/internacion/:idInternacion/indicacion/:idIndicacion*?', function(r
                         }));
                     }
                 } else if (req.body.tipo == 'Otra indicación') {
-                    if (typeof req.body.descripcion == "undefined" || req.body.descripcion == '') {
+                    if (typeof req.body.descripcion == "undefined" || req.body.descripcion === '') {
                         asyncCallback(res.status(400).send({
                             status: 400,
                             message: "Debe indicar la descripción",
                             type: 'internal'
                         }));
                     }
-                    if (typeof req.body.frecuencia == "undefined" || req.body.frecuencia == '') {
+                    if (typeof req.body.frecuencia == "undefined" || req.body.frecuencia === '') {
                         asyncCallback({
                             status: 400,
                             message: "Debe indicar la frecuencia",
@@ -271,17 +275,20 @@ router.post('/internacion/:idInternacion/indicacion/:idIndicacion*?', function(r
 
                     indicacion.merge(req.body);
                     indicacion.validar('servicio', req.body.servicio);
+
                 } else { // Insert
                     if (!internacion.indicaciones)
                         internacion.indicaciones = [];
 
-                    var indicacion = new Indicacion(req.body)
-
+                    indicacion = new Indicacion(req.body);
                     indicacion.validar('servicio', req.body.servicio);
+                    indicacion.validar('prestaciones', req.body.prestaciones);
                     internacion.indicaciones.push(indicacion);
+
                 }
 
                 asyncCallback(err, internacion, indicacion);
+
             });
         },
         // 2. Guardamos el tipo de prestacion en caso de que la
