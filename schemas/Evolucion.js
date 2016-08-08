@@ -183,8 +183,10 @@ var schema = new Schema({
             ostomias2: Number
         },
     },
-    flebitis: Boolean,
-    observacionesFlebitis: String
+    flebitis: {
+        grado: Number,
+        observacionesFlebitis: String
+    }
 });
 
 schema.plugin(require('../mongoose/audit'));

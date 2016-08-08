@@ -15,10 +15,13 @@ var schema = new Schema({
         //     'Nutrición', 'Solicitud prestaciones', 'Otra indicación'
         // ]
     },
+    // valores para via: SC = Subcutanea / EV = Endovenosa / VO = Via oral
+    // IN = Inhalatoria / SNG = Sonda nasogastrica / IM = Intramuscular
+    // TD = Transdermico
     via: String,
     frecuencia: {
         type: String,
-        enum: ['24', '12', '8', '6', '4', 'unica']
+        enum: ['24', '12', '8', '6', '4', '2', '1', 'unica', 'rescates']
     },
     // opciones para el tipo Plan Hidratación
     planHidratacion: {
@@ -105,6 +108,12 @@ var schema = new Schema({
                 enum: ['AGO', 'Venturi']
             },
             cantidad: Number
+        },
+        rotarDecubito: {
+            posiciones: {
+                type: String,
+                enum: ['Izquierda', 'Derecha'] // TODO: Definir
+            }
         }
     },
     // opciones para el tipo Cuidados especiales
@@ -120,7 +129,7 @@ var schema = new Schema({
             },
             accion: {
                 type: String,
-                enum: ['Colocación', 'Limpieza', 'Extracción']
+                enum: ['Colocación', 'Limpieza', 'Extracción', 'A débito']
             }
         },
         aislamiento: {
