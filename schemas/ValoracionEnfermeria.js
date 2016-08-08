@@ -147,6 +147,11 @@ var schema = new Schema({
     dudasExpresadas: String,
     actividadesHabituales: String,
     observacionesAprender: String,
+    // flebitis
+    flebitis: {
+        grado: Number,
+        observacionesFlebitis: String
+    },
     // ****************************** Observaciones Generales ******************************
     observacionesGenerales: String,
     servicio: {

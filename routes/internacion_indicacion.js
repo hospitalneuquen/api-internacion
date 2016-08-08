@@ -221,7 +221,11 @@ router.post('/internacion/:idInternacion/indicacion/:idIndicacion*?', function(r
                     // if (typeof req.body.frecuencia == "undefined" || req.body.frecuencia == ''){
                     //     asyncCallback({status:400, message: "Debe indicar la frecuencia", type:'internal'});
                     // }
-                } else if (req.body.tipo == 'Cuidados especiales') {} else if (req.body.tipo == 'Nutrición') {} else if (req.body.tipo == 'Solicitud prestaciones') {
+                } else if (req.body.tipo == 'Cuidados especiales') {
+
+                } else if (req.body.tipo == 'Nutrición') {
+
+                } else if (req.body.tipo == 'Solicitud prestaciones') {
                     //MANU, acá modifiqué req.body.prestacion por req.body.prestaciones, de todas formas en este momento no entra acá porque no está habilitada la opción (línea 111 de iIndicacion.js)
                     // if (typeof req.body.prestaciones == "undefined") {
                     //     req.body.prestaciones = {};
@@ -282,7 +286,7 @@ router.post('/internacion/:idInternacion/indicacion/:idIndicacion*?', function(r
 
                     indicacion = new Indicacion(req.body);
                     indicacion.validar('servicio', req.body.servicio);
-                    indicacion.validar('prestaciones', req.body.prestaciones);
+                    // indicacion.validar('prestaciones', req.body.prestaciones);
                     internacion.indicaciones.push(indicacion);
 
                 }
@@ -296,11 +300,17 @@ router.post('/internacion/:idInternacion/indicacion/:idIndicacion*?', function(r
         function(internacion, indicacion, asyncCallback) {
             if (typeof indicacion.prestaciones !== "undefined") {
                 TipoPrestacion.findOne({
-                    _id: indicacion.prestaciones.tipoPrestacion
+                    // _id: indicacion.prestaciones.tipoPrestacion
+                    _id: req.body.prestaciones.tipoPrestacion
                 }, function(err, tipoPrestacion) {
                     if (err) asyncCallback(err, internacion, indicacion);
 
-                    indicacion.prestaciones.tipoPrestacion = tipoPrestacion;
+                    // buscamos la indicacion y asignamos el tipo de prestacion
+                    for (var i = 0; i < internacion.indicaciones.length; i++) {
+                        if (indicacion._id.equals(internacion.indicaciones[i]._id)) {
+                            internacion.indicaciones[i].prestaciones.tipoPrestacion = tipoPrestacion;
+                        }
+                    }
 
                     asyncCallback(err, internacion, indicacion);
                 });
