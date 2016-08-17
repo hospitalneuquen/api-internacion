@@ -1,18 +1,23 @@
 var mongoose = require('mongoose'),
-    Schema = mongoose.Schema;
+    Schema = mongoose.Schema,
+    schemaDolor = require('../schemas/Dolor.js'),
+    schemaRiesgoCaidas = require('../schemas/RiesgoCaidas.js'),
+    schemaRiesgoUPP = require('../schemas/RiesgoUPP.js'),
+    schemaFlebitis = require('../schemas/Flebitis.js'),
+    schemaGlasgow = require('../schemas/Glasgow.js');
 
 var schema = new Schema({
-    // ****************************** Valoración inicial médica *****************************
-    enfermedadActualAntecedentes: String,
-    otrosAntecedentes: String,
-    medicaciones: String,
-    examenesTraidos: String,
-    examenFisico: String,
-    ECG: String,
-    rxTorax: String,
-    otrosExamenes: String,
-    impresionDiagnostica: String,
-    conducta: String,
+    // // ****************************** Valoración inicial médica *****************************
+    // enfermedadActualAntecedentes: String,
+    // otrosAntecedentes: String,
+    // medicaciones: String,
+    // examenesTraidos: String,
+    // examenFisico: String,
+    // ECG: String,
+    // rxTorax: String,
+    // otrosExamenes: String,
+    // impresionDiagnostica: String,
+    // conducta: String,
 
     // ****************************** Necesidad de Oxigenación ******************************
     FR: Number,
@@ -26,6 +31,16 @@ var schema = new Schema({
     secrecionesColor: String,
     musculosCuales: String,
     observacionesOxigenacion: String,
+    // ****************************** Necesidad de Circulación ******************************
+    TA: Number,
+    tensionSistolica: Number,
+    tensionDiastolica: Number,
+    FC: Number,
+    carotideo: Number,
+    radial: Number,
+    popliteo: Number,
+    pedio: Number,
+    observacionesCirculacion: String,
     // ****************************** Necesidad de Nutrición ******************************
     peso: Number,
     talla: Number,
@@ -80,6 +95,8 @@ var schema = new Schema({
     color: String,
     higiene: String,
     higieneAyuda: Boolean,
+    flebitis: Boolean,
+    valoracionFlebitis: schemaFlebitis,
     edemas: Boolean,
     edemasLocalizacion: String,
     mucosasLesiones: Boolean,
@@ -116,10 +133,18 @@ var schema = new Schema({
     ETS: Boolean,
     riesgoCardiovascular: Boolean,
     otrosDescriba: String,
+    riesgoCaidas:Boolean,
+    riesgoCaidasDescriba: String,
+    riesgoCaida: schemaRiesgoCaidas,
+    riesgoUPP:Boolean,
+    riesgoUPPDescriba: String,
+    valoracionRiesgoUPP: schemaRiesgoUPP,
     riesgosDescriba: String,
     observacionesSeguridad: String,
     // ****************************** Necesidad de Comunicación y Sensopercepción ******************************
     orientado: Boolean,
+    glasgow: Boolean,
+    glasgowValoracion: schemaGlasgow,
     idioma: String,
     vision: {
                 type: String,
@@ -134,6 +159,8 @@ var schema = new Schema({
                 enum: ['normal', 'deficiente', 'ausente'],
               },
     describaSensopercepcion: String,
+    dolor: Boolean,
+    dolorValoracion: schemaDolor,
     observacionesComunicacion: String,
     // ****************************** Necesidad de Espiritualidad ******************************
     creenciasReligiosas: String,
@@ -147,11 +174,7 @@ var schema = new Schema({
     dudasExpresadas: String,
     actividadesHabituales: String,
     observacionesAprender: String,
-    // flebitis
-    flebitis: {
-        grado: Number,
-        observacionesFlebitis: String
-    },
+
     // ****************************** Observaciones Generales ******************************
     observacionesGenerales: String,
     servicio: {
