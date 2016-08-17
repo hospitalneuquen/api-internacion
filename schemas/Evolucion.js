@@ -2,7 +2,12 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema,
     schemaDrenaje = require('../schemas/Drenaje.js'),
     schemaIndicacion = require('../schemas/Indicacion.js'),
-    schemaUbicacion = require('../schemas/Ubicacion.js');
+    schemaUbicacion = require('../schemas/Ubicacion.js'),
+    schemaDolor = require('../schemas/Dolor.js'),
+    schemaRiesgoCaidas = require('../schemas/RiesgoCaidas.js'),
+    schemaRiesgoUPP = require('../schemas/RiesgoUPP.js'),
+    schemaFlebitis = require('../schemas/Flebitis.js'),
+    schemaGlasgow = require('../schemas/Glasgow.js');
 
 var schema = new Schema({
     idEvolucion: {
@@ -51,61 +56,10 @@ var schema = new Schema({
             observacionesCirculacion: String
         }
     },
-    // riesgo de caidas
-    riesgoCaida: {
-        caidasPrevias: Number,
-        marcha: Number,
-        ayudaDeambular: Number,
-        venoclisis: Number,
-        comorbilidad: Number,
-        estadoMental: Number,
-        total: {
-            type: Number,
-            default: 0
-        },
-    },
-    // ulceras por presion
-    riesgoUPP: {
-        estadoFisico: Number,
-        estadoMental: Number,
-        actividad: Number,
-        movilidad: Number,
-        incontinencia: Number,
-        total: { // 5-9 = Alto, 10-12 Medio, 13-16 Bajo
-            type: Number,
-            default: 0
-        },
-    },
-    // glasgow
-    glasgow: {
-        glasgowOcular: Number,
-        glasgowVerbal: Number,
-        glasgowMotor: Number,
-        glasgowTotal: Number
-    },
-    dolorValoracion: {
-        analgesiaAutomedicacion: Boolean,
-        ansioliticosAutomedicacion: Boolean,
-        indicacionMedica: [{
-            drogas: String,
-            dosisDiaria: Number,
-            frecuenciaDiaria: Number,
-            via: {
-                type: String,
-                enum: ['endovenosa', 'subcutánea', 'intratecal', 'oral'],
-            },
-        }],
-        intensidad: Number,
-        punzante: Boolean,
-        tipoColico: Boolean,
-        pesadez: Boolean,
-        pulsante: Boolean,
-        caliente: Boolean,
-        hormigueo: Boolean,
-        descripcion: String,
-        dolorLocalizacion: String,
-        observacionesDolor: String,
-    },
+    riesgoCaida: schemaRiesgoCaidas,
+    riesgoUPP: schemaRiesgoUPP,
+    glasgow: schemaGlasgow,
+    dolorValoracion: schemaDolor,
     // balances liquidos
     balance : {
         ingresos: [{
@@ -183,10 +137,7 @@ var schema = new Schema({
             ostomias2: Number
         },
     },
-    flebitis: {
-        grado: Number,
-        observacionesFlebitis: String
-    }
+    flebitis: schemaFlebitis,
 });
 
 schema.plugin(require('../mongoose/audit'));
