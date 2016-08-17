@@ -34,14 +34,14 @@ var schema = new Schema({
     // Valores para tipo 'enfemero'
     signosVitales: {
         pulso: Number,
-        tensionSistolica: Number,
-        tensionDiastolica: Number,
         temperatura: Number,
         respiracion: Number,
         spo2: Number,
         peso: Number,
         // ****************************** Necesidad de Circulación ******************************
         circulacion: {
+            tensionSistolica: Number,
+            tensionDiastolica: Number,
             TA: Number,
             FC: Number,
             carotideo: Number,
