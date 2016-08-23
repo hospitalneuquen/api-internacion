@@ -7,6 +7,7 @@ var mongoose = require('mongoose'),
 var schema = new Schema({
     habitacion: Number,
     numero: Number,
+    sector: Number,
     servicio: schemaUbicacion,
     tipoCama: {
         type: String,

@@ -26,7 +26,6 @@ var Mapa = require('../models/Cama.js');
  *
  */
 router.get('/mapa/:idServicio*?', function(req, res, next) {
-    // console.log(req.params.idServicio);
     var query = Mapa.find({});
     if (req.params.idServicio)
         query.where('servicio._id').equals(req.params.idServicio);
