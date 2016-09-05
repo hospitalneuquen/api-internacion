@@ -8,7 +8,14 @@ var schema = new Schema({
     habitacion: Number,
     numero: Number,
     sector: Number,
-    servicio: schemaUbicacion,
+    // servicio: schemaUbicacion,
+    servicio: {
+        type: schemaUbicacion,
+        validar: {
+            modelo: require('../models/Ubicacion.js'),
+            resolver: true
+        }
+    },
     tipoCama: {
         type: String,
         enum: ['cama', 'sillon', 'cuna'],
@@ -57,7 +64,7 @@ var schema = new Schema({
         fechaNacimientoEstimada: Boolean,
         sexo: {
             type: String,
-            enum: ['masculino', 'femenino', 'indeterminado']
+            enum: ['Masculino', 'masculino', 'Femenino', 'femenino', 'indeterminado']
         }
     },
     ultimaEvolucion: schemaEvolucion

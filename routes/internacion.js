@@ -163,89 +163,94 @@ router.post('/internacion/:id', function(req, res, next) {
             });
         },
 
-        // 2. Verificamos si el egreso tiene diagnosticos y los resolvemos
-        function(internacion, asyncCallback) {
-
-            // if (req.body.egreso && req.body.egreso.diagnosticoAlta && typeof req.body.egreso.diagnosticoAlta.length) {
-            //     internacion.egreso['diagnosticoAlta'] = [];
-            //
-            //     // asignamos los ids de los diagnosticos a buscar a la cola
-            //     async.eachSeries(req.body.egreso.diagnosticoAlta, function(idDiagnostico, callback) {
-            //         Diagnostico.findOne({
-            //             _id: idDiagnostico
-            //         }, function(err, data) {
-            //             // asignamos el diagnostico al egreso
-            //             internacion.egreso.diagnosticoAlta.push(data);
-            //
-            //             // procesamos siguiente valor de la cola
-            //             callback();
-            //         });
-            //     }, function(err) {
-            //         if (err) asyncCallback(err);
-            //
-            //         asyncCallback(null, internacion);
-            //     });
-            // } else {
-            //     asyncCallback(null, internacion);
-            // }
-
-            //  if (req.body.egreso && req.body.egreso.diagnosticoAlta && typeof req.body.egreso.diagnosticoAlta.length) {
-            //      internacion.egreso['diagnosticoAlta'] = [];
-            //
-            //      // asignamos los ids de los diagnosticos a buscar a la cola
-            //      async.forEachOf(req.body.egreso.diagnosticoAlta, function(idDiagnostico, key, callback) {
-            //          Diagnostico.findOne({
-            //              _id: idDiagnostico
-            //          }, function(err, data) {
-            //              // asignamos el diagnostico al egreso
-            //              internacion.egreso.diagnosticoAlta.push(data);
-            //
-            //              // procesamos siguiente valor de la cola
-            //              callback();
-            //          });
-            //      }, function(err) {
-            //          if (err) console.error(err.message);
-            //          // configs is now a map of JSON data
-            //          asyncCallback(null, internacion);
-            //      });
-            //  } else {
-            //      asyncCallback(null, internacion);
-            //  }
-
-            // if (req.body.egreso && req.body.egreso.diagnosticoAlta && typeof req.body.egreso.diagnosticoAlta.length) {
-            //     internacion.egreso.diagnosticoAlta = [];
-            //
-            //     // creamos la cola con la funcionalidad a realizar
-            //     var queue = async.queue(function(diagnostico, callback) {
-            //         Diagnostico.findOne({
-            //             _id: diagnostico
-            //         }, function(err, data) {
-            //             // asignamos el diagnostico al egreso
-            //             internacion.egreso.diagnosticoAlta.push(data);
-            //
-            //             // procesamos siguiente valor de la cola
-            //             callback();
-            //         });
-            //     }, 1);
-            //
-            //     // asignamos el callback para cuando la cola ha sido completada
-            //     queue.drain = function() {
-            //         asyncCallback(null, internacion);
-            //     }
-            //
-            //     // asignamos los ids de los diagnosticos a buscar a la cola
-            //     req.body.egreso.diagnosticoAlta.forEach(function(diagnostico, index) {
-            //         if (diagnostico) queue.push(diagnostico);
-            //     });
-            // } else {
-            //    asyncCallback(null, internacion);
-            // }
-            asyncCallback(null, internacion);
-        },
+        // // 2. Verificamos si el egreso tiene diagnosticos y los resolvemos
+        // function(internacion, asyncCallback) {
+        //
+        //     if (req.body.egreso && req.body.egreso.diagnosticoAlta && typeof req.body.egreso.diagnosticoAlta.length) {
+        //         internacion.egreso['diagnosticoAlta'] = [];
+        //
+        //         // asignamos los ids de los diagnosticos a buscar a la cola
+        //         async.eachSeries(req.body.egreso.diagnosticoAlta, function(idDiagnostico, callback) {
+        //             Diagnostico.findOne({
+        //                 _id: idDiagnostico
+        //             }, function(err, data) {
+        //                 // asignamos el diagnostico al egreso
+        //                 internacion.egreso.diagnosticoAlta.push(data);
+        //
+        //                 // procesamos siguiente valor de la cola
+        //                 callback();
+        //             });
+        //         }, function(err) {
+        //             // if (err) asyncCallback(err);
+        //
+        //             asyncCallback(err, internacion);
+        //         });
+        //     } else {
+        //         asyncCallback(null, internacion);
+        //     }
+        //
+        //     //  if (req.body.egreso && req.body.egreso.diagnosticoAlta && typeof req.body.egreso.diagnosticoAlta.length) {
+        //     //      internacion.egreso['diagnosticoAlta'] = [];
+        //     //
+        //     //      // asignamos los ids de los diagnosticos a buscar a la cola
+        //     //      async.forEachOf(req.body.egreso.diagnosticoAlta, function(idDiagnostico, key, callback) {
+        //     //          Diagnostico.findOne({
+        //     //              _id: idDiagnostico
+        //     //          }, function(err, data) {
+        //     //              // asignamos el diagnostico al egreso
+        //     //              internacion.egreso.diagnosticoAlta.push(data);
+        //     //
+        //     //              // procesamos siguiente valor de la cola
+        //     //              callback();
+        //     //          });
+        //     //      }, function(err) {
+        //     //          if (err) console.error(err.message);
+        //     //          // configs is now a map of JSON data
+        //     //          asyncCallback(null, internacion);
+        //     //      });
+        //     //  } else {
+        //     //      asyncCallback(null, internacion);
+        //     //  }
+        //
+        //     // if (req.body.egreso && req.body.egreso.diagnosticoAlta && typeof req.body.egreso.diagnosticoAlta.length) {
+        //     //     internacion.egreso.diagnosticoAlta = [];
+        //     //
+        //     //     // creamos la cola con la funcionalidad a realizar
+        //     //     var queue = async.queue(function(diagnostico, callback) {
+        //     //         Diagnostico.findOne({
+        //     //             _id: diagnostico
+        //     //         }, function(err, data) {
+        //     //             // asignamos el diagnostico al egreso
+        //     //             internacion.egreso.diagnosticoAlta.push(data);
+        //     //
+        //     //             // procesamos siguiente valor de la cola
+        //     //             callback();
+        //     //         });
+        //     //     }, 1);
+        //     //
+        //     //     // asignamos el callback para cuando la cola ha sido completada
+        //     //     queue.drain = function() {
+        //     //         asyncCallback(null, internacion);
+        //     //     }
+        //     //
+        //     //     // asignamos los ids de los diagnosticos a buscar a la cola
+        //     //     req.body.egreso.diagnosticoAlta.forEach(function(diagnostico, index) {
+        //     //         if (diagnostico) queue.push(diagnostico);
+        //     //     });
+        //     // } else {
+        //     //    asyncCallback(null, internacion);
+        //     // }
+        //
+        //     // internacion.insertMany()
+        //
+        //     asyncCallback(null, internacion);
+        //
+        // },
 
         // 3 Guarda la internacion modificada
         function(internacion, asyncCallback) {
             internacion.audit(req.user);
+
             internacion.save(function(err, internacion) {
                 asyncCallback(err, internacion);
             });

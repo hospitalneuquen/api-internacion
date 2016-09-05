@@ -2,7 +2,8 @@ var express = require('express');
 var router = express.Router();
 var Cama = require('../models/Cama.js');
 var CamaEstado = require('../models/CamaEstado.js');
-var Internacion = require('../models/Internacion.js');
+var Ubicacion = require('../models/Ubicacion.js');
+var async = require('async');
 
 var ObjectId = require('mongoose').Types.ObjectId;
 
@@ -37,6 +38,90 @@ router.get('/cama/:id', function(req, res, next) {
         res.json(data);
     });
 })
+
+/**
+ * @swagger
+ * /cama/{idCama}:
+ *   post:
+ *     tags:
+ *       - Cama
+ *     summary: Modifica / crea una cama
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: idCama
+ *         description: Id de la cama
+ *         in: path
+ *         required: true
+ *         type: string
+ *     responses:
+ *       200:
+ *         description: Ok
+ *       404:
+ *         description: Not found
+ */
+router.post('/cama/:idCama?', function(req, res, next) {
+    // var query = {},
+    //     // update = { expire: new Date() },
+    //     options = {
+    //         upsert: true,
+    //         new: true,
+    //         setDefaultsOnInsert: true
+    //     };
+    //
+    //     console.log(req.body);
+    //
+    // if (req.body.idCama) {
+    //     query = {
+    //         id : req.body.idCama
+    //     };
+    // }
+    // // // Find the document
+    // Cama.findOne(query, req.body, options, function(error, result) {
+    //     if (error) return next(error);
+    //
+    //     res.json(result);
+    // });
+
+    async.waterfall([
+        // 1. Busca internación
+        function(asyncCallback) {
+            Cama.findOne({
+                _id: req.params.idCama
+            }, function(err, cama) {
+                if (err) return asyncCallback(err);
+
+                if (!cama){
+                    var cama = new Cama(req.body);
+                }else{
+                    cama.merge(req.body);
+                }
+
+                cama.validar('servicio', req.body.servicio);
+
+                if (cama.ultimaEvolucion){
+                    cama.validar('ultimaEvolucion', req.body.ultimaEvolucion);
+                }
+
+                asyncCallback(err, cama);
+            });
+        },
+        // 2. Guarda la internacion modificada
+        function(cama, asyncCallback) {
+            cama.audit(req.user);
+            cama.save(function(err) {
+                console.log(req.body);
+                console.log(cama);
+                asyncCallback(err, cama);
+            });
+        },
+    ],
+    function(err, cama) {
+        if (err) return next(err);
+
+        res.json(cama);
+    });
+});
 
 /**
  * @swagger
@@ -85,9 +170,13 @@ router.post('/cama/cambiarEstado/:idCama', function(req, res, next) {
                 res.status(500).send('La cama está actualmente ocupada, no se puede enviar a reparación');
             }
 
-            if (req.motivo == ""){
+            if (req.motivo == "") {
                 error = true;
-                res.status(400).send({status:400, message: "Debe indicar el motivo de envío a reparación", type:'internal'});
+                res.status(400).send({
+                    status: 400,
+                    message: "Debe indicar el motivo de envío a reparación",
+                    type: 'internal'
+                });
             }
 
             // actualizamos el estadode la cama
