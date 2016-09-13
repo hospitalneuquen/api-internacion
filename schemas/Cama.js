@@ -67,7 +67,7 @@ var schema = new Schema({
             enum: ['Masculino', 'masculino', 'Femenino', 'femenino', 'indeterminado']
         }
     },
-    ultimaEvolucion: schemaEvolucion
+    // ultimaEvolucion: schemaEvolucion
 });
 
 // declaramos la variable paciente id de forma manual

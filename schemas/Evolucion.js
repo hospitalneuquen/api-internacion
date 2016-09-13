@@ -61,7 +61,7 @@ var schema = new Schema({
     glasgow: schemaGlasgow,
     dolorValoracion: schemaDolor,
     // balances liquidos
-    balance : {
+    balance: {
         ingresos: [{
             idIndicacion: {
                 type: Schema.Types.ObjectId,
@@ -138,6 +138,10 @@ var schema = new Schema({
         },
     },
     flebitis: schemaFlebitis,
+    medicamento: {
+        suministrado: Boolean,
+        descripcion: String,
+    }
 });
 
 schema.plugin(require('../mongoose/audit'));

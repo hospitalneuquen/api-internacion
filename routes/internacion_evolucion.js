@@ -81,15 +81,20 @@ router.post('/internacion/:idInternacion/evolucion/:idEvolucion*?', function(req
                 });
             },
             // 3. Actualiza el mapa de camas
-            function(evolucion, asyncCallback) {
-                Cama.findOneAndUpdate({
-                    idInternacion: req.params.idInternacion
-                }, {
-                    'ultimaEvolucion': evolucion
-                }, function(err) {
-                    asyncCallback(err, evolucion);
-                });
-            },
+            // POR AHORA NO NECESITAMOS ESTA INFO EN EL MAPA DE CAMAS
+            // function(evolucion, asyncCallback) {
+            //     Cama.findOne({
+            //         idInternacion: req.params.idInternacion
+            //     }, function(err, cama) {
+            //         if (err) return asyncCallback(err);
+            //         cama.ultimaEvolucion = evolucion;
+            //         cama.validar('servicio', req.body.servicio);
+            //         cama.save(function(err) {
+            //             console.log(err);
+            //             asyncCallback(err, evolucion);
+            //         });
+            //     })
+            // },
         ],
         function(err, evolucion) {
             if (err) return next(err);
