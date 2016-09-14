@@ -25,7 +25,7 @@ var schema = new Schema({
     texto: String,
     tipo: {
         type: String,
-        enum: ['medico', 'enfermero'],
+        // enum: ['medico', 'enfermero'],
         required: true,
     },
     servicio: {

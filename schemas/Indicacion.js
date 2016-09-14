@@ -12,6 +12,7 @@ var schema = new Schema({
         // enum: [
         //     'Plan Hidratación Parenteral', 'Antibióticos', 'Heparina o profilaxis', 'Protección gástrica',
         //     'Otra medicación', 'Controles', 'Cuidados generales', 'Cuidados especiales',
+        //     'Oxigenoterapia',
         //     'Nutrición', 'Solicitud prestaciones', 'Otra indicación'
         // ]
     },
@@ -89,7 +90,7 @@ var schema = new Schema({
     controles: {
         tipo: {
             type: String,
-            enum: ['Signos vitales', 'Balance', 'Diuresis', 'Peso', 'Glasgow', 'Ulceras por presión', 'Riesgo caídas', 'Nutrición', 'Valoración del dolor']
+            enum: ['Signos vitales', 'Balance', 'Diuresis', 'Peso', 'Glasgow', 'Ulceras por presión', 'Riesgo caídas', 'Nutrición', 'Valoración del dolor', 'Flebitis']
         }
     },
     // opciones para el tipo Cuidados Generales
@@ -97,17 +98,6 @@ var schema = new Schema({
         tipo: {
             type: String,
             // enum: ['Rotar decubito', 'Aspirar secreciones', 'Oxígeno', 'Cabecera 45º', 'Colchón aire']
-        },
-        oxigeno: {
-            respiracion: {
-                type: String,
-                enum: ['Bigotera', 'Mascara', 'Reservorio']
-            },
-            tipoReservorio: {
-                type: String,
-                enum: ['AGO', 'Venturi']
-            },
-            cantidad: Number
         },
         rotarDecubito: {
             posiciones: {
@@ -149,6 +139,14 @@ var schema = new Schema({
                 enum: ['Limpieza', 'Extracción']
             }
         }
+    },
+    // opciones para el tipo Oxigenoterapia
+    oxigeno: {
+        respiracion: {
+            type: String,
+            enum: ['Bigotera', 'Mascara']
+        },
+        cantidad: Number
     },
     // opciones para el tipo Dieta
     nutricion: {
