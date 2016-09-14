@@ -2,10 +2,10 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
 var schema = new Schema({
-    glasgowOcular: Number,
-    glasgowVerbal: Number,
-    glasgowMotor: Number,
-    glasgowTotal: Number,
+    ocular: Number,
+    verbal: Number,
+    motor: Number,
+    total: Number,
 });
 
 schema.plugin(require('../mongoose/audit'));
