@@ -134,12 +134,18 @@ var schema = new Schema({
             }],
             // drenajes2: Number,
             ostomias: Number,
-            ostomias2: Number
+            ostomias2: Number,
+            residuoGastrigo: Number,
+            secrecionesAspiradas: Number
         },
     },
     flebitis: schemaFlebitis,
     medicamento: {
         suministrado: Boolean,
+        descripcion: String,
+    },
+    aislamiento: {
+        realizado: Boolean,
         descripcion: String,
     }
 });

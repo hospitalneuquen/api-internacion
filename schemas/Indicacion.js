@@ -90,7 +90,7 @@ var schema = new Schema({
     controles: {
         tipo: {
             type: String,
-            enum: ['Signos vitales', 'Balance', 'Diuresis', 'Peso', 'Glasgow', 'Ulceras por presión', 'Riesgo caídas', 'Nutrición', 'Valoración del dolor', 'Flebitis']
+            enum: ['Signos vitales', 'Balance', 'Glasgow', 'Ulceras por presión', 'Riesgo caídas', 'Nutrición', 'Valoración del dolor', 'Flebitis']
         }
     },
     // opciones para el tipo Cuidados Generales
@@ -99,12 +99,12 @@ var schema = new Schema({
             type: String,
             // enum: ['Rotar decubito', 'Aspirar secreciones', 'Oxígeno', 'Cabecera 45º', 'Colchón aire']
         },
-        rotarDecubito: {
-            posiciones: {
-                type: String,
-                enum: ['Izquierda', 'Derecha'] // TODO: Definir
-            }
-        }
+        // rotarDecubito: {
+        //     posiciones: {
+        //         type: String,
+        //         enum: ['Izquierda', 'Derecha'] // TODO: Definir
+        //     }
+        // }
     },
     // opciones para el tipo Cuidados especiales
     cuidadosEspeciales: {
@@ -142,6 +142,10 @@ var schema = new Schema({
     },
     // opciones para el tipo Oxigenoterapia
     oxigeno: {
+        accion: {
+            type: String,
+            enum: ['Colocación', 'Extracción']
+        },
         respiracion: {
             type: String,
             enum: ['Bigotera', 'Mascara']
