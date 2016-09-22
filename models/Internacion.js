@@ -156,12 +156,31 @@ var schema = new Schema({
             type: String,
             enum: ['Aislar', 'Quitar aislamiento']
         },
-        fechaDesde: {
-            type: Date,
-            // required: true,
+        desde: {
+            fecha: {
+                type: Date,
+                idEvolucion: {
+                    type: Schema.Types.ObjectId,
+                    ref: 'Evolucion'
+                },
+                idIndicacion: {
+                    type: Schema.Types.ObjectId,
+                    ref: 'Indicacion'
+                }
+            }
         },
-        fechaHasta: {
-            type: Date
+        hasta: {
+            fecha: {
+                type: Date,
+                idEvolucion: {
+                    type: Schema.Types.ObjectId,
+                    ref: 'Evolucion'
+                },
+                idIndicacion: {
+                    type: Schema.Types.ObjectId,
+                    ref: 'Indicacion'
+                }
+            }
         }
     }],
     pases: [schemaPase],

@@ -77,8 +77,41 @@ router.post('/internacion/:idInternacion/evolucion/:idEvolucion*?', function(req
             function(internacion, evolucion, asyncCallback) {
                 internacion.audit(req.user);
                 internacion.save(function(err) {
-                    asyncCallback(err, evolucion);
+                    asyncCallback(err, internacion, evolucion);
                 });
+            },
+            // 3. Si es aislamiento actualizamos la internacion
+            function(internacion, evolucion, asyncCallback) {
+                if (evolucion.tipo == 'Cuidados especiales'){
+                    var indicacion = internacion.indicaciones.find(function(i){
+                        return (evolucion.idIndicacion.equals(i._id));
+                    });
+
+                    if (indicacion && indicacion.cuidadosEspeciales.tipo == 'Aislamiento'){
+
+
+                        if (indicacion.cuidadosEspeciales.aislamiento.accion == 'Aislar'){
+                            // creamos el aislamiento
+                            var aislamiento = {
+                                tipo: indicacion.cuidadosEspeciales.aislamiento.tipo,
+                                accion: indicacion.cuidadosEspeciales.aislamiento.accion,
+                                desde: {
+                                    fecha: new Date(),
+                                    idEvolucion: evolucion._id,
+                                    idIndicacion: evolucion.idIndicacion
+                                }
+                            };
+
+                            internacion.aislamiento.push(aislamiento);
+                        }
+
+                    }
+
+                    internacion.save(function(err){
+                        asyncCallback(err, evolucion);
+                    });
+                }
+
             },
             // 3. Actualiza el mapa de camas
             // POR AHORA NO NECESITAMOS ESTA INFO EN EL MAPA DE CAMAS
