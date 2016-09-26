@@ -147,6 +147,16 @@ var schema = new Schema({
     aislamiento: {
         realizado: Boolean,
         descripcion: String,
+    },
+    rotarDecubito: {
+        puntoApoyo: {
+            type: String,
+            enum: ['Derecho', 'Izquierdo']
+        },
+        posicion: {
+            type: String,
+            enum: ['Dorsal', 'Prono']
+        }
     }
 });
 

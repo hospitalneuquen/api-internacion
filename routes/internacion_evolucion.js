@@ -110,6 +110,8 @@ router.post('/internacion/:idInternacion/evolucion/:idEvolucion*?', function(req
                     internacion.save(function(err){
                         asyncCallback(err, evolucion);
                     });
+                }else {
+                    asyncCallback(null, evolucion);
                 }
 
             },
