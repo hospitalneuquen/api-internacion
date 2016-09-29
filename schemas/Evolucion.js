@@ -159,6 +159,10 @@ var schema = new Schema({
         }
     },
     comentarios: [{
+        idPersona: {
+            type: Schema.Types.ObjectId,
+            ref: 'Personas'
+        },
         fecha: Date,
         comentario: String
     }]
