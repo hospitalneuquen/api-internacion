@@ -135,7 +135,7 @@ var schema = new Schema({
             // drenajes2: Number,
             ostomias: Number,
             ostomias2: Number,
-            residuoGastrigo: Number,
+            residuoGastrico: Number,
             secrecionesAspiradas: Number
         },
     },
@@ -157,7 +157,11 @@ var schema = new Schema({
             type: String,
             enum: ['Dorsal', 'Prono']
         }
-    }
+    },
+    comentarios: [{
+        fecha: Date,
+        comentario: String
+    }]
 });
 
 schema.plugin(require('../mongoose/audit'));

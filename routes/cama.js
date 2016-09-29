@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var Cama = require('../models/Cama.js');
+var Internacion = require('../models/Internacion.js');
 var CamaEstado = require('../models/CamaEstado.js');
 var Ubicacion = require('../models/Ubicacion.js');
 var async = require('async');
@@ -259,7 +260,7 @@ router.post('/cama/cambiarEstado/:idCama', function(req, res, next) {
 
             cama.save(function(err, cama) {
                 if (err) return next(err);
-
+console.log(req.body);
                 // agregamos log al estado de la cama
                 cama_estado.audit(req.user);
 
