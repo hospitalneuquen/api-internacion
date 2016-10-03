@@ -158,6 +158,10 @@ var schema = new Schema({
             enum: ['Dorsal', 'Prono']
         }
     },
+    otraIndicacion: {
+        realizado: Boolean,
+        descripcion: String,
+    },
     comentarios: [{
         idPersona: {
             type: Schema.Types.ObjectId,
