@@ -173,11 +173,9 @@ var schema = new Schema({
             todoCocido: Boolean,
             individual: Boolean,
             hiperConColacion: Boolean,
-            pediatrico1_2: Boolean,
+            pediatrico: Boolean,
             nadaPorBoca: Boolean,
-            lactante1_2: Boolean,
-            hipocalorico: Boolean,
-            // soporteOral: Boolean
+            hipocalorico: Boolean
         },
         // cantidadSoporteOral: Number,
         enteral: {

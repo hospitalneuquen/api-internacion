@@ -5,7 +5,7 @@ var schema = new Schema({
     ocular: Number,
     verbal: Number,
     motor: Number,
-    total: Number,
+    total: Number
 });
 
 schema.plugin(require('../mongoose/audit'));

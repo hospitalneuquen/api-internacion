@@ -11,6 +11,26 @@ var schema = new Schema({
         type: Number,
         default: 0
     },
+    lesionesFrente: [{
+        x: Number,
+        y: Number,
+        tipo: Number
+    }],
+    lesionesEspalda: [{
+        x: Number,
+        y: Number,
+        tipo: Number
+    }],
+    lesionesLadoIzquierdo: [{
+        x: Number,
+        y: Number,
+        tipo: Number
+    }],
+    lesionesLadoDerecho: [{
+        x: Number,
+        y: Number,
+        tipo: Number
+    }]
 });
 
 schema.plugin(require('../mongoose/audit'));
