@@ -1,20 +1,34 @@
-var mongoose = require('mongoose'),
-    Schema = mongoose.Schema,
+var mongoose                    = require('mongoose'),
+    Schema                      = mongoose.Schema,
     schemaSolicitudPrestaciones = require('./SolicitudPrestaciones.js'),
-    schemaUbicacion = require('./Ubicacion.js');
+    schemaTipoEvolucion         = require('./TipoEvolucion.js'),
+    schemaTipoIndicacion        = require('./TipoIndicacion.js'),
+    schemaUbicacion             = require('./Ubicacion.js');
 
 var schema = new Schema({
     // idIndicaciones hace referencia a la indicacion de la cual se modifica
     idIndicacion: Schema.Types.ObjectId,
     fechaHora: Date,
-    tipo: {
-        type: String,
-        // enum: [
-        //     'Plan Hidratación Parenteral', 'Antibióticos', 'Heparina o profilaxis', 'Protección gástrica',
-        //     'Otra medicación', 'Controles', 'Cuidados generales', 'Cuidados especiales',
-        //     'Oxigenoterapia',
-        //     'Nutrición', 'Solicitud prestaciones', 'Otra indicación'
-        // ]
+    // tipo: {
+    //     type: String,
+    //     // enum: [
+    //     //     'Plan Hidratación Parenteral', 'Antibióticos', 'Heparina o profilaxis', 'Protección gástrica',
+    //     //     'Otra medicación', 'Controles', 'Cuidados generales', 'Cuidados especiales',
+    //     //     'Oxigenoterapia',
+    //     //     'Nutrición', 'Solicitud prestaciones', 'Otra indicación'
+    //     // ]
+    // },
+    // idTipoIndicacion: {
+    //     type: schemaTipoIndicacion,
+    //     required: true,
+    //     validar: {
+    //         modelo: require('../models/TipoIndicacion.js'),
+    //         resolver: true,
+    //     }
+    // },
+    tipoIndicacion: {
+        type: Schema.Types.ObjectId,
+        ref: 'TipoIndicacion'
     },
     // valores para via: SC = Subcutanea / EV = Endovenosa / VO = Via oral
     // IN = Inhalatoria / SNG = Sonda nasogastrica / IM = Intramuscular
@@ -84,15 +98,27 @@ var schema = new Schema({
     medicamento: {
         descripcion: {
             type: String
-        }
+        },
+        // opciones para el tipo Oxigenoterapia
+        oxigeno: {
+            accion: {
+                type: String,
+                enum: ['Colocación', 'Extracción']
+            },
+            respiracion: {
+                type: String,
+                enum: ['Bigotera', 'Mascara']
+            },
+            cantidad: Number
+        },
     },
     // opciones para el tipo Controles
-    controles: {
-        tipo: {
-            type: String,
-            enum: ['Signos vitales', 'Balance', 'Glasgow', 'Ulceras por presión', 'Riesgo caídas', 'Nutrición', 'Valoración del dolor', 'Flebitis']
-        }
-    },
+    // controles: {
+    //     tipo: {
+    //         type: String,
+    //         enum: ['Signos vitales', 'Balance', 'Glasgow', 'Ulceras por presión', 'Riesgo caídas', 'Nutrición', 'Valoración del dolor', 'Flebitis']
+    //     }
+    // },
     // opciones para el tipo Cuidados Generales
     cuidadosGenerales: {
         tipo: {
@@ -140,21 +166,10 @@ var schema = new Schema({
             }
         }
     },
-    // opciones para el tipo Oxigenoterapia
-    oxigeno: {
-        accion: {
-            type: String,
-            enum: ['Colocación', 'Extracción']
-        },
-        respiracion: {
-            type: String,
-            enum: ['Bigotera', 'Mascara']
-        },
-        cantidad: Number
-    },
+
     // opciones para el tipo Dieta
     nutricion: {
-        tipo: {
+        oral: {
             ayuno: Boolean,
             blandoMecanico: Boolean,
             general: Boolean,
@@ -206,6 +221,9 @@ var schema = new Schema({
                 descripcion: String,
             },
             cantidad: Number,
+        },
+        parenteral: {
+            // definir
         }
     },
     prestaciones: schemaSolicitudPrestaciones,
@@ -213,12 +231,16 @@ var schema = new Schema({
     descripcion: String,
     observacionesGenerales: String,
     posicion: Number,
+    // servicio: {
+    //     type: schemaUbicacion,
+    //     validar: {
+    //         modelo: require('../models/Ubicacion.js'),
+    //         resolver: true
+    //     }
+    // },
     servicio: {
-        type: schemaUbicacion,
-        validar: {
-            modelo: require('../models/Ubicacion.js'),
-            resolver: true
-        }
+        type: Schema.Types.ObjectId,
+        ref: 'Ubicacion'
     },
     activo: {
         type: Boolean,
@@ -229,6 +251,6 @@ var schema = new Schema({
 
 
 schema.plugin(require('../mongoose/audit'));
-schema.plugin(require('../mongoose/validar'));
+// schema.plugin(require('../mongoose/validar'));
 schema.plugin(require('mongoose-merge-plugin'));
 module.exports = schema;

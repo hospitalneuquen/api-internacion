@@ -61,13 +61,13 @@ router.post('/internacion/:idInternacion/evolucion/:idEvolucion*?', function(req
                         }
 
                         evolucion.merge(req.body);
-                        evolucion.validar('servicio', req.body.servicio);
+                        // evolucion.validar('servicio', req.body.servicio);
                     } else { // Insert
                         if (!internacion.evoluciones)
                             internacion.evoluciones = [];
                         internacion.evoluciones.push(new Evolucion(req.body));
                         evolucion = internacion.evoluciones[internacion.evoluciones.length - 1];
-                        evolucion.validar('servicio', req.body.servicio);
+                        // evolucion.validar('servicio', req.body.servicio);
                     }
 
                     asyncCallback(err, internacion, evolucion);
@@ -134,6 +134,61 @@ router.post('/internacion/:idInternacion/evolucion/:idEvolucion*?', function(req
         function(err, evolucion) {
             if (err) return next(err);
             res.json(evolucion);
+        });
+});
+
+
+/**
+ * @swagger
+ * /internacion:
+ *   get:
+ *     tags:
+ *       - Internación
+ *     summary: Devuelve internaciones según las opciones de búsqueda
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: estado
+ *         description: Estado de la internación (soporte múltiples valores)
+ *         in: query
+ *         required: false
+ *         type: string
+ *         enum:
+ *           - enIngreso
+ *           - enPase
+ *           - ingresado
+ *           - egresado
+ *       - name: paciente
+ *         description: Id del paciente (soporte múltiples valores)
+ *         in: query
+ *         required: false
+ *         type: string
+ *     responses:
+ *       200:
+ *         description: Ok
+ *       400:
+ *         description: No se ingresó ninguna opción de búsqueda
+ */
+router.get('/internacion/:idInternacion/evolucion/:idEvolucion*?', function(req, res, next) {
+    // Parsea opciones
+    var opciones = {};
+    if (req.query.estado)
+        opciones.estado = Array.isArray(req.query.estado) ? {
+            $in: req.query.estado
+        } : req.query.estado;
+    if (req.query.paciente)
+        opciones.paciente = Array.isArray(req.query.paciente) ? {
+            $in: req.query.paciente
+        } : req.query.paciente;
+
+    // Si no ingresó ninguna opción ...
+    if (!Object.keys(opciones).length)
+        return next(400);
+
+    Internacion.find(opciones).populate('paciente')
+        .exec(function(err, data) {
+            if (err) return next(err);
+            res.json(data);
         });
 });
 
