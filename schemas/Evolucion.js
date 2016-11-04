@@ -1,13 +1,14 @@
-var mongoose = require('mongoose'),
-    Schema = mongoose.Schema,
-    schemaDrenaje = require('../schemas/Drenaje.js'),
-    schemaIndicacion = require('../schemas/Indicacion.js'),
-    schemaUbicacion = require('../schemas/Ubicacion.js'),
-    schemaDolor = require('../schemas/Dolor.js'),
-    schemaRiesgoCaidas = require('../schemas/RiesgoCaidas.js'),
-    schemaRiesgoUPP = require('../schemas/RiesgoUPP.js'),
-    schemaFlebitis = require('../schemas/Flebitis.js'),
-    schemaGlasgow = require('../schemas/Glasgow.js');
+var mongoose                = require('mongoose'),
+    Schema                  = mongoose.Schema,
+    schemaDolor             = require('./Dolor.js'),
+    schemaDrenaje           = require('./Drenaje.js'),
+    schemaFlebitis          = require('./Flebitis.js'),
+    schemaIndicacion        = require('./Indicacion.js'),
+    schemaGlasgow           = require('./Glasgow.js');
+    schemaRiesgoCaidas      = require('./RiesgoCaidas.js'),
+    schemaRiesgoUPP         = require('./RiesgoUPP.js'),
+    schemaUbicacion         = require('./Ubicacion.js'),
+    schemaTipoEvolucion     = require('./TipoEvolucion.js');
 
 var schema = new Schema({
     idEvolucion: {
@@ -18,23 +19,40 @@ var schema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Indicacion'
     },
+    _indicacion: schemaIndicacion, // referencia a la indicacion
     fechaHora: {
         type: Date,
         required: true,
     },
     texto: String,
-    tipo: {
-        type: String,
-        // enum: ['medico', 'enfermero'],
-        required: true,
+    tipo: String, // cuando no se tiene idIndicacion es para indicar que servicio
+    // idTipoEvolucion: {
+    //     type: schemaTipoEvolucion,
+    //     required: true,
+    //     validar: {
+    //         modelo: require('../models/TipoEvolucion.js'),
+    //         resolver: true,
+    //     }
+    // },
+    tipoIndicacion: {
+        type: Schema.Types.ObjectId,
+        ref: 'TipoIndicacion'
     },
+    tipoEvolucion: {
+        type: Schema.Types.ObjectId,
+        ref: 'TipoEvolucion'
+    },
+    // servicio: {
+    //     type: schemaUbicacion,
+    //     required: true,
+    //     validar: {
+    //         modelo: require('../models/Ubicacion.js'),
+    //         resolver: true,
+    //     }
+    // },
     servicio: {
-        type: schemaUbicacion,
-        required: true,
-        validar: {
-            modelo: require('../models/Ubicacion.js'),
-            resolver: true,
-        }
+        type: Schema.Types.ObjectId,
+        ref: 'Ubicacion'
     },
     // Valores para tipo 'enfemero'
     signosVitales: {
@@ -43,6 +61,7 @@ var schema = new Schema({
         respiracion: Number,
         spo2: Number,
         peso: Number,
+        talla: Number,
         // ****************************** Necesidad de Circulación ******************************
         circulacion: {
             tensionSistolica: Number,
@@ -84,6 +103,7 @@ var schema = new Schema({
             },
             medicamentos: {
                 descripcion: String,
+                observaciones: String,
                 cantidad: Number
             },
             hemoterapia: {
@@ -173,6 +193,6 @@ var schema = new Schema({
 });
 
 schema.plugin(require('../mongoose/audit'));
-schema.plugin(require('../mongoose/validar'));
+// schema.plugin(require('../mongoose/validar'));
 schema.plugin(require('mongoose-merge-plugin')); // Por un bug(?) de mongoose no aplica el plugin global. Hay que habilitarlo acá.
 module.exports = schema;

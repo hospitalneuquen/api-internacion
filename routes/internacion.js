@@ -2,6 +2,7 @@ var express = require('express'),
     router = express.Router(),
     async = require('async'),
     Internacion = require('../models/Internacion.js'),
+    Indicacion = require('../models/Indicacion.js'),
     Diagnostico = require('../models/Diagnostico.js'), // utilizado para resolver manualmente
     Ubicacion = require('../models/Ubicacion.js'); // utilizado para resolver manualmente
 
@@ -30,12 +31,54 @@ router.get('/internacion/:id', function(req, res, next) {
     Internacion.findOne({
             _id: req.params.id
         }).populate('paciente')
+
+        .populate('evoluciones.servicio')
+
+        .populate({
+            path: 'evoluciones.tipoIndicacion',
+            model: 'TipoIndicacion',
+            populate: {
+                path: 'tipoIndicacion',
+                model: 'TipoIndicacion'
+            }
+        }) // funciona oK
+
+        // .populate({
+        //     path: 'evoluciones.idIndicacion',
+        //     model: 'Indicacion',
+        //     populate: {
+        //         path: 'idIndicacion',
+        //         model: 'Indicacion'
+        //     }
+        // })
+        //
+
+        .populate('indicaciones.servicio')
+        .populate({
+            path: 'indicaciones.tipoIndicacion',
+            model: 'TipoIndicacion',
+            populate: {
+                path: 'tipoIndicacion',
+                model: 'TipoIndicacion'
+            }
+        })
+        .populate({
+            path: 'indicaciones.tipoIndicacion',
+            model: 'TipoIndicacion',
+            populate: {
+                path: 'tipoEvolucion',
+                model: 'TipoEvolucion'
+            }
+        })
+
         .exec(function(err, data) {
             if (err) return next(err);
             if (!data) return next(404);
+
             res.json(data);
         });
 });
+
 
 /**
  * @swagger
