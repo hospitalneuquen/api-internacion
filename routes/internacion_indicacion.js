@@ -265,23 +265,38 @@ router.post('/internacion/:idInternacion/indicacion/:idIndicacion*?', function(r
 
                 // Crea o modifica la evolución
                 var indicacion;
+                var accion = req.body.accion;
 
-                // si estoy editando una indicacion
-                // entonces borro los id en caso de que vengan con valores
-                // o nulos, asi puede crearme un id nuevo para la indicacion
-                if (req.body.idIndicacion){
-                    delete req.body['id'];
-                    delete req.body['_id'];
+                if (accion == "editar"){
+
+                    // si estoy editando una indicacion
+                    // entonces borro los id en caso de que vengan con valores
+                    // o nulos, asi puede crearme un id nuevo para la indicacion
+                    if (req.body.idIndicacion){
+                        delete req.body['id'];
+                        delete req.body['_id'];
+                    }
+                    var _indicacion = req.body;
+
+                    indicacion = new Indicacion(_indicacion);
+
+                    internacion.indicaciones.push(indicacion);
+                }else if (accion == "suspender"){
+                    indicacion = internacion.indicaciones.find(function(i) {
+                        return i._id == req.body.id;
+                    });
+
+                    indicacion.merge(req.body);
+                }else{
+
+                    // nueva indicacion
+                    indicacion = new Indicacion(req.body);
+                    // indicacion.validar('servicio', req.body.servicio);
+                    // indicacion.validar('prestaciones', req.body.prestaciones);
+                    internacion.indicaciones.push(indicacion);
                 }
 
-                indicacion = new Indicacion(req.body);
-                // indicacion.validar('servicio', req.body.servicio);
-                // indicacion.validar('prestaciones', req.body.prestaciones);
-                internacion.indicaciones.push(indicacion);
 
-console.log(req.body);
-
-console.log(indicacion);
                 // if (req.params.idIndicacion) { // Update
                 //
                 //     indicacion = internacion.indicaciones.find(function(i) {
@@ -308,13 +323,6 @@ console.log(indicacion);
 //
 //                     indicacion.merge(req.body);
 //                     // indicacion = new Indicacion(req.body);
-//                     console.log(req.body);
-// console.log("\n");
-// console.log("\n");
-// console.log("\n");
-// console.log(indicacion);
-// console.log("\n");
-// console.log("\n");
 //                 } else { // Insert
 //
 //
@@ -322,17 +330,10 @@ console.log(indicacion);
 //                     // indicacion.validar('servicio', req.body.servicio);
 //                     // indicacion.validar('prestaciones', req.body.prestaciones);
 //                     internacion.indicaciones.push(indicacion);
-//
-//                     console.log(req.body);
-// console.log("\n");
-// console.log("\n");
-// console.log("\n");
-// console.log(indicacion);
-// console.log("\n");
-// console.log("\n");
-//
-//                 }
 
+//                 }
+// console.log(req.body);
+// console.log(indicacion);
 
                 asyncCallback(err, internacion, indicacion);
 
@@ -380,9 +381,9 @@ console.log(indicacion);
 
         // 4. Guarda la internacion modificada
         function(internacion, indicacion, asyncCallback) {
-            console.log(internacion.indicaciones);
-            console.log("************************************************");
-            console.log(indicacion);
+            // console.log(internacion.indicaciones);
+            // console.log("************************************************");
+            // console.log(indicacion);
             internacion.audit(req.user);
             internacion.save(function(err) {
                 asyncCallback(err, indicacion);
