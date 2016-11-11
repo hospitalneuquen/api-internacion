@@ -37,7 +37,7 @@ var schema = new Schema({
         },
         tipo: {
             type: String,
-            enum: ['ambulatorio', 'guardia', 'derivacion'],
+            enum: ['ambulatorio', 'guardia', 'derivacion', 'transitorio'],
             //required: true
         },
         derivadoDesde: {

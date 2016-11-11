@@ -74,7 +74,7 @@ var schema = new Schema({
             // si es enteral mostraremos la sonda
             sonda: {
                 type: String,
-                enum: ['SNG', 'SNY', 'Gastrostomías', 'Ileostomías']
+                enum: ['SNG', 'SNY', 'Gastrostomías', 'Ileostomías', 'Vesical']
             },
             // si es enteral mostrar durante cuanto tiempo se debe pasar
             pasarDurante: Number,
