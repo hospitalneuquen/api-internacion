@@ -9,11 +9,8 @@ var schema = new Schema({
         ref: 'Problema'
     },
     diagnostico: {
-        type: schemaDiagnostico,
-        validar: {
-            modelo: require('../models/Diagnostico.js'),
-            resolver: true
-        }
+        type: Schema.Types.ObjectId,
+        ref: 'Diagnostico'
     },
     diagnosticoTexto: String,
     descripcion: {
@@ -25,16 +22,14 @@ var schema = new Schema({
     },
     esCronico: Boolean,
     estado: String,
+    activo: Boolean,
     servicio: {
-        type: schemaUbicacion,
-        validar: {
-            modelo: require('../models/Ubicacion.js'),
-            resolver: true
-        }
+        type: Schema.Types.ObjectId,
+        ref: 'Ubicacion'
     }
 });
 
 schema.plugin(require('../mongoose/audit'));
-schema.plugin(require('../mongoose/validar'));
+//schema.plugin(require('../mongoose/validar'));
 schema.plugin(require('mongoose-merge-plugin'));
 module.exports = schema;

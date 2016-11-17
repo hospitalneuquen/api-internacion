@@ -70,6 +70,14 @@ router.get('/internacion/:id', function(req, res, next) {
                 model: 'TipoEvolucion'
             }
         })
+        .populate({
+            path: 'problemas.diagnostico',
+            model: 'Diagnostico'
+        })
+        .populate({
+            path: 'problemas.servicio',
+            model: 'Ubicacion'
+        })
 
         .exec(function(err, data) {
             if (err) return next(err);
