@@ -1,3 +1,5 @@
+'use strict';
+
 var express = require('express'),
     router = express.Router(),
     async = require('async'),
@@ -40,57 +42,62 @@ router.post('/internacion/:idInternacion/problema/:idProblema*?', function(req, 
                     if (err) return asyncCallback(err);
                     if (!internacion) return asyncCallback(404);
 
-                    // Crea o modifica la prestacion
-                    var problema;
-                    if (req.params.idProblema) { // Update
-
-                        problema = internacion.problemas.find(function(i) {
-                            return i._id == req.params.idProblema;
-                        });
-                        if (!problema)
-                            return asyncCallback(404);
-
-                        // verificamos que el usuario a editar sea el usuario que
-                        // ha creado la evolucion, de lo contrario no tiene permisos
-                        if (problema.createdBy.id != req.user.id){
-                            res.status(400).send({status:400, message: "No tiene permisos para editar el problema", type:'internal'});
-                        }
-
-                        problema.merge(req.body);
-                        problema.validar('servicio', req.body.servicio);
-
-                        if (req.body.diagnostico){
-                            problema.validar('diagnostico', req.body.diagnostico);
-                        }
-                    } else { // Insert
-                        if (!internacion.problemas)
-                            internacion.problemas = [];
-
-                        internacion.problemas.push(new Problema(req.body));
-                        problema = internacion.problemas[internacion.problemas.length - 1];
-
-                        problema.validar('servicio', req.body.servicio);
-
-                        if (req.body.diagnostico){
-                            problema.validar('diagnostico', req.body.diagnostico);
-                        }
+                    if (!internacion.problemas){
+                        internacion.problemas = [];
                     }
 
+                    // si el problema es una modificacion de un existente
+                    // entonces borramos el id para poder generar el nuevo con el new Problema()
+                    if (req.body.idProblema){
+                        delete req.body.id;
+                        delete req.body._id;
+                    }
+
+                    // creamos el problema
+                    var problema = new Problema(req.body)
+
+                    // asignamos el problema creado a la lista de problemas
+                    internacion.problemas.push(problema);
+
+                    // buscamos el problema y lo desactivamos de la lista de problemas
+                    if (problema.idProblema){
+                        let encontrado = false;
+
+                        internacion.problemas.forEach(function(_problema){
+                            if (!encontrado && problema.idProblema == _problema.id){
+                                _problema.activo = false;
+                                encontrado = true;
+                            }
+                        });
+                    }
+
+                    //console.log(internacion.problemas);
                     asyncCallback(err, internacion, problema);
                 });
             },
             // 2. Guarda la internacion modificada
             function(internacion, problema, asyncCallback) {
                 internacion.audit(req.user);
+
                 internacion.save(function(err) {
                     asyncCallback(err, internacion, problema);
                 });
             },
         ],
-        function(err, internacion, problema) {
+        function(err, internacion, _problema) {
             if (err) return next(err);
 
-            res.json(problema);
+            // buscamos el problema con los datos de la auditoria
+            var problema = internacion.problemas.filter(function ( obj ) {
+                return obj._id === _problema._id;
+            })[0];
+
+            // luego de tener los datos de auditoria, populamos los campos
+            // de servicio y diagnostico y devolvemos el problema
+            Problema.populate(problema, 'servicio diagnostico', function(err, problema) {
+                res.json(problema);
+            });
+
         });
 });
 
