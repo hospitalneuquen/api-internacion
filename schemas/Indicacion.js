@@ -208,7 +208,7 @@ var schema = new Schema({
             },
             sonda: {
                 type: String,
-                enum: ['SNG', 'SNY', 'Gastrostomías', 'Ileostomías']
+                enum: ['SNG', 'SNY', 'Gastrostomías', 'Ileostomías', 'Vesical']
             }
             // agregados: [{
             //     descripcion: String,
