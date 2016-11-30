@@ -26,14 +26,6 @@ var schema = new Schema({
     },
     texto: String,
     tipo: String, // cuando no se tiene idIndicacion es para indicar que servicio
-    // idTipoEvolucion: {
-    //     type: schemaTipoEvolucion,
-    //     required: true,
-    //     validar: {
-    //         modelo: require('../models/TipoEvolucion.js'),
-    //         resolver: true,
-    //     }
-    // },
     tipoIndicacion: {
         type: Schema.Types.ObjectId,
         ref: 'TipoIndicacion'
@@ -42,14 +34,6 @@ var schema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'TipoEvolucion'
     },
-    // servicio: {
-    //     type: schemaUbicacion,
-    //     required: true,
-    //     validar: {
-    //         modelo: require('../models/Ubicacion.js'),
-    //         resolver: true,
-    //     }
-    // },
     servicio: {
         type: Schema.Types.ObjectId,
         ref: 'Ubicacion'
@@ -79,6 +63,9 @@ var schema = new Schema({
     riesgoUPP: schemaRiesgoUPP,
     glasgow: schemaGlasgow,
     dolorValoracion: schemaDolor,
+    planDeHidratacionParenteral: {
+        frasco: Number,
+    },
     // balances liquidos
     balance: {
         ingresos: [{
