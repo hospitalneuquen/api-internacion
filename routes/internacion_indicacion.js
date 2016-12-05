@@ -281,7 +281,7 @@ router.post('/internacion/:idInternacion/indicacion/:idIndicacion*?', function(r
                     indicacion = new Indicacion(req.body);
 
                     internacion.indicaciones.push(indicacion);
-                }else if (accion == "suspender"){
+                }else if (accion == "suspender" || accion == "cambio_estado"){
                     indicacion = internacion.indicaciones.find(function(i) {
                         return i._id == req.body.id;
                     });

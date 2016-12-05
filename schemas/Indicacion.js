@@ -38,6 +38,13 @@ var schema = new Schema({
         type: String,
         enum: ['24', '12', '8', '6', '4', '2', '1', 'unica', 'rescates']
     },
+    estado: [{
+        estado: {
+            type: String,
+            enum: ['Comienzo', 'Pausada', 'Reanudada', 'Suspendida']
+        },
+        fecha: { type: Date, default: Date.now }
+    }],
     // opciones para el tipo Plan Hidratación
     planHidratacion: {
         enteralParenteral: {
@@ -81,13 +88,16 @@ var schema = new Schema({
             agregados: [{
                 tipoAgregado: {
                     type: String,
-                    enum: ['Ampollas de electrolitos', 'Polivitamínicos', 'Calcio', 'Otro']
+                    enum: ['Cloruro de potasio 1 molar', 'Polivitamínicos', 'Bicarbonato de sodio 1 molar', 'Cloruro de sodio al 20%',
+                    'Gluconato de calcio al 10%', 'Sulfato de magnesio al 25%', 'Glucosado hipertónico al 10%',
+                    'Glucosado hipertónico al 25%', 'Glucosado hipertónico al 50%', 'Otro']
                 },
                 descripcion: String,
                 posicion: Number,
                 frascos: [Number]
             }],
-            esExpansion: Boolean
+            esExpansion: Boolean,
+            fueraDePlan: Boolean
         },
         oral: {
             descripcion: String,
@@ -111,6 +121,15 @@ var schema = new Schema({
             },
             cantidad: Number
         },
+        // si es parenteral mostraremos la velocidad
+        velocidadInfunsion: {
+            velocidad: Number,
+            unidad: {
+                type: String,
+                enum: ['ml/hora', 'gotas x minuto']
+            }
+        },
+        infusionContinua: Boolean
     },
     // opciones para el tipo Controles
     // controles: {
