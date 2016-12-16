@@ -89,8 +89,7 @@ var schema = new Schema({
                 tipoAgregado: {
                     type: String,
                     enum: ['Cloruro de potasio 1 molar', 'Polivitamínicos', 'Bicarbonato de sodio 1 molar', 'Cloruro de sodio al 20%',
-                    'Gluconato de calcio al 10%', 'Sulfato de magnesio al 25%', 'Glucosado hipertónico al 10%',
-                    'Glucosado hipertónico al 25%', 'Glucosado hipertónico al 50%', 'Otro']
+                    'Gluconato de calcio al 10%', 'Sulfato de magnesio al 25%', 'Glucosado hipertónico al 25%', 'Otro']
                 },
                 descripcion: String,
                 posicion: Number,
@@ -160,7 +159,7 @@ var schema = new Schema({
         sonda: {
             tipo: {
                 type: String,
-                enum: ['SNG', 'SNY', 'Gastrostomías', 'Ileostomías']
+                enum: ['SNG', 'SNY', 'Gastrostomías', 'Ileostomías', 'Vesical']
             },
             accion: {
                 type: String,
