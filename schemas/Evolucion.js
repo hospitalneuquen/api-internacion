@@ -45,7 +45,6 @@ var schema = new Schema({
         respiracion: Number,
         spo2: Number,
         peso: Number,
-        talla: Number,
         // ****************************** Necesidad de Circulación ******************************
         circulacion: {
             tensionSistolica: Number,
