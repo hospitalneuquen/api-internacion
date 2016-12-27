@@ -164,6 +164,17 @@ var schema = new Schema({
             enum: ['Dorsal', 'Prono']
         }
     },
+    catarsis: {
+        tipo: {
+            type: String,
+            enum: ['Positivo', 'Negativo']
+
+        },
+        caracteristicas: {
+            type: String,
+            enum: ['Blanda', 'Semiblanda', 'Coprolito', 'Melena', 'Líquida', 'Blanca', 'Amarilla']
+        }
+    },
     otraIndicacion: {
         realizado: Boolean,
         descripcion: String,
